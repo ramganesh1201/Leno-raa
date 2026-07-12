@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useTheme } from "@/lib/store";
-import heroIntro from "@/assets/hero-intro.jpg";
+import { SplitText } from "@/components/immersive/SplitText";
+import { Reveal } from "@/components/immersive/Reveal";
+import heroIntro from "@/assets/hero-intro.png";
 import envHerbal from "@/assets/env-herbal.jpg";
 import envNourish from "@/assets/env-nourish.jpg";
 
@@ -56,22 +58,15 @@ function Story() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--ivory)]/40 via-transparent to-[color:var(--ivory)]" />
         <div className="relative z-10 mx-auto max-w-[1400px] px-6 md:px-12">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.4 }}
-            className="text-eyebrow"
-          >
+          <Reveal preset="label" className="text-eyebrow">
             The Atelier
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.6, delay: 0.3 }}
-            className="text-display mt-4 max-w-[14ch] text-6xl leading-[0.95] md:text-9xl"
-          >
-            The old ways, held with new hands.
-          </motion.h1>
+          </Reveal>
+          <SplitText
+            as="h1"
+            text="The old ways, held with new hands."
+            delay={0.1}
+            className="text-display mt-4 max-w-[14ch] text-4xl md:text-3xl md:text-4xl leading-[0.95] md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl"
+          />
         </div>
       </section>
 
@@ -91,33 +86,24 @@ function Story() {
               transition={{ duration: 1.6 }}
               className="aspect-[4/5] rounded-md object-cover"
             />
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 1.2, delay: 0.2 }}
-            >
-              <div className="text-eyebrow text-[color:var(--gold)]">{c.eyebrow}</div>
-              <h2 className="text-display mt-4 text-4xl leading-tight md:text-6xl">
-                {c.title}
-              </h2>
-              <p className="mt-6 max-w-md text-base leading-relaxed text-[color:var(--foreground)]/80">
+            <div>
+              <Reveal preset="label" className="text-eyebrow text-[color:var(--gold)]">{c.eyebrow}</Reveal>
+              <SplitText as="h2" text={c.title} delay={0.1} className="text-display mt-4 text-4xl leading-tight md:text-4xl md:text-3xl md:text-4xl" />
+              <Reveal as="p" preset="paragraph" delay={0.2} className="mt-6 max-w-md text-base leading-relaxed text-[color:var(--foreground)]/80">
                 {c.body}
-              </p>
-            </motion.div>
+              </Reveal>
+            </div>
           </div>
         </section>
       ))}
 
       <section className="relative py-32">
         <div className="mx-auto max-w-3xl px-6 text-center md:px-12">
-          <div className="ornament-rule text-eyebrow mb-10">A closing thought</div>
-          <h2 className="text-display text-4xl leading-tight md:text-6xl">
-            "A bar of soap should feel like something someone loved into being."
-          </h2>
-          <p className="mt-8 text-sm uppercase tracking-[0.28em] text-[color:var(--muted-foreground)]">
+          <Reveal preset="label" className="ornament-rule text-eyebrow mb-10">A closing thought</Reveal>
+          <SplitText as="h2" text='"A bar of soap should feel like something someone loved into being."' delay={0.1} className="text-display text-4xl leading-tight md:text-4xl md:text-3xl md:text-4xl" />
+          <Reveal as="p" preset="paragraph" delay={0.2} className="mt-8 text-sm uppercase tracking-[0.28em] text-[color:var(--muted-foreground)]">
             — The Founder
-          </p>
+          </Reveal>
         </div>
       </section>
     </div>

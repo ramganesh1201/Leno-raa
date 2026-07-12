@@ -1,18 +1,47 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useAccount, useShop } from "@/lib/store";
-import { collections } from "@/lib/catalog";
+import { useShop } from "@/lib/store";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
+import { useCart } from "@/hooks/useCart";
+import { collections, products } from "@/lib/catalog";
+import { useNavigate } from "@tanstack/react-router";
+import { Reveal } from "@/components/immersive/Reveal";
+import { Heart, ShoppingBag, User, Search } from "lucide-react";
 
 export function SiteHeader() {
-  const cartCount = useShop((s) => s.cart.reduce((a, c) => a + c.quantity, 0));
+  const { user, signOut: authSignOut, isLoading: isAuthLoading } = useAuth();
+  const { cart: supabaseCart } = useCart();
+  const localCart = useShop((s) => s.cart);
+  const cartCount = user 
+    ? supabaseCart.reduce((a, c) => a + c.quantity, 0)
+    : localCart.reduce((a, c) => a + c.quantity, 0);
   const wishCount = useShop((s) => s.wishlist.length);
-  const account = useAccount((s) => s.account);
-  const signOut = useAccount((s) => s.signOut);
+  const { profile, isLoading: isProfileLoading } = useProfile();
+  const loading = isAuthLoading || (user && isProfileLoading);
+  const displayName = profile?.full_name || user?.user_metadata?.full_name;
+  
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<null | "collections" | "account">(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [isSearchHovered, setIsSearchHovered] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchIndex, setSearchIndex] = useState(0);
+  const [isProfileHovered, setIsProfileHovered] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  const searchResults = searchQuery
+    ? products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.collection.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.ingredients.some((i) => i.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : [];
+    const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -24,6 +53,9 @@ export function SiteHeader() {
   useEffect(() => {
     if (typeof window !== "undefined") window.scrollTo(0, 0);
     setOpenMenu(null);
+    setIsSearchHovered(false);
+    setIsSearchFocused(false);
+    setSearchQuery("");
   }, [pathname]);
 
   useEffect(() => {
@@ -39,7 +71,7 @@ export function SiteHeader() {
     <header
       ref={menuRef}
       className={`fixed top-0 z-50 w-full transition-all duration-700 ${
-        scrolled ? "surface-glass py-3" : "bg-transparent py-6"
+        scrolled ? "bg-[color:var(--ivory)]/80 backdrop-blur-md shadow-sm border-b border-[color:var(--border)] py-3" : "bg-transparent py-6"
       }`}
     >
       <div className="mx-auto flex max-w-[1500px] items-center justify-between px-6 md:px-12">
@@ -53,54 +85,198 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-8 md:flex">
           <Link
             to="/"
-            className="text-eyebrow text-[color:var(--foreground)]/70 transition hover:text-[color:var(--gold)]"
+            className={`text-sm font-medium tracking-wide transition hover:text-[color:var(--gold)] ${pathname === "/" ? "text-[color:var(--gold)] border-b border-[color:var(--gold)]" : "text-[color:var(--foreground)]/70"}`}
           >
             Home
           </Link>
           <button
             onClick={() => setOpenMenu((m) => (m === "collections" ? null : "collections"))}
-            className="text-eyebrow text-[color:var(--foreground)]/70 transition hover:text-[color:var(--gold)]"
+            className={`text-sm font-medium tracking-wide transition hover:text-[color:var(--gold)] ${pathname.startsWith("/collections") ? "text-[color:var(--gold)] border-b border-[color:var(--gold)]" : "text-[color:var(--foreground)]/70"}`}
             data-lux-hover
           >
             Collections
           </button>
           <Link
             to="/customize"
-            className="text-eyebrow text-[color:var(--foreground)]/70 transition hover:text-[color:var(--gold)]"
+            className={`text-sm font-medium tracking-wide transition hover:text-[color:var(--gold)] ${pathname.startsWith("/customize") ? "text-[color:var(--gold)] border-b border-[color:var(--gold)]" : "text-[color:var(--foreground)]/70"}`}
           >
             Customize
           </Link>
           <Link
             to="/story"
-            className="text-eyebrow text-[color:var(--foreground)]/70 transition hover:text-[color:var(--gold)]"
+            className={`text-sm font-medium tracking-wide transition hover:text-[color:var(--gold)] ${pathname.startsWith("/story") ? "text-[color:var(--gold)] border-b border-[color:var(--gold)]" : "text-[color:var(--foreground)]/70"}`}
           >
             Story
           </Link>
         </nav>
-        <div className="flex items-center gap-6 text-xs uppercase tracking-[0.24em]">
+        <div className="flex items-center gap-4 relative">
+          {/* SEARCH WRAPPER */}
+          <div 
+            className="relative flex items-center justify-end h-11 w-11"
+            onMouseEnter={() => setIsSearchHovered(true)}
+            onMouseLeave={() => setIsSearchHovered(false)}
+          >
+            <AnimatePresence>
+              {(isSearchHovered || isSearchFocused) && (
+                <motion.div
+                  initial={{ width: 44, opacity: 0 }}
+                  animate={{ width: 320, opacity: 1 }}
+                  exit={{ width: 44, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute right-0 surface-glass rounded-full border border-[color:var(--border)] shadow-xl overflow-visible z-20 flex items-center h-11 pointer-events-auto"
+                >
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search soaps..."
+                    className="w-full bg-transparent border-none outline-none pl-4 pr-12 text-sm text-[color:var(--foreground)] placeholder:text-[color:var(--foreground)]/40"
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setSearchIndex(0);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") {
+                         setIsSearchFocused(false);
+                         setIsSearchHovered(false);
+                         searchInputRef.current?.blur();
+                      }
+                      if (e.key === "ArrowDown") {
+                         e.preventDefault();
+                         setSearchIndex((i) => Math.min(i + 1, searchResults.length - 1));
+                      }
+                      if (e.key === "ArrowUp") {
+                         e.preventDefault();
+                         setSearchIndex((i) => Math.max(i - 1, 0));
+                      }
+                      if (e.key === "Enter" && searchResults[searchIndex]) {
+                         e.preventDefault();
+                         navigate({ to: "/products/$slug", params: { slug: searchResults[searchIndex].slug } });
+                         setIsSearchFocused(false);
+                         setIsSearchHovered(false);
+                         setSearchQuery("");
+                      }
+                    }}
+                  />
+                  
+                  {/* DROPDOWN */}
+                  <AnimatePresence>
+                    {(isSearchFocused || isSearchHovered) && searchQuery && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="absolute top-[calc(100%+8px)] right-0 w-80 surface-glass rounded-xl border border-[color:var(--border)] shadow-2xl p-2 flex flex-col gap-1 z-50"
+                      >
+                        {searchResults.length > 0 ? (
+                          searchResults.slice(0, 6).map((product, idx) => (
+                            <Link 
+                              key={product.slug}
+                              to="/products/$slug"
+                              params={{ slug: product.slug }}
+                              onClick={() => {
+                                setIsSearchFocused(false);
+                                setIsSearchHovered(false);
+                                setSearchQuery("");
+                              }}
+                              className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${idx === searchIndex ? "bg-[color:var(--ivory)]/60" : "hover:bg-[color:var(--ivory)]/40"}`}
+                            >
+                              <div className="w-10 h-10 rounded-md overflow-hidden bg-[color:var(--cream)]">
+                                {product.image && <img src={product.image} alt={product.name} className="w-full h-full object-cover" />}
+                              </div>
+                              <div className="flex-1 text-left">
+                                <div className="text-sm font-medium text-[color:var(--foreground)]">{product.name}</div>
+                                <div className="text-[10px] uppercase tracking-wider text-[color:var(--foreground)]/50">{product.collection}</div>
+                              </div>
+                            </Link>
+                          ))
+                        ) : (
+                          <div className="p-4 text-center">
+                            <div className="text-sm text-[color:var(--foreground)] font-medium">No soaps found</div>
+                            <div className="text-xs text-[color:var(--foreground)]/60 mt-1">Try another ingredient or collection.</div>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <button
+              className="absolute right-0 z-30 flex nav-icon-btn group"
+              aria-label="Search"
+              data-lux-hover
+              onClick={() => {
+                setIsSearchFocused(true);
+                searchInputRef.current?.focus();
+              }}
+            >
+              <Search size={20} strokeWidth={1.5} className="transition-colors duration-250" />
+            </button>
+          </div>
+          
           <Link
             to="/wishlist"
-            className="hidden sm:inline transition hover:text-[color:var(--gold)]"
-          >
-            Saved{" "}
-            {wishCount > 0 && (
-              <sup className="text-[color:var(--gold)]">{wishCount}</sup>
-            )}
-          </Link>
-          <Link to="/cart" className="transition hover:text-[color:var(--gold)]">
-            Bag{" "}
-            {cartCount > 0 && (
-              <sup className="text-[color:var(--gold)]">{cartCount}</sup>
-            )}
-          </Link>
-          <button
-            onClick={() => setOpenMenu((m) => (m === "account" ? null : "account"))}
-            className="grid h-9 w-9 place-items-center rounded-full border border-[color:var(--border)] bg-white/40 text-[10px] uppercase tracking-[0.2em] transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]"
-            aria-label="Account"
+            className="hidden sm:flex nav-icon-btn group"
+            aria-label="Saved"
             data-lux-hover
           >
-            {account ? account.name.slice(0, 2).toUpperCase() : "IN"}
-          </button>
+            <Heart 
+              size={20} 
+              strokeWidth={1.5} 
+              className="transition-colors duration-250"
+              fill={wishCount > 0 ? "currentColor" : "none"}
+            />
+            <span className="nav-tooltip">Saved</span>
+          </Link>
+          
+          <Link 
+            to="/cart" 
+            className="flex nav-icon-btn group"
+            aria-label="Bag"
+            data-lux-hover
+          >
+            <ShoppingBag size={20} strokeWidth={1.5} className="transition-colors duration-250" />
+            {cartCount > 0 && (
+              <span className="nav-badge">{cartCount}</span>
+            )}
+            <span className="nav-tooltip">Bag</span>
+          </Link>
+          
+          {/* PROFILE WRAPPER */}
+          <div 
+            className="relative flex items-center justify-end h-11 w-11"
+            onMouseEnter={() => setIsProfileHovered(true)}
+            onMouseLeave={() => setIsProfileHovered(false)}
+          >
+            <AnimatePresence>
+              {isProfileHovered && (
+                <motion.div
+                  initial={{ width: 44, opacity: 0 }}
+                  animate={{ width: user ? 140 : 130, opacity: 1 }}
+                  exit={{ width: 44, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute right-0 h-11 surface-glass rounded-full border border-[color:var(--border)] flex items-center overflow-hidden z-20 pointer-events-none shadow-sm"
+                >
+                  <div className="w-full text-[10px] uppercase tracking-[0.2em] text-[color:var(--foreground)] pl-5 pr-12 whitespace-nowrap overflow-hidden text-left">
+                    {loading ? `👤 Loading...` : user ? `👤 ${displayName || "Guest"}` : `👤 Sign In`}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <button
+              onClick={() => setOpenMenu((m) => (m === "account" ? null : "account"))}
+              className="absolute right-0 z-30 flex nav-icon-btn group"
+              aria-label="Account"
+              data-lux-hover
+            >
+              <User size={20} strokeWidth={1.5} className="transition-colors duration-250" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -160,14 +336,20 @@ export function SiteHeader() {
             transition={{ duration: 0.35 }}
             className="surface-menu absolute right-6 top-full mt-3 w-72 rounded-md p-6 md:right-12"
           >
-            {account ? (
+            {loading ? (
+              <div className="animate-pulse">
+                <div className="h-4 w-16 bg-[color:var(--foreground)]/10 rounded mb-4"></div>
+                <div className="h-8 w-40 bg-[color:var(--foreground)]/10 rounded mb-2"></div>
+                <div className="h-3 w-32 bg-[color:var(--foreground)]/10 rounded mb-6"></div>
+              </div>
+            ) : user ? (
               <div>
                 <div className="text-eyebrow text-[color:var(--muted-foreground)]">
                   Signed in
                 </div>
-                <div className="text-display mt-2 text-2xl">{account.name}</div>
+                <div className="text-display mt-2 text-2xl">{displayName || "Guest"}</div>
                 <div className="mt-1 text-xs text-[color:var(--muted-foreground)]">
-                  {account.email}
+                  {profile?.email || user.email}
                 </div>
                 <ul className="mt-6 space-y-3 text-sm">
                   {[
@@ -190,13 +372,14 @@ export function SiteHeader() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => {
-                    signOut();
+                  onClick={async () => {
+                    await authSignOut.mutateAsync();
                     setOpenMenu(null);
                   }}
-                  className="mt-6 text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)]"
+                  className="mt-6 text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)] flex items-center"
+                  disabled={authSignOut.isPending}
                 >
-                  Sign out
+                  {authSignOut.isPending ? "Signing out..." : "Sign out"}
                 </button>
               </div>
             ) : (
@@ -236,16 +419,16 @@ export function SiteFooter() {
     <footer className="relative mt-32 border-t border-[color:var(--border)] bg-[color:var(--cream)]/60 py-20">
       <div className="mx-auto grid max-w-[1400px] gap-16 px-6 md:grid-cols-4 md:px-12">
         <div>
-          <div className="text-display text-3xl">Lenoraa</div>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-[color:var(--muted-foreground)]">
+          <Reveal preset="subheading" className="text-display text-3xl">Lenoraa</Reveal>
+          <Reveal as="p" preset="paragraph" delay={0.1} className="mt-4 max-w-xs text-sm leading-relaxed text-[color:var(--muted-foreground)]">
             Nature crafted into luxury. Handmade soaps, doctor-formulated,
             cold-processed in small batches.
-          </p>
+          </Reveal>
         </div>
         <div>
-          <div className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
+          <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             Collections
-          </div>
+          </Reveal>
           <ul className="space-y-2 text-sm">
             {collections.map((c) => (
               <li key={c.slug}>
@@ -261,9 +444,9 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <div className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
+          <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             World
-          </div>
+          </Reveal>
           <ul className="space-y-2 text-sm">
             <li><Link to="/story" className="transition hover:text-[color:var(--gold)]">Our Story</Link></li>
             <li><Link to="/customize" className="transition hover:text-[color:var(--gold)]">Custom Soap Studio</Link></li>
@@ -273,12 +456,12 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <div className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
+          <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             Newsletter
-          </div>
-          <p className="mb-4 text-sm text-[color:var(--muted-foreground)]">
+          </Reveal>
+          <Reveal as="p" preset="paragraph" delay={0.1} className="mb-4 text-sm text-[color:var(--muted-foreground)]">
             Letters from the atelier. New rituals, seasonal releases.
-          </p>
+          </Reveal>
           <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
             <input
               type="email"

@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useShop, useTheme, type CustomDesign } from "@/lib/store";
-import { SoapBar3D } from "@/components/immersive/SoapBar3D";
 import { SplitText } from "@/components/immersive/SplitText";
+import { Reveal } from "@/components/immersive/Reveal";
 import { Magnetic } from "@/components/immersive/Magnetic";
+import { useAuth } from "@/hooks/useAuth";
+import { useCustomizations } from "@/hooks/useCustomizations";
+import { useCart } from "@/hooks/useCart";
 
 export const Route = createFileRoute("/customize")({
   head: () => ({
@@ -32,8 +35,17 @@ const RIBBONS = ["None", "Gold", "Ivory", "Sage", "Rose"];
 
 function CustomizePage() {
   const setTheme = useTheme((s) => s.setTheme);
-  const saveDesign = useShop((s) => s.saveDesign);
-  const addCustom = useShop((s) => s.addCustomToCart);
+  const saveLocalDesign = useShop((s) => s.saveDesign);
+  const addLocalCustom = useShop((s) => s.addCustomToCart);
+  
+  const authHook = useAuth() || {};
+  const { user, isLoading: isAuthLoading } = authHook;
+  
+  const customHook = useCustomizations() || {};
+  const { addCustomization } = customHook;
+  
+  const cartHook = useCart() || {};
+  const { addToCart } = cartHook;
 
   const [shape, setShape] = useState(SHAPES[0]);
   const [color, setColor] = useState(COLORS[0]);
@@ -48,10 +60,15 @@ function CustomizePage() {
   const [saved, setSaved] = useState(false);
   const [added, setAdded] = useState(false);
 
-  useEffect(() => setTheme(color.theme), [color, setTheme]);
+  useEffect(() => {
+    if (color?.theme) setTheme(color.theme);
+  }, [color, setTheme]);
 
   const toggleIngredient = (i: string) =>
-    setIngredients((cur) => (cur.includes(i) ? cur.filter((x) => x !== i) : [...cur, i]));
+    setIngredients((cur) => {
+      const current = cur || [];
+      return current.includes(i) ? current.filter((x) => x !== i) : [...current, i];
+    });
 
   const buildDesign = (): CustomDesign => ({
     id: Math.random().toString(36).slice(2, 10),
@@ -68,39 +85,61 @@ function CustomizePage() {
     createdAt: Date.now(),
   });
 
-  const price = 480 + ingredients.length * 30 + (giftBox ? 200 : 0);
+  const price = 480 + (ingredients || []).length * 30 + (giftBox ? 200 : 0);
 
   const radius =
     shape === "Round" ? "9999px" : shape === "Square" ? "12px" : shape === "Petal" ? "70% 30% 60% 40% / 50% 50% 50% 50%" : "40% 60% 40% 60% / 50%";
 
+  if (isAuthLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center pt-32">
+        <div className="text-sm uppercase tracking-widest text-[color:var(--muted-foreground)] animate-pulse">
+          Loading Studio...
+        </div>
+      </div>
+    );
+  }
+
+  const isSaving = addCustomization?.isPending || false;
+  const isAdding = addToCart?.isPending || false;
+
   return (
     <div className="relative pt-32">
       <div className="mx-auto max-w-[1500px] px-6 md:px-12">
-        <div className="text-eyebrow text-[color:var(--muted-foreground)]">The Studio</div>
-        <SplitText as="h1" text="Design your own ritual." className="text-display mt-3 text-5xl md:text-7xl" />
-        <p className="mt-4 max-w-xl text-[color:var(--muted-foreground)]">
+        <Reveal preset="label" className="text-eyebrow text-[color:var(--muted-foreground)]">The Studio</Reveal>
+        <SplitText as="h1" text="Design your own ritual." delay={0.1} className="text-display mt-3 text-3xl md:text-4xl md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl" />
+        <Reveal as="p" preset="paragraph" delay={0.2} className="mt-4 max-w-xl text-[color:var(--muted-foreground)]">
           Every choice reshapes the atmosphere. Watch the world respond as you build.
-        </p>
+        </Reveal>
 
         <div className="mt-16 grid gap-16 md:grid-cols-[1.1fr_1fr]">
           {/* Preview */}
           <div className="sticky top-32 self-start">
-            <div className="relative" style={{ perspective: 1000 }}>
-              <SoapBar3D>
-                <div
-                  className="absolute inset-6 flex items-center justify-center"
-                  style={{
-                    borderRadius: radius,
-                    background: `radial-gradient(120% 80% at 30% 20%, color-mix(in oklab, white 60%, ${color.val}) 0%, transparent 55%), ${color.val}`,
-                    boxShadow: "inset 0 2px 12px rgba(255,255,255,0.35), inset 0 -12px 32px rgba(0,0,0,0.15)",
-                    transition: "all 0.8s cubic-bezier(.22,1,.36,1)",
-                  }}
-                >
-                  <div className="text-display text-2xl uppercase tracking-[0.3em] text-white/70 mix-blend-overlay">
-                    {engraving.slice(0, 12)}
-                  </div>
+            <div className="relative">
+              {/* 2D Soap Preview */}
+              <div 
+                className="relative aspect-[4/5] w-full max-w-[400px] mx-auto overflow-hidden shadow-2xl transition-all duration-700"
+                style={{ 
+                  background: color?.val || "var(--background)", 
+                  borderRadius: radius 
+                }}
+              >
+                {/* 3D-like Highlights */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent mix-blend-overlay" />
+                <div className="absolute bottom-0 right-0 h-1/2 w-1/2 bg-gradient-to-tl from-black/10 to-transparent mix-blend-multiply" />
+                
+                {/* Brand Imprint */}
+                <div className="absolute inset-0 flex items-center justify-center mix-blend-overlay opacity-60">
+                  <div className="rotate-[-45deg] text-2xl tracking-[0.3em] font-light">{engraving || ""}</div>
                 </div>
-              </SoapBar3D>
+              </div>
+
+              {/* Extras indicators */}
+              {giftBox && (
+                <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded bg-[color:var(--border)] shadow-xl rotate-12 flex items-center justify-center">
+                  <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">Gift Box</span>
+                </div>
+              )}
               {ribbon !== "None" && (
                 <div
                   className="mx-auto mt-4 h-2 w-1/2 rounded"
@@ -115,7 +154,7 @@ function CustomizePage() {
               )}
               <div className="mt-8 flex items-baseline justify-between">
                 <div>
-                  <div className="text-display text-3xl">{name}</div>
+                  <div className="text-display text-3xl">{name || "Custom Design"}</div>
                   <div className="text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
                     {shape} · {texture} · {fragrance}
                   </div>
@@ -125,18 +164,75 @@ function CustomizePage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Magnetic>
                   <button
-                    onClick={() => { saveDesign(buildDesign()); setSaved(true); setTimeout(() => setSaved(false), 2000); }}
+                    disabled={isSaving}
+                    onClick={async () => { 
+                      try {
+                        if (user && addCustomization) {
+                          await addCustomization.mutateAsync({
+                            soap_base: "Standard",
+                            shape: shape || "Oval",
+                            size: "Standard",
+                            color: color?.name || "Ivory",
+                            fragrance: fragrance || "Unscented",
+                            essential_oils: [],
+                            ingredients: ingredients || [],
+                            packaging: packaging || "Kraft Sleeve",
+                            engraving_text: engraving || null,
+                            gift_wrap: giftBox || false,
+                            preview_image: null,
+                            notes: name || "My Ritual",
+                            estimated_price: price
+                          });
+                        } else if (saveLocalDesign) {
+                          saveLocalDesign(buildDesign()); 
+                        }
+                        setSaved(true); 
+                        setTimeout(() => setSaved(false), 2000); 
+                      } catch (err) {
+                        console.error("Failed to save customization:", err);
+                      }
+                    }}
                     className="btn-ghost-lux"
                   >
-                    {saved ? "Saved ♥" : "Save design"}
+                    {saved ? "Saved ♥" : isSaving ? "Saving..." : "Save design"}
                   </button>
                 </Magnetic>
                 <Magnetic>
                   <button
-                    onClick={() => { const d = buildDesign(); saveDesign(d); addCustom(d); setAdded(true); setTimeout(() => setAdded(false), 2000); }}
+                    disabled={isAdding}
+                    onClick={async () => { 
+                      try {
+                        if (user && addCustomization && addToCart) {
+                          const custom = await addCustomization.mutateAsync({
+                            soap_base: "Standard",
+                            shape: shape || "Oval",
+                            size: "Standard",
+                            color: color?.name || "Ivory",
+                            fragrance: fragrance || "Unscented",
+                            essential_oils: [],
+                            ingredients: ingredients || [],
+                            packaging: packaging || "Kraft Sleeve",
+                            engraving_text: engraving || null,
+                            gift_wrap: giftBox || false,
+                            preview_image: null,
+                            notes: name || "My Ritual",
+                            estimated_price: price
+                          });
+                          await addToCart.mutateAsync({ productId: null, quantity: 1, customizationId: custom.id });
+                        } else if (saveLocalDesign && addLocalCustom) {
+                          const d = buildDesign(); 
+                          saveLocalDesign(d); 
+                          addLocalCustom(d); 
+                        }
+                        setAdded(true); 
+                        setTimeout(() => setAdded(false), 2000); 
+                      } catch (err) {
+                        console.error("Failed to add to cart:", err);
+                      }
+                    }}
                     className="btn-lux"
                   >
-                    {added ? "Added ✓" : "Add to bag"}
+                    {added ? "Added ✓" : isAdding ? "Adding..." : "Add to bag"}
                   </button>
                 </Magnetic>
               </div>
@@ -219,7 +315,7 @@ function CustomizePage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-eyebrow mb-4 text-[color:var(--gold)]">{title}</div>
+      <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--gold)]">{title}</Reveal>
       {children}
     </div>
   );

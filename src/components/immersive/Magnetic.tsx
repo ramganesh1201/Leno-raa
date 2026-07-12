@@ -21,13 +21,12 @@ export function Magnetic({
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const x = (e.clientX - (rect.left + rect.width / 2)) * strength;
-    const y = (e.clientY - (rect.top + rect.height / 2)) * strength;
-    el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    // Disabled exaggerated magnetic translation as per luxury interaction specs.
+    // The cursor light tracks over this element instead.
   };
   const onLeave = () => {
     const el = ref.current;
-    if (el) el.style.transform = "translate3d(0, 0, 0)";
+    if (el) el.style.transform = "";
   };
 
   const Comp = Tag as unknown as "span";

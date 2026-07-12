@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { Product } from "@/lib/catalog";
 import { useShop } from "@/lib/store";
 
+
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const toggleWishlist = useShop((s) => s.toggleWishlist);
   const saved = useShop((s) => s.wishlist.includes(product.slug));
@@ -96,13 +97,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         </div>
         <div className="mt-6 flex items-baseline justify-between">
           <div>
-            <div className="text-display text-2xl">{product.name}</div>
+            <div className="text-display text-2xl">{product.name || "Product Name"}</div>
             <div className="mt-1 text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
-              {product.tagline}
+              {product.tagline || "Collection Chapter"}
             </div>
           </div>
           <div className="text-sm tracking-widest text-[color:var(--foreground)]/70">
-            ₹{product.price}
+            ₹{product.price || "---"}
           </div>
         </div>
       </Link>

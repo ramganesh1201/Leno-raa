@@ -26,7 +26,7 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <div className="text-eyebrow text-[color:var(--muted-foreground)]">404</div>
-        <h1 className="text-display mt-4 text-5xl">Off the trail</h1>
+        <h1 className="text-display mt-4 text-3xl md:text-4xl">Off the trail</h1>
         <p className="mt-4 text-sm text-[color:var(--muted-foreground)]">
           This page has drifted away like a petal in the breeze.
         </p>
@@ -111,23 +111,27 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+import { AuthProvider } from "@/components/auth/AuthProvider";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <CinematicIntro />
-        <AmbienceLayer />
-        <Suspense fallback={null}>
-          <LuxuryCursor />
-        </Suspense>
-        <SiteHeader />
+        <AuthProvider>
+          <CinematicIntro />
+          <AmbienceLayer />
+          <Suspense fallback={null}>
+            <LuxuryCursor />
+          </Suspense>
+          <SiteHeader />
         <main className="min-h-screen">
           <PageTransition>
             <Outlet />
           </PageTransition>
         </main>
         <SiteFooter />
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

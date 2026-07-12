@@ -9,6 +9,8 @@ import {
 } from "@/lib/catalog";
 import { useTheme } from "@/lib/store";
 import { ProductCard } from "@/components/ProductCard";
+import { SplitText } from "@/components/immersive/SplitText";
+import { Reveal } from "@/components/immersive/Reveal";
 
 export const Route = createFileRoute("/collections/$slug")({
   loader: ({ params }) => {
@@ -72,31 +74,37 @@ function CollectionPage() {
               "radial-gradient(70% 50% at 50% 100%, color-mix(in oklab, var(--theme) 35%, transparent), transparent 70%)",
           }}
         />
+        
+        {/* Localized Readability Layer */}
+        {(() => {
+          const isBright = ["radiance", "calm", "nourish"].includes(collection.slug as string);
+          const overlayOpacity = isBright ? 0.6 : 0.25;
+          return (
+            <div 
+              className="absolute bottom-0 left-0 w-full md:w-[70%] h-[70%] pointer-events-none"
+              style={{
+                background: `radial-gradient(100% 100% at 0% 100%, rgba(0,0,0,${overlayOpacity}) 0%, rgba(0,0,0,0) 100%)`,
+                backdropFilter: "blur(8px)",
+                maskImage: "radial-gradient(100% 100% at 0% 100%, black 20%, transparent 100%)",
+                WebkitMaskImage: "radial-gradient(100% 100% at 0% 100%, black 20%, transparent 100%)"
+              }}
+            />
+          );
+        })()}
+
         <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-20 text-[color:var(--ivory)] md:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.4, delay: 0.4 }}
-            className="text-eyebrow text-white/70"
-          >
+          <Reveal preset="label" delay={0.1} className="text-eyebrow text-white/90 drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
             {collection.eyebrow} · {collection.scene}
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.8, delay: 0.6 }}
-            className="text-display mt-6 max-w-[14ch] text-7xl leading-[0.95] md:text-[9rem]"
-          >
-            {collection.name}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.4, delay: 1.1 }}
-            className="mt-6 max-w-lg text-lg text-white/85"
-          >
+          </Reveal>
+          <SplitText
+            as="h1"
+            text={collection.name}
+            delay={0.2}
+            className="text-display mt-6 max-w-[14ch] text-5xl md:text-6xl lg:text-7xl leading-[0.95] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+          />
+          <Reveal as="p" preset="paragraph" delay={0.3} className="mt-6 max-w-lg text-lg text-white/95 drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
             {collection.environment}
-          </motion.p>
+          </Reveal>
         </div>
       </section>
 
@@ -104,28 +112,19 @@ function CollectionPage() {
       <section className="relative py-32">
         <div className="mx-auto grid max-w-[1400px] gap-16 px-6 md:grid-cols-[1fr_1.4fr] md:px-12">
           <div>
-            <div className="text-eyebrow text-[color:var(--muted-foreground)]">
+            <Reveal preset="label" className="text-eyebrow text-[color:var(--muted-foreground)]">
               Purpose
-            </div>
-            <h2 className="text-display mt-4 text-4xl leading-tight md:text-5xl">
-              {collection.purpose}
-            </h2>
+            </Reveal>
+            <SplitText as="h2" text={collection.purpose} delay={0.1} className="text-display mt-4 text-4xl leading-tight md:text-3xl md:text-4xl" />
           </div>
           <ul className="space-y-6">
             {collection.benefits.map((b: string, i: number) => (
-              <motion.li
-                key={b}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="flex items-start gap-6 border-b border-[color:var(--border)] pb-6"
-              >
-                <span className="text-eyebrow mt-2 text-[color:var(--gold)]">
+              <li key={b} className="flex items-start gap-6 border-b border-[color:var(--border)] pb-6">
+                <Reveal preset="label" delay={i * 0.1} className="text-eyebrow mt-2 text-[color:var(--gold)]">
                   0{i + 1}
-                </span>
-                <span className="text-display text-2xl md:text-3xl">{b}</span>
-              </motion.li>
+                </Reveal>
+                <Reveal preset="subheading" delay={i * 0.1 + 0.1} className="text-display text-2xl md:text-3xl">{b}</Reveal>
+              </li>
             ))}
           </ul>
         </div>
@@ -134,7 +133,7 @@ function CollectionPage() {
       {/* Products */}
       <section className="relative py-16">
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-          <div className="ornament-rule text-eyebrow mb-16">The Bars</div>
+          <Reveal preset="label" className="ornament-rule text-eyebrow mb-16">The Bars</Reveal>
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
             {items.map((p, i) => (
               <ProductCard key={p.slug} product={p} index={i} />
@@ -146,9 +145,9 @@ function CollectionPage() {
       {/* Chapter navigation */}
       <section className="relative py-32">
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-          <div className="text-eyebrow mb-8 text-[color:var(--muted-foreground)]">
+          <Reveal preset="label" className="text-eyebrow mb-8 text-[color:var(--muted-foreground)]">
             Continue the journey
-          </div>
+          </Reveal>
           <div className="grid gap-4 md:grid-cols-4">
             {otherChapters.map((c) => (
               <Link
@@ -167,8 +166,8 @@ function CollectionPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                  <div className="text-eyebrow text-white/60">{c.eyebrow}</div>
-                  <div className="text-display mt-2 text-2xl">{c.name}</div>
+                  <Reveal preset="label" className="text-eyebrow text-white/60">{c.eyebrow}</Reveal>
+                  <Reveal preset="subheading" delay={0.1} className="text-display mt-2 text-2xl">{c.name}</Reveal>
                 </div>
               </Link>
             ))}

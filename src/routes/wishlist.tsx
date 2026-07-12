@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { getProduct } from "@/lib/catalog";
 import { useShop, useTheme } from "@/lib/store";
 import { ProductCard } from "@/components/ProductCard";
+import { SplitText } from "@/components/immersive/SplitText";
+import { Reveal } from "@/components/immersive/Reveal";
 
 export const Route = createFileRoute("/wishlist")({
   head: () => ({
@@ -24,14 +26,14 @@ function Wishlist() {
   return (
     <div className="relative pt-32">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        <div className="text-eyebrow text-[color:var(--muted-foreground)]">Saved</div>
-        <h1 className="text-display mt-3 text-5xl md:text-7xl">Kept for later</h1>
+        <Reveal preset="label" className="text-eyebrow text-[color:var(--muted-foreground)]">Saved</Reveal>
+        <SplitText as="h1" text="Kept for later" delay={0.1} className="text-display mt-3 text-3xl md:text-4xl md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl" />
 
         {items.length === 0 ? (
           <div className="mt-24 text-center">
-            <p className="text-[color:var(--muted-foreground)]">
+            <Reveal as="p" preset="paragraph" delay={0.2} className="text-[color:var(--muted-foreground)]">
               You haven't saved any bars yet.
-            </p>
+            </Reveal>
             <Link to="/" className="btn-lux mt-8">Explore</Link>
           </div>
         ) : (

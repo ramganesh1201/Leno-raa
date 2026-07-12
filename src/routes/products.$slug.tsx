@@ -1,25 +1,33 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   getProduct,
   getCollection,
-  productsInCollection,
 } from "@/lib/catalog";
 import { useShop, useTheme } from "@/lib/store";
-import { SoapBar3D } from "@/components/immersive/SoapBar3D";
+import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 import { SplitText } from "@/components/immersive/SplitText";
-import { Magnetic } from "@/components/immersive/Magnetic";
+import { Reveal } from "@/components/immersive/Reveal";
+import { ProductEnvironment } from "@/components/product/ProductEnvironment";
+import { ProductGallery } from "@/components/product/ProductGallery";
+import { FloatingBenefits } from "@/components/product/FloatingBenefits";
+import { RatingStars } from "@/components/product/RatingStars";
+import { ProductActions } from "@/components/product/ProductActions";
+import { TrustBadges } from "@/components/product/TrustBadges";
+import { InteractiveIngredients } from "@/components/product/InteractiveIngredients";
+import { ExpandableInfo } from "@/components/product/ExpandableInfo";
+import { WhyThisSoap } from "@/components/product/WhyThisSoap";
+import { CustomerReviews } from "@/components/product/CustomerReviews";
+import { StickyPurchasePanel } from "@/components/product/StickyPurchasePanel";
+import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => {
     const product = getProduct(params.slug);
     if (!product) throw notFound();
     const collection = getCollection(product.collection)!;
-    const related = productsInCollection(product.collection).filter(
-      (p) => p.slug !== product.slug,
-    );
-    return { product, collection, related };
+    return { product, collection };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -32,6 +40,7 @@ export const Route = createFileRoute("/products/$slug")({
       : [{ title: "Product not found — Lenoraa" }],
   }),
   component: ProductPage,
+  pendingComponent: ProductSkeleton,
   notFoundComponent: () => (
     <div className="pt-40 text-center">
       <h1 className="text-display text-4xl">Not in the atelier</h1>
@@ -41,210 +50,161 @@ export const Route = createFileRoute("/products/$slug")({
 });
 
 function ProductPage() {
-  const { product, collection, related } = Route.useLoaderData();
+  const { product, collection } = Route.useLoaderData();
   const setTheme = useTheme((s) => s.setTheme);
-  const addToCart = useShop((s) => s.addToCart);
+  const addToLocalCart = useShop((s) => s.addToCart);
   const toggleWishlist = useShop((s) => s.toggleWishlist);
   const markRecentlyViewed = useShop((s) => s.markRecentlyViewed);
   const saved = useShop((s) => s.wishlist.includes(product.slug));
-  const [added, setAdded] = useState(false);
+  const { user } = useAuth();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // We still update the global theme to maintain continuity for navigation
     setTheme(collection.slug, product.ambience);
     markRecentlyViewed(product.slug);
   }, [collection.slug, product.slug, product.ambience, setTheme, markRecentlyViewed]);
 
-  const handleAdd = () => {
-    addToCart(product.slug);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+  const handleAdd = async () => {
+    if (user) {
+      await addToCart.mutateAsync({ productId: product.id, quantity: 1 });
+    } else {
+      addToLocalCart(product.slug);
+    }
   };
 
+  const handleBuyNow = async () => {
+    await handleAdd();
+    navigate({ to: "/cart" });
+  };
+
+  const scrollToReviews = () => {
+    const el = document.getElementById("reviews");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const galleryImages = product.images || (product.image ? [product.image, collection.image, product.image] : [collection.image, collection.image]);
+
+  const expandableItems = [
+    {
+      title: "Ingredients",
+      content: "All our ingredients are sustainably sourced and cold-processed to preserve their natural potency. See the interactive ingredients section above for a detailed breakdown."
+    },
+    {
+      title: "How to Use",
+      content: (
+        <ol className="list-decimal pl-4 space-y-2">
+          <li>Warm the bar between wet palms until fragrance rises.</li>
+          <li>Trace slow circles across the skin. Breathe.</li>
+          <li>Rinse in cool water. Pat dry. Notice.</li>
+        </ol>
+      )
+    },
+    {
+      title: "Skin Type",
+      content: product.skinType ? product.skinType : `Ideal for all skin types, specifically formulated for the ${collection.name} experience. Dermatologically tested and safe for sensitive skin.`
+    },
+    {
+      title: "Shipping & Returns",
+      content: "Free standard shipping on all orders. Expedited shipping available at checkout. If you are not completely satisfied, we offer easy returns within 30 days of purchase."
+    }
+  ];
+
   return (
-    <div data-theme={collection.slug} className="relative">
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <img
-          src={collection.image}
-          alt=""
-          aria-hidden
-          className="h-full w-full object-cover opacity-20 blur-3xl"
-        />
-        <div className="absolute inset-0 bg-[color:var(--ivory)]/40" />
-      </div>
-
-      <section className="relative pt-32 pb-24">
-        <div className="mx-auto grid max-w-[1400px] gap-16 px-6 md:grid-cols-2 md:px-12">
-          {/* Presentation */}
-          <div className="sticky top-32 self-start">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotate: -6 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-              className="relative"
-            >
-              <SoapBar3D>
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                  <div className="text-display text-3xl uppercase tracking-[0.3em] text-white/40 mix-blend-overlay">
-                    Lenoraa
-                  </div>
-                  <div className="text-eyebrow text-white/60">{product.name}</div>
-                </div>
-              </SoapBar3D>
-              <div
-                className="mx-auto mt-[-20px] h-24 w-3/4 rounded-full opacity-40 blur-2xl"
-                style={{ background: "var(--theme)" }}
+    <ProductEnvironment product={product} collectionImage={collection.image}>
+      <div className="relative pt-32 pb-24">
+        <div className="mx-auto max-w-[1400px] px-6 md:px-12">
+          
+          {/* Two Column Layout */}
+          <div className="grid gap-16 lg:grid-cols-[48%_1fr]">
+            
+            {/* Left Column: Gallery (Scrolling Cinematic) */}
+            <div className="w-full">
+              <ProductGallery 
+                images={galleryImages} 
+                productName={product.name}
+                benefits={<FloatingBenefits benefits={product.benefits} />}
               />
-              {/* Orbiting benefit chips */}
-              {product.benefits.map((b: string, i: number) => (
-                <motion.div
-                  key={b}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 + i * 0.2, duration: 1 }}
-                  className="surface-glass absolute hidden rounded-full px-4 py-2 text-xs uppercase tracking-[0.24em] shadow-lg md:block"
-                  style={{
-                    top: `${15 + i * 30}%`,
-                    [i % 2 ? "right" : "left"]: "-3rem",
-                  }}
-                >
-                  {b}
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Details */}
-          <div>
-            <Link
-              to="/collections/$slug"
-              params={{ slug: collection.slug }}
-              className="text-eyebrow text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)]"
-            >
-              ← {collection.name}
-            </Link>
-            <SplitText
-              as="h1"
-              text={product.name}
-              className="text-display mt-6 text-6xl leading-[0.95] md:text-8xl"
-            />
-            <p className="mt-4 text-lg italic text-[color:var(--muted-foreground)]">
-              {product.tagline}
-            </p>
-            <p className="mt-8 max-w-md text-base leading-relaxed">
-              {product.description}
-            </p>
-
-            <div className="mt-10 flex items-baseline gap-6">
-              <div className="text-display text-3xl">₹{product.price}</div>
-              <div className="text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
-                100g · Cold-pressed
-              </div>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Magnetic>
-                <button onClick={handleAdd} className="btn-lux">
-                  {added ? "Added ✓" : "Add to bag"}
-                </button>
-              </Magnetic>
-              <Magnetic>
-                <button
-                  onClick={() => toggleWishlist(product.slug)}
-                  className="btn-ghost-lux"
+            {/* Right Column: Details (Sticky) */}
+            <div className="w-full lg:sticky lg:top-32 self-start pb-24">
+              <Reveal preset="label" className="mb-6">
+                <Link
+                  to="/collections/$slug"
+                  params={{ slug: collection.slug }}
+                  className="text-eyebrow text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)]"
                 >
-                  {saved ? "Saved ♥" : "Save"}
-                </button>
-              </Magnetic>
-            </div>
+                  ← {collection.name}
+                </Link>
+              </Reveal>
 
-            <div className="mt-16 space-y-10">
-              <div>
-                <div className="text-eyebrow mb-4 text-[color:var(--gold)]">
-                  Ingredients
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {product.ingredients.map((i: string) => (
-                    <span
-                      key={i}
-                      className="rounded-full border border-[color:var(--border)] px-4 py-2 text-xs tracking-wide transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]"
-                      data-lux-hover
-                    >
-                      {i}
-                    </span>
-                  ))}
+              <div className="mb-4">
+                <RatingStars rating={4.8} count={248} onReviewsClick={scrollToReviews} />
+              </div>
+
+              <SplitText
+                as="h1"
+                text={product.name}
+                delay={0.1}
+                className="text-display text-4xl md:text-5xl lg:text-6xl leading-[0.95]"
+              />
+              
+              <Reveal as="p" preset="subheading" delay={0.2} className="mt-6 text-xl italic text-[color:var(--muted-foreground)]">
+                {product.tagline}
+              </Reveal>
+
+              <Reveal as="p" preset="paragraph" delay={0.3} className="mt-8 text-base leading-relaxed text-[color:var(--muted-foreground)] max-w-[65ch]">
+                {product.description}
+              </Reveal>
+
+              <div className="mt-10 flex items-baseline gap-6 border-b border-[color:var(--border)] pb-10">
+                <div className="text-display text-4xl text-[color:var(--foreground)]">₹{product.price}</div>
+                <div className="text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                  100g · Cold-pressed
                 </div>
               </div>
 
-              <div>
-                <div className="text-eyebrow mb-4 text-[color:var(--gold)]">
-                  Aromatic Notes
-                </div>
-                <p className="text-sm italic text-[color:var(--muted-foreground)]">
-                  {product.notes}
-                </p>
+              <ProductActions 
+                onAdd={handleAdd} 
+                onSave={() => toggleWishlist(product.slug)} 
+                isSaved={saved}
+                onBuyNow={handleBuyNow}
+              />
+
+              <TrustBadges />
+
+              <div className="mt-12">
+                <Reveal preset="label" className="text-eyebrow mb-6 text-[color:var(--gold)]">
+                  Key Ingredients
+                </Reveal>
+                <InteractiveIngredients ingredients={product.ingredients} />
               </div>
 
-              <div>
-                <div className="text-eyebrow mb-4 text-[color:var(--gold)]">
-                  Benefits
-                </div>
-                <ul className="space-y-3">
-                  {product.benefits.map((b: string) => (
-                    <li key={b} className="flex items-baseline gap-3 text-sm">
-                      <span className="text-[color:var(--gold)]">✦</span>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
+              <div className="mt-16">
+                <ExpandableInfo items={expandableItems} />
               </div>
-
-              <div>
-                <div className="text-eyebrow mb-4 text-[color:var(--gold)]">
-                  Ritual
-                </div>
-                <ol className="space-y-3 text-sm text-[color:var(--muted-foreground)]">
-                  <li><span className="text-[color:var(--gold)] mr-2">01</span>Warm the bar between wet palms until fragrance rises.</li>
-                  <li><span className="text-[color:var(--gold)] mr-2">02</span>Trace slow circles across the skin. Breathe.</li>
-                  <li><span className="text-[color:var(--gold)] mr-2">03</span>Rinse in cool water. Pat dry. Notice.</li>
-                </ol>
-              </div>
+              
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {related.length > 0 && (
-        <section className="relative py-24">
-          <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-            <div className="ornament-rule text-eyebrow mb-12">
-              More from {collection.name}
-            </div>
-            <div className="grid gap-10 md:grid-cols-3">
-              {related.map((p: typeof related[number]) => (
-                <Link
-                  key={p.slug}
-                  to="/products/$slug"
-                  params={{ slug: p.slug }}
-                  data-theme={p.collection}
-                  className="group block"
-                  data-lux-hover
-                >
-                  <div className="soap-bar breathe shimmer-sweep transition-transform duration-1000 group-hover:scale-105">
-                    <span className="soap-bar-shine" />
-                    <span className="soap-bar-glow" />
-                  </div>
-                  <div className="mt-5 flex items-baseline justify-between">
-                    <div className="text-display text-xl">{p.name}</div>
-                    <div className="text-sm text-[color:var(--muted-foreground)]">
-                      ₹{p.price}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-    </div>
+      <WhyThisSoap collection={collection.name} />
+      
+      <CustomerReviews productName={product.name} />
+
+      {/* Sticky Purchase Panel */}
+      <StickyPurchasePanel 
+        productName={product.name}
+        price={product.price}
+        onAdd={handleAdd}
+        onBuyNow={handleBuyNow}
+        image={product.image}
+      />
+    </ProductEnvironment>
   );
 }

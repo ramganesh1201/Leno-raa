@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { useAccount } from "@/lib/store";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import { SplitText } from "@/components/immersive/SplitText";
 
 export const Route = createFileRoute("/account")({
@@ -8,10 +9,16 @@ export const Route = createFileRoute("/account")({
 });
 
 function AccountLayout() {
-  const account = useAccount((s) => s.account);
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const { profile, isLoading: isProfileLoading } = useProfile();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  if (!account) {
+  // Wait for initial auth check before showing logged out state
+  if (isAuthLoading) {
+    return <div className="min-h-screen" />; // Blank/loading screen while checking auth
+  }
+
+  if (!user) {
     return (
       <div className="relative flex min-h-[70vh] items-center justify-center pt-32">
         <div className="surface-glass max-w-md rounded-md p-10 text-center">
@@ -28,6 +35,9 @@ function AccountLayout() {
     );
   }
 
+  // Use profile name if available, otherwise user metadata, otherwise fallback
+  const displayName = profile?.full_name || user.user_metadata?.full_name || "Guest";
+
   const nav = [
     ["/account", "Profile"],
     ["/account/orders", "Orders"],
@@ -41,7 +51,7 @@ function AccountLayout() {
     <div className="relative pt-32">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <div className="text-eyebrow text-[color:var(--muted-foreground)]">Atelier</div>
-        <SplitText as="h1" text={`Hello, ${account.name}`} className="text-display mt-3 text-5xl md:text-6xl" />
+        <SplitText as="h1" text={`Hello, ${displayName}`} className="text-display mt-3 text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl" />
 
         <div className="mt-12 grid gap-12 md:grid-cols-[220px_1fr]">
           <aside className="md:sticky md:top-32 md:self-start">

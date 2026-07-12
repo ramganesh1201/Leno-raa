@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import heroIntro from "@/assets/hero-intro.jpg";
+import heroIntro from "@/assets/hero-intro.png";
 
 const KEY = "lenoraa-intro-seen";
 
@@ -76,7 +76,7 @@ export function CinematicIntro() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.6, delay: 1.4 }}
-              className="text-display text-6xl sm:text-8xl md:text-9xl"
+              className="text-display text-4xl md:text-3xl md:text-4xl sm:text-4xl md:text-3xl md:text-4xl md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl"
             >
               Lenoraa
             </motion.h1>

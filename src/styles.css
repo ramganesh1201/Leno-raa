@@ -151,6 +151,12 @@
   html {
     transition: --theme 1.2s ease, --theme-soft 1.2s ease, --theme-deep 1.2s ease;
   }
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
   h1, h2, h3, h4 {
     font-family: var(--font-serif);
     font-weight: 400;
@@ -172,15 +178,15 @@
 @utility text-display {
   font-family: var(--font-serif);
   font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
 }
 
 @utility text-eyebrow {
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
@@ -197,7 +203,7 @@
   color: var(--ivory);
 }
 
-/* Luxury button with liquid sweep + letter-spacing shift */
+/* Luxury premium button interaction (stable, radial highlight, diagonal sweep) */
 @utility btn-lux {
   position: relative;
   display: inline-flex;
@@ -211,35 +217,62 @@
   color: var(--ivory);
   background: var(--forest);
   border: 1px solid var(--forest);
-  transition: all 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Crisp shadow and inner glow */
+  box-shadow: 0 4px 14px -4px color-mix(in oklab, var(--charcoal) 30%, transparent), inset 0 1px 2px color-mix(in oklab, white 15%, transparent);
+  /* Hover out timing */
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
   isolation: isolate;
+  will-change: transform, box-shadow;
+
+  /* Radial cursor reflection layer */
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(120deg, transparent 30%, color-mix(in oklab, var(--gold) 60%, transparent) 50%, transparent 70%);
-    transform: translateX(-120%);
-    transition: transform 0.9s cubic-bezier(.22,1,.36,1);
+    background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), color-mix(in oklab, white 22%, transparent), transparent 100%);
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
+    pointer-events: none;
   }
+
+  /* Diagonal light sweep layer */
   &::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--gold);
-    transform: translateY(101%);
-    transition: transform 0.55s cubic-bezier(.22,1,.36,1);
+    background: linear-gradient(120deg, transparent 20%, color-mix(in oklab, white 35%, transparent) 40%, transparent 60%);
+    transform: translateX(-120%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
+    pointer-events: none;
   }
+
   &:hover {
-    color: var(--charcoal);
-    border-color: var(--gold);
-    letter-spacing: 0.32em;
+    /* Gentle, stable scale */
+    transform: scale(1.015);
+    /* Slightly deeper, more defined shadow */
+    box-shadow: 0 8px 24px -6px color-mix(in oklab, var(--charcoal) 45%, transparent), inset 0 1px 5px color-mix(in oklab, white 35%, transparent);
+    border-color: color-mix(in oklab, var(--gold) 40%, var(--forest));
+    /* Faster hover-in timing */
+    transition-duration: 0.25s;
   }
-  &:hover::before { transform: translateX(120%); }
-  &:hover::after { transform: translateY(0); }
-  &:active { transform: scale(0.98); }
+  &:hover::before {
+    opacity: 1;
+    transition-duration: 0.25s;
+  }
+  &:hover::after {
+    transform: translateX(120%);
+    /* Sweep naturally across */
+    transition-duration: 0.6s;
+  }
+  &:active {
+    /* Tactile compression */
+    transform: scale(0.985);
+    transition-duration: 0.15s;
+    box-shadow: 0 2px 8px -2px color-mix(in oklab, var(--charcoal) 25%, transparent), inset 0 2px 8px color-mix(in oklab, white 20%, transparent);
+  }
 }
 
 @utility btn-ghost-lux {
@@ -255,21 +288,159 @@
   color: var(--foreground);
   background: transparent;
   border: 1px solid color-mix(in oklab, var(--foreground) 30%, transparent);
-  transition: all 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 2px 10px -4px transparent, inset 0 1px 2px transparent;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
+  isolation: isolate;
+  will-change: transform, box-shadow;
+
+  /* Radial cursor reflection layer */
   &::before {
     content: "";
-    position: absolute; inset: 0;
-    background: color-mix(in oklab, var(--gold) 12%, transparent);
-    transform: translateY(101%);
-    transition: transform 0.55s cubic-bezier(.22,1,.36,1);
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), color-mix(in oklab, var(--gold) 15%, transparent), transparent 100%);
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: -1;
+    pointer-events: none;
   }
+
+  /* Diagonal light sweep layer */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 20%, color-mix(in oklab, var(--gold) 25%, transparent) 40%, transparent 60%);
+    transform: translateX(-120%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: -1;
+    pointer-events: none;
+  }
+
   &:hover {
+    transform: scale(1.015);
     border-color: var(--gold);
     color: var(--gold);
-    letter-spacing: 0.32em;
+    box-shadow: 0 6px 18px -4px color-mix(in oklab, var(--gold) 20%, transparent), inset 0 1px 4px color-mix(in oklab, var(--gold) 15%, transparent);
+    transition-duration: 0.25s;
   }
-  &:hover::before { transform: translateY(0); }
+  &:hover::before {
+    opacity: 1;
+    transition-duration: 0.25s;
+  }
+  &:hover::after {
+    transform: translateX(120%);
+    transition-duration: 0.6s;
+  }
+  &:active {
+    transform: scale(0.985);
+    transition-duration: 0.15s;
+    box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--gold) 12%, transparent), inset 0 2px 6px color-mix(in oklab, var(--gold) 12%, transparent);
+  }
+}
+
+/* Premium Navigation Icon Buttons */
+@utility nav-icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: color-mix(in oklab, var(--foreground) 70%, transparent);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  will-change: transform;
+  isolation: isolate;
+
+  /* Radial cursor highlight */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: radial-gradient(80px circle at var(--x, 50%) var(--y, 50%), color-mix(in oklab, var(--gold) 10%, transparent), transparent 100%);
+    opacity: 0;
+    transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &:hover {
+    background: color-mix(in oklab, var(--ivory) 40%, transparent);
+    border-color: color-mix(in oklab, var(--border) 60%, transparent);
+    color: var(--gold);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px -2px color-mix(in oklab, var(--charcoal) 10%, transparent), inset 0 0 10px color-mix(in oklab, var(--gold) 10%, transparent);
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &:active {
+    transform: scale(0.98);
+    transition-duration: 0.12s;
+    box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--charcoal) 5%, transparent);
+  }
+}
+
+@utility nav-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--gold);
+  color: white;
+  font-size: 9px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  pointer-events: none;
+  border: 2px solid var(--background);
+}
+
+@utility nav-tooltip {
+  position: absolute;
+  top: 100%;
+  margin-top: 12px;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  background: color-mix(in oklab, var(--ivory) 80%, transparent);
+  backdrop-filter: blur(12px);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--charcoal);
+  box-shadow: 0 4px 16px -4px color-mix(in oklab, var(--charcoal) 15%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 50%, transparent);
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.group:hover .nav-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-lux:hover, .btn-ghost-lux:hover, .btn-lux:active, .btn-ghost-lux:active, .nav-icon-btn:hover, .nav-icon-btn:active {
+    transform: none !important;
+  }
+  .btn-lux::before, .btn-lux::after, .btn-ghost-lux::before, .btn-ghost-lux::after, .nav-icon-btn::before {
+    display: none !important;
+  }
 }
 
 @utility ornament-rule {
