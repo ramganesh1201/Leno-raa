@@ -3,18 +3,23 @@ import { cartService, CartItemType } from "@/services/cart.service";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "./useAuth";
+import { toast } from "sonner";
+import { productService } from "@/services/product.service";
 
 export const cartKeys = {
   all: ["cart"] as const,
-  lists: () => [...cartKeys.all, "list"] as const,
+  lists: (userId?: string) => [...cartKeys.all, "list", userId] as const,
 };
+
+let cartChannel: ReturnType<typeof supabase.channel> | null = null;
+let cartSubscribers = 0;
 
 export function useCart() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
   const query = useQuery({
-    queryKey: cartKeys.lists(),
+    queryKey: cartKeys.lists(user?.id),
     queryFn: () => cartService.getCart(),
     enabled: !!user,
   });
@@ -26,25 +31,32 @@ export function useCart() {
   useEffect(() => {
     if (!user || !user.id) return;
     
-    const channelId = `cart_items_${user.id}_${Math.random().toString(36).substring(7)}`;
-    const channel = supabase
-      .channel(channelId)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "cart_items",
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: cartKeys.lists() });
-        }
-      )
-      .subscribe();
+    if (cartSubscribers === 0) {
+      cartChannel = supabase.channel(`cart_items_${user.id}`);
+      cartChannel
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "cart_items",
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            queryClient.invalidateQueries({ queryKey: cartKeys.lists(user.id) });
+          }
+        )
+        .subscribe();
+    }
+    
+    cartSubscribers++;
 
     return () => {
-      supabase.removeChannel(channel);
+      cartSubscribers--;
+      if (cartSubscribers === 0 && cartChannel) {
+        supabase.removeChannel(cartChannel);
+        cartChannel = null;
+      }
     };
   }, [user?.id, queryClient]);
 
@@ -52,19 +64,18 @@ export function useCart() {
     mutationFn: (params: { productId: string | null; quantity?: number; customizationId?: string | null }) =>
       cartService.addToCart(params.productId, params.quantity, params.customizationId),
     onMutate: async (newItem) => {
-      await queryClient.cancelQueries({ queryKey: cartKeys.lists() });
-      const previousCart = queryClient.getQueryData<CartItemType[]>(cartKeys.lists());
+      await queryClient.cancelQueries({ queryKey: cartKeys.lists(user?.id) });
+      const previousCart = queryClient.getQueryData<CartItemType[]>(cartKeys.lists(user?.id));
 
       // Optimistically update
       if (previousCart) {
         // Find product from catalog to prevent UI flash
         let mockProduct = null;
         if (newItem.productId) {
-          const { products } = await import("@/lib/catalog");
-          mockProduct = products.find(p => p.id === newItem.productId);
+          mockProduct = await productService.getProductById(newItem.productId);
         }
 
-        queryClient.setQueryData<CartItemType[]>(cartKeys.lists(), [
+        queryClient.setQueryData<CartItemType[]>(cartKeys.lists(user?.id), [
           ...previousCart,
           {
             id: Math.random().toString(),
@@ -83,11 +94,14 @@ export function useCart() {
     },
     onError: (err, newItem, context) => {
       if (context?.previousCart) {
-        queryClient.setQueryData(cartKeys.lists(), context.previousCart);
+        queryClient.setQueryData(cartKeys.lists(user?.id), context.previousCart);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: cartKeys.lists() });
+    onSettled: (data, error) => {
+      queryClient.invalidateQueries({ queryKey: cartKeys.lists(user?.id) });
+      if (!error) {
+        toast.success("Added to Bag");
+      }
     },
   });
 
@@ -95,11 +109,11 @@ export function useCart() {
     mutationFn: (params: { id: string; quantity: number }) =>
       cartService.updateQuantity(params.id, params.quantity),
     onMutate: async ({ id, quantity }) => {
-      await queryClient.cancelQueries({ queryKey: cartKeys.lists() });
-      const previousCart = queryClient.getQueryData<CartItemType[]>(cartKeys.lists());
+      await queryClient.cancelQueries({ queryKey: cartKeys.lists(user?.id) });
+      const previousCart = queryClient.getQueryData<CartItemType[]>(cartKeys.lists(user?.id));
       if (previousCart) {
         queryClient.setQueryData<CartItemType[]>(
-          cartKeys.lists(),
+          cartKeys.lists(user?.id),
           previousCart.map((item) => (item.id === id ? { ...item, quantity } : item))
         );
       }
@@ -107,22 +121,22 @@ export function useCart() {
     },
     onError: (err, variables, context) => {
       if (context?.previousCart) {
-        queryClient.setQueryData(cartKeys.lists(), context.previousCart);
+        queryClient.setQueryData(cartKeys.lists(user?.id), context.previousCart);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: cartKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: cartKeys.lists(user?.id) });
     },
   });
 
   const removeFromCart = useMutation({
     mutationFn: (id: string) => cartService.removeFromCart(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: cartKeys.lists() });
-      const previousCart = queryClient.getQueryData<CartItemType[]>(cartKeys.lists());
+      await queryClient.cancelQueries({ queryKey: cartKeys.lists(user?.id) });
+      const previousCart = queryClient.getQueryData<CartItemType[]>(cartKeys.lists(user?.id));
       if (previousCart) {
         queryClient.setQueryData<CartItemType[]>(
-          cartKeys.lists(),
+          cartKeys.lists(user?.id),
           previousCart.filter((item) => item.id !== id)
         );
       }
@@ -130,11 +144,14 @@ export function useCart() {
     },
     onError: (err, id, context) => {
       if (context?.previousCart) {
-        queryClient.setQueryData(cartKeys.lists(), context.previousCart);
+        queryClient.setQueryData(cartKeys.lists(user?.id), context.previousCart);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: cartKeys.lists() });
+    onSettled: (data, error) => {
+      queryClient.invalidateQueries({ queryKey: cartKeys.lists(user?.id) });
+      if (!error) {
+        toast.success("Removed from Bag");
+      }
     },
   });
 

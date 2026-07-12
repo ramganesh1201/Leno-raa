@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { getProduct } from "@/lib/catalog";
 import { useShop, useTheme } from "@/lib/store";
+import { productService } from "@/services/product.service";
+import { useAuth } from "@/hooks/useAuth";
+import { useWishlist } from "@/hooks/useWishlist";
 import { ProductCard } from "@/components/ProductCard";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
@@ -13,15 +15,25 @@ export const Route = createFileRoute("/wishlist")({
       { name: "description", content: "Bars you've saved for later." },
     ],
   }),
+  loader: async () => {
+    const products = await productService.getProducts();
+    return { products };
+  },
   component: Wishlist,
 });
 
 function Wishlist() {
-  const wishlist = useShop((s) => s.wishlist);
+  const { user } = useAuth();
+  const { wishlist: supabaseWishlist } = useWishlist();
+  const localWishlist = useShop((s) => s.wishlist);
   const setTheme = useTheme((s) => s.setTheme);
+  const { products } = Route.useLoaderData();
+  
   useEffect(() => setTheme("default"), [setTheme]);
 
-  const items = wishlist.map(getProduct).filter((p): p is NonNullable<typeof p> => !!p);
+  const items = user 
+    ? supabaseWishlist.map(w => w.product || products.find(p => p.id === (w as any).product_id)).filter((p): p is NonNullable<typeof p> => !!p)
+    : localWishlist.map(slug => products.find(p => p.slug === slug)).filter((p): p is NonNullable<typeof p> => !!p);
 
   return (
     <div className="relative pt-32">

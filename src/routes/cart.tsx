@@ -4,7 +4,8 @@ import { useCart } from "@/hooks/useCart";
 import { useOrders } from "@/hooks/useOrders";
 import { useAuth } from "@/hooks/useAuth";
 import { useShop, useTheme } from "@/lib/store";
-import { getProduct, getProductById } from "@/lib/catalog";
+import { productService } from "@/services/product.service";
+import { resolveImageUrl } from "@/lib/imageResolver";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
 
@@ -15,6 +16,10 @@ export const Route = createFileRoute("/cart")({
       { name: "description", content: "Review your selected Lenoraa handcrafted soaps." },
     ],
   }),
+  loader: async () => {
+    const products = await productService.getProducts();
+    return { products };
+  },
   component: CartPage,
 });
 
@@ -22,6 +27,7 @@ function CartPage() {
   const { user } = useAuth();
   const { cart: supabaseCart, isLoading, updateQuantity, removeFromCart } = useCart();
   const { createOrder } = useOrders();
+  const { products } = Route.useLoaderData();
   
   const localCartRaw = useShop((s) => s.cart);
   const localUpdateQuantity = useShop((s) => s.setQuantity);
@@ -46,7 +52,7 @@ function CartPage() {
         customization: design ? { preview_image: null, estimated_price: 480 } : null,
       };
     }
-    const product = getProduct(item.slug);
+    const product = products.find(p => p.slug === item.slug);
     return {
       id: item.slug,
       quantity: item.quantity,
@@ -142,7 +148,7 @@ function CartPage() {
           <div className="mt-16 grid gap-16 md:grid-cols-[1.5fr_1fr]">
             <ul className="divide-y divide-[color:var(--border)]">
               {cart.map((item) => {
-                const product = item.product || getProductById(item.product_id) || getProduct(item.product_id);
+                const product = item.product || products.find(p => p.id === (item as any).product_id) || products.find(p => p.slug === (item as any).product_id);
                 const custom = item.customization;
                 
                 const price = product?.price || custom?.estimated_price || 0;
@@ -156,7 +162,7 @@ function CartPage() {
                   <li key={item.id} className="flex gap-6 py-8">
                     <div className="h-28 w-32 flex-shrink-0 rounded-[12px] overflow-hidden bg-black/5">
                       {image ? (
-                        <img src={image} alt={name} className="h-full w-full object-cover" />
+                        <img src={resolveImageUrl(image)} alt={name} className="h-full w-full object-cover" />
                       ) : (
                         <div className="soap-bar h-full w-full"><span className="soap-bar-shine" /></div>
                       )}

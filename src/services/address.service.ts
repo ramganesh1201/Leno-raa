@@ -28,7 +28,11 @@ export const addressService = {
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    return data as AddressType[];
+    return data.map(addr => ({
+      ...addr,
+      address: addr.address_line1,
+      zipcode: addr.postal_code
+    })) as unknown as AddressType[];
   },
 
   async addAddress(address: Omit<AddressType, "id" | "user_id" | "created_at" | "updated_at">) {
@@ -42,14 +46,27 @@ export const addressService = {
         .eq("user_id", user.id);
     }
 
+    const dbAddress = {
+      ...address,
+      user_id: user.id,
+      address_line1: address.address,
+      postal_code: address.zipcode
+    };
+    delete (dbAddress as any).address;
+    delete (dbAddress as any).zipcode;
+
     const { data, error } = await supabase
       .from("user_addresses")
-      .insert({ ...address, user_id: user.id })
+      .insert(dbAddress)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return {
+      ...data,
+      address: data.address_line1,
+      zipcode: data.postal_code
+    } as unknown as AddressType;
   },
 
   async updateAddress(id: string, updates: Partial<AddressType>) {
@@ -63,16 +80,26 @@ export const addressService = {
         .eq("user_id", user.id);
     }
 
+    const dbUpdates = { ...updates } as any;
+    if (updates.address) dbUpdates.address_line1 = updates.address;
+    if (updates.zipcode) dbUpdates.postal_code = updates.zipcode;
+    delete dbUpdates.address;
+    delete dbUpdates.zipcode;
+
     const { data, error } = await supabase
       .from("user_addresses")
-      .update(updates)
+      .update(dbUpdates)
       .eq("id", id)
       .eq("user_id", user.id)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return {
+      ...data,
+      address: data.address_line1,
+      zipcode: data.postal_code
+    } as unknown as AddressType;
   },
 
   async deleteAddress(id: string) {

@@ -2,12 +2,21 @@ import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import type { Product } from "@/lib/catalog";
+import { resolveImageUrl } from "@/lib/imageResolver";
 import { useShop } from "@/lib/store";
+import { useAuth } from "@/hooks/useAuth";
+import { useWishlist } from "@/hooks/useWishlist";
 
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
-  const toggleWishlist = useShop((s) => s.toggleWishlist);
-  const saved = useShop((s) => s.wishlist.includes(product.slug));
+  const { user } = useAuth();
+  const { wishlist: supabaseWishlist, toggleWishlist: toggleSupabaseWishlist } = useWishlist();
+  
+  const localToggleWishlist = useShop((s) => s.toggleWishlist);
+  const localSaved = useShop((s) => s.wishlist.includes(product.slug));
+  
+  const saved = user ? supabaseWishlist.some((w) => w.product_id === product.id) : localSaved;
+  
   const tiltRef = useRef<HTMLDivElement>(null);
 
   const onMove = (e: React.PointerEvent) => {
@@ -60,7 +69,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {product.image ? (
               <>
                 <img
-                  src={product.image}
+                  src={resolveImageUrl(product.image)}
                   alt={product.name}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.03]"
@@ -82,10 +91,15 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <button
             onClick={(e) => {
               e.preventDefault();
-              toggleWishlist(product.slug);
+              if (user) {
+                toggleSupabaseWishlist.mutate(product.id);
+              } else {
+                localToggleWishlist(product.slug);
+              }
             }}
+            disabled={toggleSupabaseWishlist.isPending}
             aria-label="Save"
-            className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white"
+            className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white disabled:opacity-50 disabled:hover:bg-white/70"
             data-lux-hover
           >
             <span

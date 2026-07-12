@@ -3,10 +3,11 @@ import { ordersService } from "@/services/orders.service";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "./useAuth";
+import { cartKeys } from "./useCart";
 
 export const ordersKeys = {
   all: ["orders"] as const,
-  lists: () => [...ordersKeys.all, "list"] as const,
+  lists: (userId?: string) => [...ordersKeys.all, "list", userId] as const,
 };
 
 export function useOrders() {
@@ -14,7 +15,7 @@ export function useOrders() {
   const { user } = useAuth();
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ordersKeys.lists(),
+    queryKey: ordersKeys.lists(user?.id),
     queryFn: () => ordersService.getOrders(),
     enabled: !!user,
   });
@@ -35,7 +36,7 @@ export function useOrders() {
           filter: `user_id=eq.${user.id}`,
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: ordersKeys.lists() });
+          queryClient.invalidateQueries({ queryKey: ordersKeys.lists(user.id) });
         }
       )
       .subscribe();
@@ -49,9 +50,9 @@ export function useOrders() {
     mutationFn: (params: { addressId: string | null; subtotal: number; shipping: number; tax?: number; discount?: number }) =>
       ordersService.createOrder(params.addressId, params.subtotal, params.shipping, params.tax, params.discount),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ordersKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: ordersKeys.lists(user?.id) });
       // cart is cleared in service, invalidate cart too
-      queryClient.invalidateQueries({ queryKey: ["cart", "list"] });
+      queryClient.invalidateQueries({ queryKey: cartKeys.lists(user?.id) });
     },
   });
 

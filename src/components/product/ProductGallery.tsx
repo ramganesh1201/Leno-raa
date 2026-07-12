@@ -1,5 +1,6 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { resolveImageUrl } from "@/lib/imageResolver";
 
 interface ProductGalleryProps {
   images: string[];
@@ -9,6 +10,9 @@ interface ProductGalleryProps {
 
 function GalleryImage({ src, alt, isHero, benefits }: { src: string, alt: string, isHero: boolean, benefits?: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+  const resolvedSrc = resolveImageUrl(src) || src;
   
   // Track this specific element's position in the viewport
   const { scrollYProgress } = useScroll({
@@ -26,13 +30,27 @@ function GalleryImage({ src, alt, isHero, benefits }: { src: string, alt: string
     <motion.div
       ref={ref}
       style={{ opacity, filter: blur }}
-      className="relative w-full h-[75vh] min-h-[500px] max-h-[900px] overflow-hidden rounded-[24px] bg-[color:var(--muted)]/20 shadow-xl mb-12 last:mb-0"
+      className="relative w-full h-[75vh] min-h-[500px] max-h-[900px] overflow-hidden rounded-[24px] bg-[color:var(--muted)]/20 shadow-xl mb-12 last:mb-0 flex items-center justify-center"
     >
+      {!loaded && !error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[color:var(--background)]">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[color:var(--gold)]/20 border-t-[color:var(--gold)]" />
+        </div>
+      )}
+      
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[color:var(--background)]">
+          <span className="text-[color:var(--muted-foreground)]">Image not available</span>
+        </div>
+      )}
+
       <motion.img
         style={{ scale, y }}
-        src={src}
+        src={resolvedSrc}
         alt={alt}
-        className="absolute -top-[10%] left-0 h-[120%] w-full object-cover origin-center"
+        onLoad={() => setLoaded(true)}
+        onError={() => { setError(true); setLoaded(true); }}
+        className={`absolute -top-[10%] left-0 h-[120%] w-full object-cover origin-center transition-opacity duration-700 ${loaded && !error ? 'opacity-100' : 'opacity-0'}`}
       />
       
       {/* Subtle premium inner glow/shadow */}

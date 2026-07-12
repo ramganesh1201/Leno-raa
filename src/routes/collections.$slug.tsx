@@ -3,20 +3,22 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import {
   getCollection,
-  productsInCollection,
   collections,
   type ThemeKey,
 } from "@/lib/catalog";
+import { productService } from "@/services/product.service";
 import { useTheme } from "@/lib/store";
 import { ProductCard } from "@/components/ProductCard";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
 
 export const Route = createFileRoute("/collections/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const collection = getCollection(params.slug);
     if (!collection) throw notFound();
-    return { collection };
+    const allProducts = await productService.getProducts();
+    const items = allProducts.filter(p => p.collection === params.slug);
+    return { collection, items };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -41,9 +43,8 @@ export const Route = createFileRoute("/collections/$slug")({
 });
 
 function CollectionPage() {
-  const { collection } = Route.useLoaderData();
+  const { collection, items } = Route.useLoaderData();
   const setTheme = useTheme((s) => s.setTheme);
-  const items = productsInCollection(collection.slug);
   const otherChapters = collections.filter((c) => c.slug !== collection.slug);
 
   useEffect(() => {

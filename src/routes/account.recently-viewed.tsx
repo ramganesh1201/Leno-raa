@@ -1,15 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useShop } from "@/lib/store";
-import { getProduct } from "@/lib/catalog";
+import { productService } from "@/services/product.service";
 import { ProductCard } from "@/components/ProductCard";
 
 export const Route = createFileRoute("/account/recently-viewed")({
+  loader: async () => {
+    const products = await productService.getProducts();
+    return { products };
+  },
   component: RecentlyViewed,
 });
 
 function RecentlyViewed() {
+  const { products } = Route.useLoaderData();
   const recent = useShop((s) => s.recentlyViewed);
-  const items = recent.map(getProduct).filter((p): p is NonNullable<typeof p> => !!p);
+  const items = recent.map(slug => products.find(p => p.slug === slug)).filter((p): p is NonNullable<typeof p> => !!p);
   if (items.length === 0)
     return (
       <div className="surface-glass rounded-md p-10 text-center">

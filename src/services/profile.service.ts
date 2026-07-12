@@ -18,12 +18,19 @@ export const profileService = {
       .from("profiles")
       .select("*")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        // Record not found: The database trigger might have failed or the user existed before it.
-        // Auto-recover by creating the profile row now.
+      console.error("Supabase Error in getProfile:", {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+    }
+    
+    if (!data) {
+      try {
         const newProfile = {
           id: user.id,
           email: user.email,
@@ -39,8 +46,10 @@ export const profileService = {
           
         if (createError) throw createError;
         return createdData;
+      } catch (err) {
+        console.error("Failed to auto-recover profile:", err);
+        return null;
       }
-      throw error;
     }
     
     return data;
@@ -52,9 +61,19 @@ export const profileService = {
       .update(updates)
       .eq("id", userId)
       .select()
-      .single();
+      .maybeSingle();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase Error in updateProfile:", {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+      throw error;
+    }
+    
+    if (!data) throw new Error("Profile not found to update");
     return data;
   },
 };

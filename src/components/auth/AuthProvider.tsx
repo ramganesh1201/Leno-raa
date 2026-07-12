@@ -1,12 +1,14 @@
 import { useEffect, ReactNode } from "react";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/hooks/useAuth";
+import { authKeys, useAuth } from "@/hooks/useAuth";
 import { useRouter } from "@tanstack/react-router";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { isLoading } = useAuth();
 
   useEffect(() => {
     const {
@@ -35,5 +37,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [queryClient, router]);
 
-  return <>{children}</>;
+  return (
+    <>
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-[color:var(--background)]"
+          >
+            <div className="h-6 w-6 rounded-full border border-[color:var(--gold)]/30 border-t-[color:var(--gold)] animate-spin" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {!isLoading && children}
+    </>
+  );
 }

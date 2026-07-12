@@ -48,7 +48,7 @@ export const ordersService = {
     // 2. Fetch current cart items
     const { data: cartItems, error: cartError } = await supabase
       .from("cart_items")
-      .select("*, product:products(price), customization:soap_customizations(estimated_price)")
+      .select("*, product:products(price), customization:soap_customizations(calculated_price)")
       .eq("user_id", user.id);
 
     if (cartError) throw cartError;
@@ -59,7 +59,7 @@ export const ordersService = {
         order_id: order.id,
         product_id: item.product_id,
         quantity: item.quantity,
-        price: item.product ? item.product.price : (item.customization ? item.customization.estimated_price : 0),
+        price: item.product ? item.product.price : (item.customization ? item.customization.calculated_price : 0),
         customization_id: item.customization_id
       }));
 
@@ -69,11 +69,17 @@ export const ordersService = {
 
       if (itemsError) throw itemsError;
 
-      // 4. Clear Cart
       await supabase
         .from("cart_items")
         .delete()
         .eq("user_id", user.id);
+        
+      // 5. Notify User
+      await supabase.from("notifications").insert({
+        user_id: user.id,
+        title: "Order Placed",
+        message: `Your order #${order.id.slice(0, 8).toUpperCase()} has been saved securely.`
+      });
     }
 
     return order;

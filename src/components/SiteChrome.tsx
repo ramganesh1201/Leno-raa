@@ -5,26 +5,35 @@ import { useShop } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useCart } from "@/hooks/useCart";
-import { collections, products } from "@/lib/catalog";
+import { useWishlist } from "@/hooks/useWishlist";
+import { useNotifications } from "@/hooks/useNotifications";
+import { collections } from "@/lib/catalog";
+import { productService } from "@/services/product.service";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Reveal } from "@/components/immersive/Reveal";
-import { Heart, ShoppingBag, User, Search } from "lucide-react";
+import { Heart, ShoppingBag, User, Search, Bell, Check, MapPin, Package, Settings, Sparkles, LogOut } from "lucide-react";
 
 export function SiteHeader() {
   const { user, signOut: authSignOut, isLoading: isAuthLoading } = useAuth();
   const { cart: supabaseCart } = useCart();
+  const { wishlist: supabaseWishlist } = useWishlist();
+  const { notifications, unreadCount, markAsRead } = useNotifications();
   const localCart = useShop((s) => s.cart);
+  const localWishlist = useShop((s) => s.wishlist);
+  
   const cartCount = user 
     ? supabaseCart.reduce((a, c) => a + c.quantity, 0)
     : localCart.reduce((a, c) => a + c.quantity, 0);
-  const wishCount = useShop((s) => s.wishlist.length);
+    
+  const wishCount = user ? supabaseWishlist.length : localWishlist.length;
   const { profile, isLoading: isProfileLoading } = useProfile();
   const loading = isAuthLoading || (user && isProfileLoading);
   const displayName = profile?.full_name || user?.user_metadata?.full_name;
   
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [scrolled, setScrolled] = useState(false);
-  const [openMenu, setOpenMenu] = useState<null | "collections" | "account">(null);
+  const [openMenu, setOpenMenu] = useState<null | "collections" | "account" | "notifications">(null);
   const [isSearchHovered, setIsSearchHovered] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,6 +41,11 @@ export function SiteHeader() {
   const [isProfileHovered, setIsProfileHovered] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  const { data: products = [] } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => productService.getProducts(),
+  });
 
   const searchResults = searchQuery
     ? products.filter(
@@ -230,8 +244,26 @@ export function SiteHeader() {
               className="transition-colors duration-250"
               fill={wishCount > 0 ? "currentColor" : "none"}
             />
+            {wishCount > 0 && (
+              <span className="nav-badge">{wishCount}</span>
+            )}
             <span className="nav-tooltip">Saved</span>
           </Link>
+          
+          {user && (
+            <button
+              onClick={() => setOpenMenu((m) => (m === "notifications" ? null : "notifications"))}
+              className="hidden sm:flex nav-icon-btn group"
+              aria-label="Notifications"
+              data-lux-hover
+            >
+              <Bell size={20} strokeWidth={1.5} className="transition-colors duration-250" />
+              {unreadCount > 0 && (
+                <span className="nav-badge bg-[color:var(--gold)] text-white">{unreadCount}</span>
+              )}
+              <span className="nav-tooltip">Updates</span>
+            </button>
+          )}
           
           <Link 
             to="/cart" 
@@ -269,7 +301,13 @@ export function SiteHeader() {
             </AnimatePresence>
 
             <button
-              onClick={() => setOpenMenu((m) => (m === "account" ? null : "account"))}
+              onClick={() => {
+                if (!user) {
+                  navigate({ to: "/auth/login" });
+                } else {
+                  setOpenMenu((m) => (m === "account" ? null : "account"));
+                }
+              }}
               className="absolute right-0 z-30 flex nav-icon-btn group"
               aria-label="Account"
               data-lux-hover
@@ -326,84 +364,136 @@ export function SiteHeader() {
         )}
       </AnimatePresence>
 
-      {/* Account dropdown */}
+      {/* Notifications dropdown */}
       <AnimatePresence>
-        {openMenu === "account" && (
+        {openMenu === "notifications" && (
           <motion.div
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35 }}
-            className="surface-menu absolute right-6 top-full mt-3 w-72 rounded-md p-6 md:right-12"
+            className="surface-menu absolute right-24 top-full mt-3 w-80 max-h-96 overflow-y-auto rounded-md p-6 md:right-32"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-display text-xl">Notifications</div>
+              {unreadCount > 0 && (
+                <button 
+                  onClick={() => markAsRead.mutate()}
+                  className="text-xs uppercase tracking-[0.1em] text-[color:var(--gold)] transition hover:text-[color:var(--foreground)] flex items-center gap-1"
+                >
+                  <Check size={14} /> Mark all read
+                </button>
+              )}
+            </div>
+            
+            {notifications.length === 0 ? (
+              <div className="text-sm text-[color:var(--muted-foreground)] text-center py-6">
+                You have no notifications.
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {notifications.map((n) => (
+                  <div key={n.id} className={`p-3 rounded-md transition-colors ${n.is_read ? '' : 'bg-black/5 dark:bg-white/5'}`}>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="font-medium text-sm text-[color:var(--foreground)]">{n.title}</div>
+                      {!n.is_read && (
+                        <button 
+                          onClick={() => markAsRead.mutate(n.id)}
+                          className="h-2 w-2 rounded-full bg-[color:var(--gold)]"
+                          aria-label="Mark as read"
+                        />
+                      )}
+                    </div>
+                    <p className="text-xs text-[color:var(--muted-foreground)] leading-relaxed">
+                      {n.message}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Account dropdown */}
+      <AnimatePresence>
+        {openMenu === "account" && user && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute right-6 top-full mt-4 w-[320px] rounded-[20px] surface-glass border border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl md:right-12 overflow-hidden flex flex-col z-50"
           >
             {loading ? (
-              <div className="animate-pulse">
-                <div className="h-4 w-16 bg-[color:var(--foreground)]/10 rounded mb-4"></div>
-                <div className="h-8 w-40 bg-[color:var(--foreground)]/10 rounded mb-2"></div>
-                <div className="h-3 w-32 bg-[color:var(--foreground)]/10 rounded mb-6"></div>
+              <div className="animate-pulse p-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-12 w-12 rounded-full bg-[color:var(--foreground)]/10"></div>
+                  <div>
+                    <div className="h-4 w-24 bg-[color:var(--foreground)]/10 rounded mb-2"></div>
+                    <div className="h-3 w-32 bg-[color:var(--foreground)]/10 rounded"></div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="h-8 bg-[color:var(--foreground)]/5 rounded"></div>
+                  ))}
+                </div>
               </div>
-            ) : user ? (
-              <div>
-                <div className="text-eyebrow text-[color:var(--muted-foreground)]">
-                  Signed in
+            ) : (
+              <div className="flex flex-col">
+                <div className="flex items-center gap-4 px-6 pt-6 pb-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[color:var(--gold)]/10 text-[color:var(--gold)] border border-[color:var(--gold)]/20 shadow-sm">
+                    <User size={22} strokeWidth={1.5} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-display text-lg tracking-wide truncate text-[color:var(--foreground)]">
+                      {displayName || "Guest"}
+                    </div>
+                    <div className="text-xs text-[color:var(--muted-foreground)] truncate mt-0.5">
+                      {profile?.email || user.email}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-display mt-2 text-2xl">{displayName || "Guest"}</div>
-                <div className="mt-1 text-xs text-[color:var(--muted-foreground)]">
-                  {profile?.email || user.email}
-                </div>
-                <ul className="mt-6 space-y-3 text-sm">
+
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-[color:var(--border)] to-transparent opacity-50 my-1" />
+
+                <ul className="flex flex-col px-3 py-2 space-y-0.5">
                   {[
-                    ["/account", "Profile"],
-                    ["/account/orders", "Orders"],
-                    ["/account/addresses", "Addresses"],
-                    ["/wishlist", "Wishlist"],
-                    ["/account/saved-designs", "Saved designs"],
-                    ["/account/recently-viewed", "Recently viewed"],
-                    ["/account/settings", "Settings"],
-                  ].map(([to, label]) => (
+                    { to: "/account", label: "My Profile", icon: User },
+                    { to: "/account/orders", label: "My Orders", icon: Package },
+                    { to: "/account/addresses", label: "Addresses", icon: MapPin },
+                    { to: "/wishlist", label: "Wishlist", icon: Heart },
+                    { to: "/account/saved-designs", label: "Saved Designs", icon: Sparkles },
+                    { to: "/account/settings", label: "Settings", icon: Settings },
+                  ].map(({ to, label, icon: Icon }) => (
                     <li key={to}>
                       <Link
                         to={to}
-                        className="block transition hover:text-[color:var(--gold)]"
+                        onClick={() => setOpenMenu(null)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-[color:var(--foreground)]/5 hover:text-[color:var(--gold)] text-[color:var(--foreground)] text-sm font-medium"
                       >
+                        <Icon size={16} strokeWidth={1.5} className="text-[color:var(--muted-foreground)]" />
                         {label}
                       </Link>
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={async () => {
-                    await authSignOut.mutateAsync();
-                    setOpenMenu(null);
-                  }}
-                  className="mt-6 text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)] flex items-center"
-                  disabled={authSignOut.isPending}
-                >
-                  {authSignOut.isPending ? "Signing out..." : "Sign out"}
-                </button>
-              </div>
-            ) : (
-              <div>
-                <div className="text-eyebrow text-[color:var(--muted-foreground)]">
-                  Welcome
-                </div>
-                <div className="text-display mt-2 text-2xl">The atelier awaits</div>
-                <p className="mt-2 text-xs text-[color:var(--muted-foreground)]">
-                  Sign in to save designs, track orders and continue rituals.
-                </p>
-                <div className="mt-6 flex flex-col gap-3">
-                  <Link to="/auth/login" className="btn-lux justify-center">
-                    Sign in
-                  </Link>
-                  <Link to="/auth/signup" className="btn-ghost-lux justify-center">
-                    Create account
-                  </Link>
-                  <Link
-                    to="/auth/forgot"
-                    className="text-center text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)]"
+
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-[color:var(--border)] to-transparent opacity-50 my-1" />
+
+                <div className="px-3 pb-3 pt-1">
+                  <button
+                    onClick={async () => {
+                      await authSignOut.mutateAsync();
+                      setOpenMenu(null);
+                    }}
+                    disabled={authSignOut.isPending}
+                    className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-red-500/10 hover:text-red-500 text-[color:var(--muted-foreground)] text-sm font-medium"
                   >
-                    Forgot password
-                  </Link>
+                    <LogOut size={16} strokeWidth={1.5} />
+                    {authSignOut.isPending ? "Signing out..." : "Sign Out"}
+                  </button>
                 </div>
               </div>
             )}

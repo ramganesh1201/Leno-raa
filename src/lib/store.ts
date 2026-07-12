@@ -37,6 +37,7 @@ interface ShopState {
   saveDesign: (d: CustomDesign) => void;
   deleteDesign: (id: string) => void;
   clearCart: () => void;
+  clearAll: () => void;
 }
 
 export const useShop = create<ShopState>()(
@@ -93,6 +94,7 @@ export const useShop = create<ShopState>()(
       deleteDesign: (id) =>
         set((s) => ({ savedDesigns: s.savedDesigns.filter((d) => d.id !== id) })),
       clearCart: () => set({ cart: [] }),
+      clearAll: () => set({ cart: [], wishlist: [], recentlyViewed: [], savedDesigns: [] }),
     }),
     { name: "lenoraa-shop" },
   ),

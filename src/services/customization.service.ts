@@ -32,37 +32,64 @@ export const customizationService = {
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    return data as CustomizationType[];
+    return data.map(item => ({
+      ...item,
+      engraving_text: item.message,
+      estimated_price: item.calculated_price
+    })) as unknown as CustomizationType[];
   },
 
   async addCustomization(customization: Omit<CustomizationType, "id" | "user_id" | "created_at" | "updated_at">) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Must be logged in to save a design");
 
+    const dbItem = {
+      ...customization,
+      user_id: user.id,
+      message: customization.engraving_text,
+      calculated_price: customization.estimated_price
+    };
+    delete (dbItem as any).engraving_text;
+    delete (dbItem as any).estimated_price;
+
     const { data, error } = await supabase
       .from("soap_customizations")
-      .insert({ ...customization, user_id: user.id })
+      .insert(dbItem)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return {
+      ...data,
+      engraving_text: data.message,
+      estimated_price: data.calculated_price
+    } as unknown as CustomizationType;
   },
 
   async updateCustomization(id: string, updates: Partial<CustomizationType>) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Must be logged in to update a design");
 
+    const dbUpdates = { ...updates } as any;
+    if (updates.engraving_text !== undefined) dbUpdates.message = updates.engraving_text;
+    if (updates.estimated_price !== undefined) dbUpdates.calculated_price = updates.estimated_price;
+    delete dbUpdates.engraving_text;
+    delete dbUpdates.estimated_price;
+
     const { data, error } = await supabase
       .from("soap_customizations")
-      .update(updates)
+      .update(dbUpdates)
       .eq("id", id)
       .eq("user_id", user.id)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return {
+      ...data,
+      engraving_text: data.message,
+      estimated_price: data.calculated_price
+    } as unknown as CustomizationType;
   },
 
   async deleteCustomization(id: string) {

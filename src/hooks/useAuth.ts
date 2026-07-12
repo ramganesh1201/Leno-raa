@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/services/auth.service";
+import { useShop } from "@/lib/store";
 
 export const authKeys = {
   all: ["auth"] as const,
@@ -41,8 +42,15 @@ export function useAuth() {
   const signOut = useMutation({
     mutationFn: () => authService.signOut(),
     onSuccess: () => {
-      queryClient.setQueryData(authKeys.user(), null);
+      // Clear React Query cache entirely
+      queryClient.removeQueries();
       queryClient.clear();
+      
+      // Clear local guest cache to prevent leak
+      useShop.getState().clearAll();
+      
+      // Force redirect to clean state
+      window.location.href = "/";
     },
   });
 

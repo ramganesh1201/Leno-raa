@@ -6,7 +6,7 @@ import { useAuth } from "./useAuth";
 
 export const addressKeys = {
   all: ["addresses"] as const,
-  lists: () => [...addressKeys.all, "list"] as const,
+  lists: (userId?: string) => [...addressKeys.all, "list", userId] as const,
 };
 
 export function useAddresses() {
@@ -14,7 +14,7 @@ export function useAddresses() {
   const { user } = useAuth();
 
   const { data: addresses = [], isLoading } = useQuery({
-    queryKey: addressKeys.lists(),
+    queryKey: addressKeys.lists(user?.id),
     queryFn: () => addressService.getAddresses(),
     enabled: !!user,
   });
@@ -34,7 +34,7 @@ export function useAddresses() {
           filter: `user_id=eq.${user.id}`,
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: addressKeys.lists() });
+          queryClient.invalidateQueries({ queryKey: addressKeys.lists(user.id) });
         }
       )
       .subscribe();
@@ -48,7 +48,7 @@ export function useAddresses() {
     mutationFn: (address: Omit<AddressType, "id" | "user_id" | "created_at" | "updated_at">) =>
       addressService.addAddress(address),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: addressKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: addressKeys.lists(user?.id) });
     },
   });
 
@@ -56,14 +56,14 @@ export function useAddresses() {
     mutationFn: (params: { id: string; updates: Partial<AddressType> }) =>
       addressService.updateAddress(params.id, params.updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: addressKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: addressKeys.lists(user?.id) });
     },
   });
 
   const deleteAddress = useMutation({
     mutationFn: (id: string) => addressService.deleteAddress(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: addressKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: addressKeys.lists(user?.id) });
     },
   });
 

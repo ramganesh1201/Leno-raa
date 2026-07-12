@@ -19,11 +19,19 @@ export const preferencesService = {
       .from("user_preferences")
       .select("*")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        // Auto-recover missing preferences row
+      console.error("Supabase Error in getPreferences:", {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+      throw error;
+    }
+    
+    if (!data) {
         const newPrefs = {
           id: user.id,
           theme: 'system',
@@ -38,8 +46,6 @@ export const preferencesService = {
           .single();
         if (createError) throw createError;
         return createdData as PreferencesType;
-      }
-      throw error;
     }
     
     return data as PreferencesType;
@@ -54,9 +60,18 @@ export const preferencesService = {
       .update(updates)
       .eq("id", user.id)
       .select()
-      .single();
+      .maybeSingle();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase Error in updatePreferences:", {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+      throw error;
+    }
+    if (!data) throw new Error("Preferences not found to update");
     return data as PreferencesType;
   }
 };

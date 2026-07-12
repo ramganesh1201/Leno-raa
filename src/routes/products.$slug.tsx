@@ -1,12 +1,11 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  getProduct,
-  getCollection,
-} from "@/lib/catalog";
+import { getCollection } from "@/lib/catalog";
+import { productService } from "@/services/product.service";
 import { useShop, useTheme } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
 import { ProductEnvironment } from "@/components/product/ProductEnvironment";
@@ -23,8 +22,8 @@ import { StickyPurchasePanel } from "@/components/product/StickyPurchasePanel";
 import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 
 export const Route = createFileRoute("/products/$slug")({
-  loader: ({ params }) => {
-    const product = getProduct(params.slug);
+  loader: async ({ params }) => {
+    const product = await productService.getProductBySlug(params.slug);
     if (!product) throw notFound();
     const collection = getCollection(product.collection)!;
     return { product, collection };
@@ -53,12 +52,15 @@ function ProductPage() {
   const { product, collection } = Route.useLoaderData();
   const setTheme = useTheme((s) => s.setTheme);
   const addToLocalCart = useShop((s) => s.addToCart);
-  const toggleWishlist = useShop((s) => s.toggleWishlist);
+  const toggleLocalWishlist = useShop((s) => s.toggleWishlist);
   const markRecentlyViewed = useShop((s) => s.markRecentlyViewed);
-  const saved = useShop((s) => s.wishlist.includes(product.slug));
+  const localSaved = useShop((s) => s.wishlist.includes(product.slug));
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const { wishlist: supabaseWishlist, toggleWishlist: toggleSupabaseWishlist } = useWishlist();
   const navigate = useNavigate();
+  
+  const saved = user ? supabaseWishlist.some((w) => w.product_id === product.id) : localSaved;
 
   useEffect(() => {
     // We still update the global theme to maintain continuity for navigation
@@ -66,17 +68,24 @@ function ProductPage() {
     markRecentlyViewed(product.slug);
   }, [collection.slug, product.slug, product.ambience, setTheme, markRecentlyViewed]);
 
-  const handleAdd = async () => {
+  const handleAdd = () => {
     if (user) {
-      await addToCart.mutateAsync({ productId: product.id, quantity: 1 });
+      addToCart.mutate({ productId: product.id, quantity: 1 });
     } else {
       addToLocalCart(product.slug);
     }
   };
 
-  const handleBuyNow = async () => {
-    await handleAdd();
-    navigate({ to: "/cart" });
+  const handleBuyNow = () => {
+    if (user) {
+      addToCart.mutate(
+        { productId: product.id, quantity: 1 },
+        { onSuccess: () => navigate({ to: "/cart" }) }
+      );
+    } else {
+      addToLocalCart(product.slug);
+      navigate({ to: "/cart" });
+    }
   };
 
   const scrollToReviews = () => {
@@ -86,7 +95,8 @@ function ProductPage() {
     }
   };
 
-  const galleryImages = product.images || (product.image ? [product.image, collection.image, product.image] : [collection.image, collection.image]);
+  const hasImages = product.images && product.images.length > 0;
+  const galleryImages = hasImages ? product.images : (product.image ? [product.image, collection.image, product.image] : [collection.image, collection.image]);
 
   const expandableItems = [
     {
@@ -126,7 +136,7 @@ function ProductPage() {
               <ProductGallery 
                 images={galleryImages} 
                 productName={product.name}
-                benefits={<FloatingBenefits benefits={product.benefits} />}
+                benefits={<FloatingBenefits product={product} />}
               />
             </div>
 
@@ -170,7 +180,15 @@ function ProductPage() {
 
               <ProductActions 
                 onAdd={handleAdd} 
-                onSave={() => toggleWishlist(product.slug)} 
+                isAdding={addToCart.isPending}
+                onSave={() => {
+                  if (user) {
+                    toggleSupabaseWishlist.mutate(product.id);
+                  } else {
+                    toggleLocalWishlist(product.slug);
+                  }
+                }}
+                isSaving={toggleSupabaseWishlist.isPending}
                 isSaved={saved}
                 onBuyNow={handleBuyNow}
               />

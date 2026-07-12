@@ -6,7 +6,7 @@ import { useAuth } from "./useAuth";
 
 export const customizationKeys = {
   all: ["customizations"] as const,
-  lists: () => [...customizationKeys.all, "list"] as const,
+  lists: (userId?: string) => [...customizationKeys.all, "list", userId] as const,
 };
 
 export function useCustomizations() {
@@ -14,7 +14,7 @@ export function useCustomizations() {
   const { user } = useAuth();
 
   const query = useQuery({
-    queryKey: customizationKeys.lists(),
+    queryKey: customizationKeys.lists(user?.id),
     queryFn: () => customizationService.getCustomizations(),
     enabled: !!user,
   });
@@ -37,7 +37,7 @@ export function useCustomizations() {
           filter: `user_id=eq.${user.id}`,
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: customizationKeys.lists() });
+          queryClient.invalidateQueries({ queryKey: customizationKeys.lists(user.id) });
         }
       )
       .subscribe();
@@ -51,7 +51,7 @@ export function useCustomizations() {
     mutationFn: (customization: Omit<CustomizationType, "id" | "user_id" | "created_at" | "updated_at">) =>
       customizationService.addCustomization(customization),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: customizationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customizationKeys.lists(user?.id) });
     },
   });
 
@@ -59,14 +59,14 @@ export function useCustomizations() {
     mutationFn: (params: { id: string; updates: Partial<CustomizationType> }) =>
       customizationService.updateCustomization(params.id, params.updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: customizationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customizationKeys.lists(user?.id) });
     },
   });
 
   const deleteCustomization = useMutation({
     mutationFn: (id: string) => customizationService.deleteCustomization(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: customizationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: customizationKeys.lists(user?.id) });
     },
   });
 

@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { products, trustPillars } from "@/lib/catalog";
 import { useTheme } from "@/lib/store";
+import { productService } from "@/services/product.service";
 
 import { ProductCard } from "@/components/ProductCard";
 import { LuxuryEditorialCollections } from "@/components/home/LuxuryEditorialCollections";
@@ -12,6 +12,11 @@ import { Magnetic } from "@/components/immersive/Magnetic";
 import heroIntro from "@/assets/hero-intro.png";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const products = await productService.getProducts();
+    const { trustPillars } = await import("@/lib/catalog");
+    return { products, trustPillars };
+  },
   component: Index,
 });
 
@@ -30,6 +35,7 @@ function Index() {
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
+  const { products, trustPillars } = Route.useLoaderData();
   const featured = products.slice(0, 3);
   return (
     <div className="relative">
