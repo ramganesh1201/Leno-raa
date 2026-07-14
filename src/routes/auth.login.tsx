@@ -42,7 +42,6 @@ function LoginPage() {
         setTimeout(() => navigate({ to: "/account" }), 1200);
       } else {
         const { user } = await signIn.mutateAsync({ email, password });
-        console.log("Authenticated User ID:", user?.id);
         setIsSuccess(true);
         
         setTimeout(async () => {
@@ -52,14 +51,10 @@ function LoginPage() {
               return;
             }
             const profile = await profileService.getProfile(user);
-            console.log("Fetched Profile:", profile);
-            console.log("Profile Role:", profile?.role);
             
             if (profile?.role === 'admin') {
-              console.log("Redirect Destination: /admin");
               navigate({ to: "/admin" });
             } else {
-              console.log("Redirect Destination: /");
               navigate({ to: "/" });
             }
           } catch (e: any) {

@@ -40,7 +40,6 @@ export const profileService = {
           role: 'customer' as const,
         };
         
-        console.log("Attempting to auto-create profile for user:", user.id);
         const { data: createdData, error: createError } = await supabase
           .from("profiles")
           .insert(newProfile)
@@ -51,14 +50,12 @@ export const profileService = {
           console.error("Supabase Error creating profile:", createError);
           throw createError;
         }
-        console.log("Successfully created auto-recovered profile:", createdData);
         return createdData;
       } catch (err) {
         console.error("Fatal: Failed to auto-recover profile:", err);
         throw err;
       }
     }
-    console.log("Fetched Profile successfully:", data);
     return data;
   },
 

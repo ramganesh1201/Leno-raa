@@ -50,19 +50,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (user && profile) {
         if (profile.role === 'admin' && !currentPath.startsWith('/admin')) {
           if (!isAuthPage) {
-            console.log("AuthProvider: Redirecting admin to /admin");
             router.navigate({ to: '/admin' });
           }
         }
         
         if (profile.role !== 'admin' && currentPath.startsWith('/admin')) {
-          console.log("AuthProvider: Redirecting non-admin away from /admin");
           router.navigate({ to: '/' });
         }
       } else if (!user || profileError) {
         // If they are on an admin page without a valid user or profile
         if (currentPath.startsWith('/admin')) {
-          console.log("AuthProvider: Redirecting unauthenticated/errored away from /admin");
           router.navigate({ to: '/' });
         }
       }
