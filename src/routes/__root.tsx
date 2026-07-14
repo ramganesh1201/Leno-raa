@@ -115,22 +115,31 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const routerState = useRouter();
+  const isAdmin = routerState.state.location.pathname.startsWith('/admin');
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <CinematicIntro />
-          <AmbienceLayer />
-          <Suspense fallback={null}>
-            <LuxuryCursor />
-          </Suspense>
-          <SiteHeader />
-        <main className="min-h-screen">
-          <PageTransition>
-            <Outlet />
-          </PageTransition>
-        </main>
-        <SiteFooter />
+          {!isAdmin && <CinematicIntro />}
+          {!isAdmin && <AmbienceLayer />}
+          {!isAdmin && (
+            <Suspense fallback={null}>
+              <LuxuryCursor />
+            </Suspense>
+          )}
+          {!isAdmin && <SiteHeader />}
+          <main className={!isAdmin ? "min-h-screen" : ""}>
+            {isAdmin ? (
+              <Outlet />
+            ) : (
+              <PageTransition>
+                <Outlet />
+              </PageTransition>
+            )}
+          </main>
+          {!isAdmin && <SiteFooter />}
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

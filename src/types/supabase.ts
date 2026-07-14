@@ -16,6 +16,7 @@ export interface Database {
           full_name: string | null
           phone: string | null
           avatar_url: string | null
+          role: 'customer' | 'admin'
           created_at: string
           updated_at: string
         }
@@ -25,6 +26,7 @@ export interface Database {
           full_name?: string | null
           phone?: string | null
           avatar_url?: string | null
+          role?: 'customer' | 'admin'
           created_at?: string
           updated_at?: string
         }
@@ -34,6 +36,7 @@ export interface Database {
           full_name?: string | null
           phone?: string | null
           avatar_url?: string | null
+          role?: 'customer' | 'admin'
           created_at?: string
           updated_at?: string
         }
@@ -269,48 +272,314 @@ export interface Database {
       orders: {
         Row: {
           id: string
+          order_number: string
           user_id: string
           address_id: string | null
           subtotal: number
-          shipping: number
+          shipping_cost: number
           discount: number
           tax: number
           total: number
           payment_method: string
           payment_status: string
           order_status: string
+          courier_name: string | null
+          tracking_number: string | null
+          internal_notes: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
+          order_number: string
           user_id: string
           address_id?: string | null
           subtotal: number
-          shipping: number
+          shipping_cost: number
           discount?: number
           tax?: number
           total: number
           payment_method?: string
           payment_status?: string
           order_status?: string
+          courier_name?: string | null
+          tracking_number?: string | null
+          internal_notes?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
+          order_number?: string
           user_id?: string
           address_id?: string | null
           subtotal?: number
-          shipping?: number
+          shipping_cost?: number
           discount?: number
           tax?: number
           total?: number
           payment_method?: string
           payment_status?: string
           order_status?: string
+          courier_name?: string | null
+          tracking_number?: string | null
+          internal_notes?: string | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      shipping_addresses: {
+        Row: {
+          id: string
+          order_id: string
+          full_name: string
+          phone: string
+          address: string
+          city: string
+          state: string
+          pincode: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          full_name: string
+          phone: string
+          address: string
+          city: string
+          state: string
+          pincode: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          full_name?: string
+          phone?: string
+          address?: string
+          city?: string
+          state?: string
+          pincode?: string
+          created_at?: string
+        }
+      }
+      payment_proofs: {
+        Row: {
+          id: string
+          order_id: string
+          screenshot_url: string
+          utr_number: string
+          uploaded_at: string
+          verification_status: 'pending' | 'verified' | 'rejected'
+          verified_at: string | null
+          verified_by: string | null
+          rejection_reason: string | null
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          screenshot_url: string
+          utr_number: string
+          uploaded_at?: string
+          verification_status?: 'pending' | 'verified' | 'rejected'
+          verified_at?: string | null
+          verified_by?: string | null
+          rejection_reason?: string | null
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          screenshot_url?: string
+          utr_number?: string
+          uploaded_at?: string
+          verification_status?: 'pending' | 'verified' | 'rejected'
+          verified_at?: string | null
+          verified_by?: string | null
+          rejection_reason?: string | null
+        }
+      }
+      site_settings: {
+        Row: {
+          id: string
+          merchant_name: string
+          upi_id: string
+          upi_qr_url: string | null
+          support_phone: string | null
+          support_email: string | null
+          shipping_charge: number
+          free_shipping_threshold: number | null
+          logo_url: string | null
+          favicon_url: string | null
+          return_policy: string | null
+          privacy_policy: string | null
+          terms_of_service: string | null
+          instagram_url: string | null
+          facebook_url: string | null
+          whatsapp_url: string | null
+          meta_title: string | null
+          meta_description: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          merchant_name: string
+          upi_id: string
+          upi_qr_url?: string | null
+          support_phone?: string | null
+          support_email?: string | null
+          shipping_charge?: number
+          free_shipping_threshold?: number | null
+          logo_url?: string | null
+          favicon_url?: string | null
+          return_policy?: string | null
+          privacy_policy?: string | null
+          terms_of_service?: string | null
+          instagram_url?: string | null
+          facebook_url?: string | null
+          whatsapp_url?: string | null
+          meta_title?: string | null
+          meta_description?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          merchant_name?: string
+          upi_id?: string
+          upi_qr_url?: string | null
+          support_phone?: string | null
+          support_email?: string | null
+          shipping_charge?: number
+          free_shipping_threshold?: number | null
+          logo_url?: string | null
+          favicon_url?: string | null
+          return_policy?: string | null
+          privacy_policy?: string | null
+          terms_of_service?: string | null
+          instagram_url?: string | null
+          facebook_url?: string | null
+          whatsapp_url?: string | null
+          meta_title?: string | null
+          meta_description?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      reviews: {
+        Row: {
+          id: string
+          product_id: string
+          user_id: string
+          rating: number
+          comment: string | null
+          status: 'pending' | 'approved' | 'rejected'
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          user_id: string
+          rating: number
+          comment?: string | null
+          status?: 'pending' | 'approved' | 'rejected'
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          user_id?: string
+          rating?: number
+          comment?: string | null
+          status?: 'pending' | 'approved' | 'rejected'
+          created_at?: string
+        }
+      }
+      coupons: {
+        Row: {
+          id: string
+          code: string
+          discount_type: 'percentage' | 'fixed'
+          discount_value: number
+          min_order_value: number
+          max_discount: number | null
+          usage_limit: number | null
+          used_count: number
+          valid_from: string
+          valid_until: string | null
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          code: string
+          discount_type: 'percentage' | 'fixed'
+          discount_value: number
+          min_order_value?: number
+          max_discount?: number | null
+          usage_limit?: number | null
+          used_count?: number
+          valid_from?: string
+          valid_until?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          code?: string
+          discount_type?: 'percentage' | 'fixed'
+          discount_value?: number
+          min_order_value?: number
+          max_discount?: number | null
+          usage_limit?: number | null
+          used_count?: number
+          valid_from?: string
+          valid_until?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      collections: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          image_url: string | null
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          image_url?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          image_url?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      product_collections: {
+        Row: {
+          collection_id: string
+          product_id: string
+        }
+        Insert: {
+          collection_id: string
+          product_id: string
+        }
+        Update: {
+          collection_id?: string
+          product_id?: string
         }
       }
     }

@@ -2,13 +2,23 @@ import { useEffect, ReactNode } from "react";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { authKeys, useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import { useRouter } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { isLoading } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const { profile, isLoading: isProfileLoading, error: profileError } = useProfile();
+  
+  const isGlobalLoading = isAuthLoading || (!!user && isProfileLoading);
+
+  useEffect(() => {
+    if (profileError) {
+      console.error("AuthProvider encountered profile load error:", profileError);
+    }
+  }, [profileError]);
 
   useEffect(() => {
     const {
@@ -16,12 +26,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
         queryClient.setQueryData(authKeys.user(), session?.user ?? null);
-        
-        // Redirect verified users away from auth pages
-        const currentPath = window.location.pathname;
-        if (event === "SIGNED_IN" && session?.user && currentPath.startsWith("/auth/")) {
-          router.navigate({ to: "/account" });
-        }
       } else if (event === "SIGNED_OUT") {
         queryClient.setQueryData(authKeys.user(), null);
         // Clear all queries (like profile, cart, wishlist, etc.)
@@ -37,10 +41,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [queryClient, router]);
 
+  // Global Route Guard
+  useEffect(() => {
+    if (!isGlobalLoading) {
+      const currentPath = window.location.pathname;
+      const isAuthPage = currentPath.startsWith('/auth');
+
+      if (user && profile) {
+        if (profile.role === 'admin' && !currentPath.startsWith('/admin')) {
+          if (!isAuthPage) {
+            console.log("AuthProvider: Redirecting admin to /admin");
+            router.navigate({ to: '/admin' });
+          }
+        }
+        
+        if (profile.role !== 'admin' && currentPath.startsWith('/admin')) {
+          console.log("AuthProvider: Redirecting non-admin away from /admin");
+          router.navigate({ to: '/' });
+        }
+      } else if (!user || profileError) {
+        // If they are on an admin page without a valid user or profile
+        if (currentPath.startsWith('/admin')) {
+          console.log("AuthProvider: Redirecting unauthenticated/errored away from /admin");
+          router.navigate({ to: '/' });
+        }
+      }
+    }
+  }, [user, profile, profileError, isGlobalLoading, router]);
+
   return (
     <>
       <AnimatePresence>
-        {isLoading && (
+        {isGlobalLoading && (
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -51,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           </motion.div>
         )}
       </AnimatePresence>
-      {!isLoading && children}
+      {!isGlobalLoading && children}
     </>
   );
 }

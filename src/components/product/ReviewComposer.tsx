@@ -2,21 +2,24 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, UploadCloud, X } from "lucide-react";
 
-export function ReviewComposer({ productName, onSubmit }: { productName: string, onSubmit: () => void }) {
+export function ReviewComposer({ productName, onSubmit }: { productName: string, onSubmit: (rating: number, content: string) => Promise<void> }) {
   const [isOpen, setIsOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
+  const [content, setContent] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await onSubmit(rating, content);
       setIsOpen(false);
-      onSubmit();
-    }, 1200);
+      setRating(0);
+      setContent("");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,71 +94,19 @@ export function ReviewComposer({ productName, onSubmit }: { productName: string,
 
             <div>
               <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
-                Review Title
-              </label>
-              <input 
-                required
-                type="text"
-                placeholder="Sum up your experience"
-                className="w-full bg-transparent border-b border-[color:var(--border)] pb-3 pt-2 text-lg focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
                 Your Review
               </label>
               <textarea 
                 required
                 rows={4}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder="Tell us what you liked (or didn't like) about this soap..."
                 className="w-full bg-[color:var(--muted)]/30 border border-[color:var(--border)] rounded-xl p-4 text-base focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50 resize-none"
               />
             </div>
 
-            <div>
-              <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-4">
-                Add Photos (Optional)
-              </label>
-              
-              <div className="flex gap-4 items-start">
-                {image && (
-                  <div className="relative h-24 w-24 rounded-lg overflow-hidden border border-[color:var(--border)]">
-                    <img src={image} alt="Upload preview" className="h-full w-full object-cover" />
-                    <button 
-                      type="button"
-                      onClick={() => setImage(null)}
-                      className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 hover:bg-black/80 backdrop-blur-sm"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                )}
-                
-                {!image && (
-                  <label className="flex flex-col items-center justify-center h-24 w-24 rounded-lg border border-dashed border-[color:var(--border)] cursor-pointer hover:border-[color:var(--gold)] hover:bg-[color:var(--gold)]/5 transition-colors">
-                    <UploadCloud className="h-6 w-6 text-[color:var(--muted-foreground)] mb-2" />
-                    <span className="text-[10px] uppercase tracking-wider text-[color:var(--muted-foreground)]">Upload</span>
-                    <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                  </label>
-                )}
-              </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
-                  Name
-                </label>
-                <input required type="text" className="w-full bg-transparent border-b border-[color:var(--border)] pb-3 pt-2 focus:outline-none focus:border-[color:var(--gold)] transition-colors" />
-              </div>
-              <div>
-                <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
-                  Email
-                </label>
-                <input required type="email" className="w-full bg-transparent border-b border-[color:var(--border)] pb-3 pt-2 focus:outline-none focus:border-[color:var(--gold)] transition-colors" />
-              </div>
-            </div>
           </div>
 
           <div className="mt-10 flex justify-end">

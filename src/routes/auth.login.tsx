@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { profileService } from "@/services/profile.service";
 import { supabase } from "@/lib/supabase";
 import { SplitText } from "@/components/immersive/SplitText";
 import { AuthCard } from "@/components/auth/AuthCard";
@@ -39,9 +41,33 @@ function LoginPage() {
         setIsSuccess(true);
         setTimeout(() => navigate({ to: "/account" }), 1200);
       } else {
-        await signIn.mutateAsync({ email, password });
+        const { user } = await signIn.mutateAsync({ email, password });
+        console.log("Authenticated User ID:", user?.id);
         setIsSuccess(true);
-        setTimeout(() => navigate({ to: "/account" }), 1200);
+        
+        setTimeout(async () => {
+          try {
+            if (!user) {
+              navigate({ to: "/" });
+              return;
+            }
+            const profile = await profileService.getProfile(user);
+            console.log("Fetched Profile:", profile);
+            console.log("Profile Role:", profile?.role);
+            
+            if (profile?.role === 'admin') {
+              console.log("Redirect Destination: /admin");
+              navigate({ to: "/admin" });
+            } else {
+              console.log("Redirect Destination: /");
+              navigate({ to: "/" });
+            }
+          } catch (e: any) {
+            console.error("Profile load failed during redirect:", e);
+            setErrorMsg(e.message || "Failed to load user profile. Please try again or contact support.");
+            setIsSuccess(false);
+          }
+        }, 1200);
       }
     } catch (err: any) {
       const msg = err.message?.toLowerCase() || "";

@@ -1,27 +1,36 @@
-import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { SplitText } from "@/components/immersive/SplitText";
+import { motion, AnimatePresence } from "framer-motion";
+import { User, Package, MapPin, Heart, Sparkles, Clock, Settings } from "lucide-react";
 
 export const Route = createFileRoute("/account")({
   head: () => ({ meta: [{ title: "Account — Lenoraa" }, { name: "description", content: "Manage your Lenoraa account." }] }),
   component: AccountLayout,
 });
 
-function AccountLayout() {
+export function AccountShell({ children, requireAuth = true }: { children: React.ReactNode, requireAuth?: boolean }) {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { profile, isLoading: isProfileLoading } = useProfile();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
 
-  // Wait for initial auth check before showing logged out state
-  if (isAuthLoading) {
-    return <div className="min-h-screen" />; // Blank/loading screen while checking auth
+  useEffect(() => {
+    if (profile?.role === 'admin') {
+      navigate({ to: '/admin' });
+    }
+  }, [profile, navigate]);
+
+  if (isAuthLoading || isProfileLoading || profile?.role === 'admin') {
+    return <div className="min-h-screen" />; 
   }
 
-  if (!user) {
+  if (requireAuth && !user) {
     return (
       <div className="relative flex min-h-[70vh] items-center justify-center pt-32">
-        <div className="surface-glass max-w-md rounded-md p-10 text-center">
+        <div className="surface-glass max-w-md rounded-[24px] p-10 text-center border border-[color:var(--border)] shadow-2xl">
           <SplitText as="h1" text="Sign in to continue" className="text-display text-4xl" />
           <p className="mt-4 text-sm text-[color:var(--muted-foreground)]">
             Your rituals, orders and saved designs live here.
@@ -35,44 +44,76 @@ function AccountLayout() {
     );
   }
 
-  // Use profile name if available, otherwise user metadata, otherwise fallback
-  const displayName = profile?.full_name || user.user_metadata?.full_name || "Guest";
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || "Guest";
 
   const nav = [
-    ["/account", "Profile"],
-    ["/account/orders", "Orders"],
-    ["/account/addresses", "Addresses"],
-    ["/account/saved-designs", "Saved designs"],
-    ["/account/recently-viewed", "Recently viewed"],
-    ["/account/settings", "Settings"],
+    { to: "/account", label: "Profile", icon: User },
+    { to: "/account/orders", label: "Orders", icon: Package },
+    { to: "/account/addresses", label: "Addresses", icon: MapPin },
+    { to: "/wishlist", label: "Wishlist", icon: Heart },
+    { to: "/account/saved-designs", label: "Saved Designs", icon: Sparkles },
+    { to: "/account/recently-viewed", label: "Recently Viewed", icon: Clock },
+    { to: "/account/settings", label: "Settings", icon: Settings },
   ] as const;
 
   return (
-    <div className="relative pt-32">
+    <div className="relative pt-32 pb-40 min-h-screen">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        <div className="text-eyebrow text-[color:var(--muted-foreground)]">Atelier</div>
-        <SplitText as="h1" text={`Hello, ${displayName}`} className="text-display mt-3 text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl" />
-
-        <div className="mt-12 grid gap-12 md:grid-cols-[220px_1fr]">
-          <aside className="md:sticky md:top-32 md:self-start">
-            <ul className="space-y-3 text-sm">
-              {nav.map(([to, label]) => (
-                <li key={to}>
-                  <Link
-                    to={to}
-                    className={`block border-l-2 pl-4 py-1 transition ${pathname === to ? "border-[color:var(--gold)] text-[color:var(--gold)]" : "border-transparent text-[color:var(--muted-foreground)] hover:text-[color:var(--gold)]"}`}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
+        <div className="grid gap-12 md:grid-cols-[240px_1fr] items-start">
+          <aside className="md:sticky md:top-32 w-full overflow-x-auto md:overflow-visible pb-4 md:pb-0 scrollbar-hide">
+            <ul className="flex md:flex-col gap-2 min-w-max md:min-w-0">
+              {nav.map(({ to, label, icon: Icon }) => {
+                const isActive = pathname === to || pathname.startsWith(to + '/');
+                // exception for exact match on /account
+                const isActuallyActive = to === '/account' ? pathname === '/account' || pathname === '/account/' : isActive;
+                
+                return (
+                  <li key={to} className="relative">
+                    <Link
+                      to={to}
+                      className={`relative z-10 flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-300 ${
+                        isActuallyActive ? "text-[color:var(--gold)]" : "text-[color:var(--foreground)] hover:text-[color:var(--gold)]"
+                      }`}
+                    >
+                      <Icon size={18} strokeWidth={1.5} className={isActuallyActive ? "text-[color:var(--gold)]" : "text-[color:var(--muted-foreground)]"} />
+                      <span className="text-sm font-medium tracking-wide">{label}</span>
+                    </Link>
+                    {isActuallyActive && (
+                      <motion.div
+                        layoutId="account-nav-active"
+                        className="absolute inset-0 bg-[color:var(--gold)]/10 border border-[color:var(--gold)]/20 rounded-xl"
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </aside>
-          <div>
-            <Outlet />
-          </div>
+          
+          <main className="min-w-0 w-full relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={pathname}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </main>
         </div>
       </div>
     </div>
+  );
+}
+
+function AccountLayout() {
+  return (
+    <AccountShell requireAuth={true}>
+      <Outlet />
+    </AccountShell>
   );
 }

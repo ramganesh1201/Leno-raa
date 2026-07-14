@@ -40,6 +40,7 @@ CREATE TABLE public.profiles (
   full_name TEXT,
   phone TEXT,
   avatar_url TEXT,
+  role TEXT DEFAULT 'customer' CHECK (role IN ('customer', 'admin')) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -68,6 +69,18 @@ CREATE TABLE public.user_addresses (
   is_default BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE public.shipping_addresses (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  order_id UUID NOT NULL, -- Will add foreign key after orders table is created
+  full_name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  address TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  pincode TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 -- B. CATALOG
@@ -176,19 +189,26 @@ CREATE UNIQUE INDEX cart_items_user_customization_idx ON public.cart_items(user_
 -- E. ORDERS (Manual System)
 CREATE TABLE public.orders (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  order_number TEXT UNIQUE NOT NULL,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   address_id UUID REFERENCES public.user_addresses(id) ON DELETE SET NULL,
   subtotal NUMERIC(10, 2) NOT NULL,
-  shipping NUMERIC(10, 2) NOT NULL,
+  shipping_cost NUMERIC(10, 2) NOT NULL,
   discount NUMERIC(10, 2) DEFAULT 0,
   tax NUMERIC(10, 2) DEFAULT 0,
   total NUMERIC(10, 2) NOT NULL,
   payment_method TEXT DEFAULT 'Manual Transfer' NOT NULL,
   payment_status TEXT DEFAULT 'Pending' NOT NULL,
   order_status TEXT DEFAULT 'Awaiting Payment' NOT NULL,
+  courier_name TEXT,
+  tracking_number TEXT,
+  internal_notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Add foreign key constraint to shipping_addresses
+ALTER TABLE public.shipping_addresses ADD CONSTRAINT fk_shipping_addresses_order FOREIGN KEY (order_id) REFERENCES public.orders(id) ON DELETE CASCADE;
 
 CREATE TABLE public.order_items (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -207,6 +227,18 @@ CREATE TABLE public.manual_payment_requests (
   transaction_reference TEXT,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'verified', 'rejected')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE public.payment_proofs (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE NOT NULL,
+  screenshot_url TEXT NOT NULL,
+  utr_number TEXT NOT NULL,
+  uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'rejected')),
+  verified_at TIMESTAMP WITH TIME ZONE,
+  verified_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  rejection_reason TEXT
 );
 
 -- F. ENGAGEMENT & ANALYTICS
@@ -274,6 +306,19 @@ CREATE TABLE public.website_settings (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+CREATE TABLE public.site_settings (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  merchant_name TEXT NOT NULL,
+  upi_id TEXT NOT NULL,
+  upi_qr_url TEXT,
+  support_phone TEXT,
+  support_email TEXT,
+  shipping_charge NUMERIC(10, 2) DEFAULT 0,
+  free_shipping_threshold NUMERIC(10, 2),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 CREATE TABLE public.coupon_codes (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   code TEXT UNIQUE NOT NULL,
@@ -323,6 +368,7 @@ CREATE TRIGGER modtime_soap_customizations BEFORE UPDATE ON public.soap_customiz
 CREATE TRIGGER modtime_cart_items BEFORE UPDATE ON public.cart_items FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
 CREATE TRIGGER modtime_orders BEFORE UPDATE ON public.orders FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
 CREATE TRIGGER modtime_website_settings BEFORE UPDATE ON public.website_settings FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+CREATE TRIGGER modtime_site_settings BEFORE UPDATE ON public.site_settings FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
 
 -- Auth Signup Trigger
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -370,6 +416,8 @@ ALTER TABLE public.cart_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.manual_payment_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.shipping_addresses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.payment_proofs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.recently_viewed ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.search_history ENABLE ROW LEVEL SECURITY;
@@ -380,14 +428,15 @@ ALTER TABLE public.website_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coupon_codes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payment_methods ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 
 -- Generic Policy Helper Function
 CREATE OR REPLACE FUNCTION public.create_user_policies(table_name text, col_name text DEFAULT 'user_id') RETURNS void AS $$
 BEGIN
-  EXECUTE format('CREATE POLICY "Users can view own %I" ON public.%I FOR SELECT USING (auth.uid() = %I)', table_name, table_name, col_name);
-  EXECUTE format('CREATE POLICY "Users can insert own %I" ON public.%I FOR INSERT WITH CHECK (auth.uid() = %I)', table_name, table_name, col_name);
-  EXECUTE format('CREATE POLICY "Users can update own %I" ON public.%I FOR UPDATE USING (auth.uid() = %I)', table_name, table_name, col_name);
-  EXECUTE format('CREATE POLICY "Users can delete own %I" ON public.%I FOR DELETE USING (auth.uid() = %I)', table_name, table_name, col_name);
+  EXECUTE format('CREATE POLICY "Users can view own %I" ON public.%I FOR SELECT USING (auth.uid() = %I OR (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = ''admin'')))', table_name, table_name, col_name);
+  EXECUTE format('CREATE POLICY "Users can insert own %I" ON public.%I FOR INSERT WITH CHECK (auth.uid() = %I OR (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = ''admin'')))', table_name, table_name, col_name);
+  EXECUTE format('CREATE POLICY "Users can update own %I" ON public.%I FOR UPDATE USING (auth.uid() = %I OR (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = ''admin'')))', table_name, table_name, col_name);
+  EXECUTE format('CREATE POLICY "Users can delete own %I" ON public.%I FOR DELETE USING (auth.uid() = %I OR (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = ''admin'')))', table_name, table_name, col_name);
 END;
 $$ LANGUAGE plpgsql;
 
@@ -399,6 +448,7 @@ CREATE POLICY "Public read product_variants" ON public.product_variants FOR SELE
 CREATE POLICY "Public read product_ingredients" ON public.product_ingredients FOR SELECT USING (true);
 CREATE POLICY "Public read reviews" ON public.reviews FOR SELECT USING (status = 'approved');
 CREATE POLICY "Public read website_settings" ON public.website_settings FOR SELECT USING (true);
+CREATE POLICY "Public read site_settings" ON public.site_settings FOR SELECT USING (true);
 CREATE POLICY "Public read payment_methods" ON public.payment_methods FOR SELECT USING (is_active = true);
 
 -- B. USER ISOLATED ACCESS
@@ -410,6 +460,28 @@ SELECT public.create_user_policies('wishlist');
 SELECT public.create_user_policies('cart_items');
 SELECT public.create_user_policies('orders');
 SELECT public.create_user_policies('manual_payment_requests');
+
+-- Custom RLS for shipping_addresses based on orders
+CREATE POLICY "Users can view own shipping addresses" ON public.shipping_addresses FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = shipping_addresses.order_id AND (orders.user_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')))
+);
+CREATE POLICY "Users can insert own shipping addresses" ON public.shipping_addresses FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = shipping_addresses.order_id AND (orders.user_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')))
+);
+CREATE POLICY "Users can update own shipping addresses" ON public.shipping_addresses FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = shipping_addresses.order_id AND (orders.user_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')))
+);
+
+-- Custom RLS for payment_proofs based on orders
+CREATE POLICY "Users can view own payment proofs" ON public.payment_proofs FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = payment_proofs.order_id AND (orders.user_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')))
+);
+CREATE POLICY "Users can insert own payment proofs" ON public.payment_proofs FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = payment_proofs.order_id AND (orders.user_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')))
+);
+CREATE POLICY "Admins can update payment proofs" ON public.payment_proofs FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+);
 SELECT public.create_user_policies('recently_viewed');
 SELECT public.create_user_policies('search_history');
 SELECT public.create_user_policies('notifications');
@@ -422,10 +494,10 @@ CREATE POLICY "Users can view own pending reviews" ON public.reviews FOR SELECT 
 
 -- Order Items (Indirect RLS)
 CREATE POLICY "Users can view own order items" ON public.order_items FOR SELECT USING (
-  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid())
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_items.order_id AND (orders.user_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')))
 );
 CREATE POLICY "Users can insert own order items" ON public.order_items FOR INSERT WITH CHECK (
-  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid())
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_items.order_id AND (orders.user_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')))
 );
 
 -- Anyone can insert a contact message (even guests)
@@ -442,14 +514,19 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('products', 'products', t
 INSERT INTO storage.buckets (id, name, public) VALUES ('customizations', 'customizations', true) ON CONFLICT DO NOTHING;
 INSERT INTO storage.buckets (id, name, public) VALUES ('reviews', 'reviews', true) ON CONFLICT DO NOTHING;
 INSERT INTO storage.buckets (id, name, public) VALUES ('categories', 'categories', true) ON CONFLICT DO NOTHING;
+INSERT INTO storage.buckets (id, name, public) VALUES ('payment-proofs', 'payment-proofs', false) ON CONFLICT DO NOTHING;
 
 -- Allow public viewing of files
 CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id IN ('avatars', 'products', 'customizations', 'reviews', 'categories'));
+
+-- Allow admins to view payment proofs
+CREATE POLICY "Admin Payment Proofs Access" ON storage.objects FOR SELECT USING (bucket_id = 'payment-proofs' AND EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
 -- Allow authenticated uploads to avatars/customizations/reviews
 CREATE POLICY "Authenticated users can upload avatars" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
 CREATE POLICY "Authenticated users can upload customizations" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'customizations' AND auth.role() = 'authenticated');
 CREATE POLICY "Authenticated users can upload reviews" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'reviews' AND auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can upload payment proofs" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'payment-proofs' AND auth.role() = 'authenticated');
 
 -- ==============================================================================
 -- 6. SEED DATA (PRODUCTS & CATEGORIES)
@@ -482,6 +559,10 @@ INSERT INTO public.product_ingredients (product_id, name, is_key_ingredient) VAL
 ('d4c3b2a1-6f5e-b5a4-d9c8-d5c4b3a2f1e0', 'Raw Manuka Honey', true),
 ('e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b', 'Rose Absolute', true),
 ('e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b', 'French Pink Clay', true);
+
+-- Site Settings
+INSERT INTO public.site_settings (merchant_name, upi_id, upi_qr_url, support_phone, support_email, shipping_charge, free_shipping_threshold) VALUES
+('Lenoraa Artisan Soaps', 'merchant@placeholder.upi', 'https://images.unsplash.com/photo-1547484451-b84499d3ba69', '+91 98765 43210', 'support@lenoraa.com', 50.00, 1500.00);
 
 -- Realtime Publication for specific tables
 BEGIN;

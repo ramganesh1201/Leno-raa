@@ -213,7 +213,7 @@ function ProductPage() {
 
       <WhyThisSoap collection={collection.name} />
       
-      <CustomerReviews productName={product.name} />
+      <CustomerReviews productName={product.name} productId={product.id} />
 
       {/* Sticky Purchase Panel */}
       <StickyPurchasePanel 

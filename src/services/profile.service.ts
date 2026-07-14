@@ -6,6 +6,7 @@ export interface UserProfile {
   full_name: string | null;
   phone: string | null;
   avatar_url: string | null;
+  role: 'customer' | 'admin';
   created_at: string;
   updated_at: string;
 }
@@ -36,22 +37,28 @@ export const profileService = {
           email: user.email,
           full_name: user.user_metadata?.full_name || null,
           avatar_url: user.user_metadata?.avatar_url || null,
+          role: 'customer' as const,
         };
         
+        console.log("Attempting to auto-create profile for user:", user.id);
         const { data: createdData, error: createError } = await supabase
           .from("profiles")
           .insert(newProfile)
           .select()
           .single();
           
-        if (createError) throw createError;
+        if (createError) {
+          console.error("Supabase Error creating profile:", createError);
+          throw createError;
+        }
+        console.log("Successfully created auto-recovered profile:", createdData);
         return createdData;
       } catch (err) {
-        console.error("Failed to auto-recover profile:", err);
-        return null;
+        console.error("Fatal: Failed to auto-recover profile:", err);
+        throw err;
       }
     }
-    
+    console.log("Fetched Profile successfully:", data);
     return data;
   },
 
