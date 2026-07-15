@@ -12,7 +12,7 @@ import { productService } from "@/services/product.service";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Reveal } from "@/components/immersive/Reveal";
-import { Heart, ShoppingBag, User, Search, Bell, Check, MapPin, Package, Settings, Sparkles, LogOut } from "lucide-react";
+import { Heart, ShoppingBag, User, Search, Bell, Check, MapPin, Package, Settings, Sparkles, LogOut, Menu, X } from "lucide-react";
 
 export function SiteHeader() {
   const { user, signOut: authSignOut, isLoading: isAuthLoading } = useAuth();
@@ -39,7 +39,10 @@ export function SiteHeader() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchIndex, setSearchIndex] = useState(0);
   const [isProfileHovered, setIsProfileHovered] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   const { data: products = [] } = useQuery({
@@ -67,8 +70,10 @@ export function SiteHeader() {
   useEffect(() => {
     if (typeof window !== "undefined") window.scrollTo(0, 0);
     setOpenMenu(null);
+    setMobileMenuOpen(false);
     setIsSearchHovered(false);
     setIsSearchFocused(false);
+    setIsMobileSearchOpen(false);
     setSearchQuery("");
   }, [pathname]);
 
@@ -85,13 +90,23 @@ export function SiteHeader() {
     <header
       ref={menuRef}
       className={`fixed top-0 z-50 w-full transition-all duration-700 ${
-        scrolled ? "bg-[color:var(--ivory)]/80 backdrop-blur-md shadow-sm border-b border-[color:var(--border)] py-3" : "bg-transparent py-6"
+        scrolled ? "bg-[color:var(--ivory)]/80 backdrop-blur-md shadow-sm border-b border-[color:var(--border)] py-3 max-md:py-3" : "bg-transparent py-6 max-md:py-4"
       }`}
     >
-      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-6 md:px-12">
+      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-6 md:px-12 relative">
+        <div className="flex md:hidden items-center">
+          <button 
+            onClick={() => setMobileMenuOpen(true)} 
+            className="nav-icon-btn group -ml-2"
+            aria-label="Open menu"
+            data-lux-hover
+          >
+            <Menu size={24} strokeWidth={1.5} className="transition-colors duration-250" />
+          </button>
+        </div>
         <Link
           to="/"
-          className="text-display text-2xl tracking-wide text-[color:var(--foreground)]"
+          className="text-display text-2xl tracking-wide text-[color:var(--foreground)] md:static max-md:absolute max-md:left-1/2 max-md:-translate-x-1/2"
           data-lux-hover
         >
           Lenoraa
@@ -124,9 +139,22 @@ export function SiteHeader() {
           </Link>
         </nav>
         <div className="flex items-center gap-4 relative">
-          {/* SEARCH WRAPPER */}
+          {/* MOBILE SEARCH BUTTON */}
+          <button
+            className="flex md:hidden nav-icon-btn group"
+            aria-label="Search"
+            data-lux-hover
+            onClick={() => {
+              setIsMobileSearchOpen(true);
+              setTimeout(() => mobileSearchInputRef.current?.focus(), 100);
+            }}
+          >
+            <Search size={24} strokeWidth={1.5} className="transition-colors duration-250" />
+          </button>
+
+          {/* DESKTOP SEARCH WRAPPER */}
           <div 
-            className="relative flex items-center justify-end h-11 w-11"
+            className="relative items-center justify-end h-11 w-11 hidden md:flex"
             onMouseEnter={() => setIsSearchHovered(true)}
             onMouseLeave={() => setIsSearchHovered(false)}
           >
@@ -498,6 +526,207 @@ export function SiteHeader() {
               </div>
             )}
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Fullscreen Search */}
+      <AnimatePresence>
+        {isMobileSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[60] bg-[color:var(--ivory)] flex flex-col md:hidden"
+          >
+            <div className="flex items-center border-b border-[color:var(--border)] px-4 py-4 gap-3 bg-[color:var(--ivory)]/90 backdrop-blur-md">
+              <Search size={20} className="text-[color:var(--muted-foreground)]" />
+              <input
+                ref={mobileSearchInputRef}
+                type="text"
+                placeholder="Search soaps, ingredients..."
+                className="flex-1 bg-transparent border-none outline-none text-base text-[color:var(--foreground)] placeholder:text-[color:var(--foreground)]/40"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button 
+                onClick={() => {
+                  setIsMobileSearchOpen(false);
+                  setSearchQuery("");
+                }}
+                className="p-2 -mr-2 text-[color:var(--foreground)]"
+              >
+                <X size={24} strokeWidth={1.5} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 bg-[color:var(--ivory)]">
+              {searchQuery ? (
+                <div className="flex flex-col gap-2">
+                  <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-2 font-medium">Results</div>
+                  {searchResults.length > 0 ? (
+                    searchResults.map((product) => (
+                      <Link 
+                        key={product.slug}
+                        to="/products/$slug"
+                        params={{ slug: product.slug }}
+                        onClick={() => {
+                          setIsMobileSearchOpen(false);
+                          setSearchQuery("");
+                        }}
+                        className="flex items-center gap-4 p-3 rounded-xl transition-colors hover:bg-[color:var(--foreground)]/5 active:bg-[color:var(--foreground)]/10"
+                      >
+                        <div className="w-16 h-16 rounded-lg overflow-hidden bg-[color:var(--cream)] shrink-0">
+                          {product.image && <img src={product.image} alt={product.name} className="w-full h-full object-cover" />}
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="text-base font-medium text-[color:var(--foreground)]">{product.name}</div>
+                          <div className="text-[11px] uppercase tracking-wider text-[color:var(--foreground)]/50 mt-1">{product.collection}</div>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="py-12 text-center">
+                      <div className="text-base text-[color:var(--foreground)] font-medium">No soaps found</div>
+                      <div className="text-sm text-[color:var(--foreground)]/60 mt-2">Try another ingredient or collection.</div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-6 pt-4">
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-3 font-medium">Suggested Collections</div>
+                    <div className="flex flex-wrap gap-2">
+                      {collections.slice(0, 4).map((c) => (
+                        <Link
+                          key={c.slug}
+                          to="/collections/$slug"
+                          params={{ slug: c.slug }}
+                          onClick={() => setIsMobileSearchOpen(false)}
+                          className="px-4 py-2 rounded-full border border-[color:var(--border)] text-sm text-[color:var(--foreground)]/80 active:bg-[color:var(--foreground)]/5"
+                        >
+                          {c.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-3 font-medium">Trending Soaps</div>
+                    <div className="flex flex-col gap-2">
+                      {products.slice(0, 3).map((product) => (
+                        <Link 
+                          key={product.slug}
+                          to="/products/$slug"
+                          params={{ slug: product.slug }}
+                          onClick={() => setIsMobileSearchOpen(false)}
+                          className="flex items-center gap-4 p-2 rounded-xl active:bg-[color:var(--foreground)]/5"
+                        >
+                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-[color:var(--cream)] shrink-0">
+                            {product.image && <img src={product.image} alt={product.name} className="w-full h-full object-cover" />}
+                          </div>
+                          <div className="flex-1 text-left">
+                            <div className="text-sm font-medium text-[color:var(--foreground)]">{product.name}</div>
+                            <div className="text-[10px] uppercase tracking-wider text-[color:var(--foreground)]/50 mt-0.5">{product.collection}</div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Hamburger Menu Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed inset-y-0 left-0 z-[70] w-[85vw] max-w-[400px] bg-[color:var(--ivory)] shadow-2xl flex flex-col md:hidden overflow-hidden"
+            >
+              <div className="flex items-center justify-between p-6 border-b border-[color:var(--border)]">
+                <span className="text-display text-2xl tracking-wide text-[color:var(--foreground)]">Lenoraa</span>
+                <button 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 -mr-2 text-[color:var(--foreground)] active:bg-black/5 rounded-full transition-colors"
+                >
+                  <X size={24} strokeWidth={1.5} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto py-6 px-6">
+                <nav className="flex flex-col gap-6">
+                  <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50">
+                    Home
+                  </Link>
+                  <div className="flex flex-col gap-4">
+                    <span className="text-display text-3xl text-[color:var(--foreground)]">Collections</span>
+                    <div className="pl-4 flex flex-col gap-4 border-l border-[color:var(--border)]">
+                      {collections.map(c => (
+                        <Link 
+                          key={c.slug} 
+                          to="/collections/$slug" 
+                          params={{ slug: c.slug }}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="text-lg text-[color:var(--foreground)]/80 transition-opacity active:opacity-50 flex items-center justify-between"
+                        >
+                          <span>{c.name}</span>
+                          <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">{c.eyebrow}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  <Link to="/customize" onClick={() => setMobileMenuOpen(false)} className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50">
+                    Customize
+                  </Link>
+                  <Link to="/story" onClick={() => setMobileMenuOpen(false)} className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50">
+                    Story
+                  </Link>
+                </nav>
+              </div>
+              <div className="p-6 border-t border-[color:var(--border)] bg-[color:var(--cream)]/30 flex flex-col gap-4">
+                {!user ? (
+                  <Link 
+                    to="/auth/login" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="btn-lux w-full justify-center"
+                  >
+                    Sign In / Register
+                  </Link>
+                ) : (
+                  <Link 
+                    to="/account" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-[color:var(--foreground)]/5"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[color:var(--gold)]/10 text-[color:var(--gold)] border border-[color:var(--gold)]/20">
+                      <User size={18} strokeWidth={1.5} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-medium tracking-wide truncate text-[color:var(--foreground)]">
+                        {displayName || "My Profile"}
+                      </div>
+                      <div className="text-xs text-[color:var(--muted-foreground)] truncate mt-0.5">
+                        Manage account
+                      </div>
+                    </div>
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

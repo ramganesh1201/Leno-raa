@@ -100,7 +100,7 @@ function AdminOrdersPage() {
 
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse hidden md:table">
               <thead>
                 <tr className="border-b border-[color:var(--border)] bg-black/5 dark:bg-white/5 text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
                   <th className="p-4 font-medium">Order</th>
@@ -165,6 +165,51 @@ function AdminOrdersPage() {
                 )}
               </tbody>
             </table>
+
+            {/* Mobile Cards View */}
+            <div className="md:hidden space-y-4 p-4">
+              {isError ? (
+                <div className="p-8 text-center text-red-500">
+                  <p className="font-bold">Error loading orders</p>
+                  <p className="text-sm opacity-80 mt-1">{(error as any)?.message || "Unknown error"}</p>
+                </div>
+              ) : filteredOrders.length === 0 ? (
+                <div className="p-8 text-center text-[color:var(--muted-foreground)]">
+                  No orders found matching your criteria.
+                </div>
+              ) : (
+                filteredOrders.map((order: any) => (
+                  <div key={order.id} className="border border-[color:var(--border)] rounded-xl p-4 bg-white dark:bg-neutral-900 shadow-sm flex flex-col gap-3 cursor-pointer" onClick={() => setSelectedOrder(order)}>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-bold">{order.order_number}</div>
+                        <div className="text-xs text-[color:var(--muted-foreground)]">{new Date(order.created_at).toLocaleDateString()}</div>
+                      </div>
+                      <div className="font-medium tracking-wide">₹{order.total}</div>
+                    </div>
+                    
+                    <div>
+                      <div className="font-medium text-sm">{order.shipping_addresses?.[0]?.full_name || order.profiles?.full_name}</div>
+                      <div className="text-xs text-[color:var(--muted-foreground)]">{order.shipping_addresses?.[0]?.phone}</div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className={`inline-flex px-2 py-1 rounded-full text-[10px] uppercase tracking-widest font-medium border ${
+                          order.payment_status === 'Verified' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
+                          order.payment_status === 'Rejected' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                          order.payment_status === 'Awaiting Verification' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                          'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                        }`}>
+                          {order.payment_status}
+                      </span>
+                      <span className="inline-flex px-2 py-1 rounded-full text-[10px] uppercase tracking-widest font-medium bg-[color:var(--gold)]/10 text-[color:var(--gold)] border border-[color:var(--gold)]/20">
+                          {order.order_status}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 

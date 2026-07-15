@@ -50,13 +50,13 @@ export function StickyPurchasePanel({ productName, price, onAdd, onBuyNow, image
             <div className="flex w-full gap-3 md:w-auto">
               <button
                 onClick={onAdd}
-                className="flex-1 rounded-full border border-[color:var(--border)] bg-transparent px-6 py-3 text-xs uppercase tracking-widest transition hover:border-[color:var(--foreground)] md:flex-none"
+                className="flex-1 rounded-full border border-[color:var(--border)] bg-transparent px-6 py-3 max-md:py-4 text-xs uppercase tracking-widest transition hover:border-[color:var(--foreground)] md:flex-none"
               >
                 Add to Bag
               </button>
               <button
                 onClick={onBuyNow}
-                className="flex-1 rounded-full bg-[color:var(--gold)] px-8 py-3 text-xs uppercase tracking-widest text-white transition hover:bg-yellow-600 md:flex-none"
+                className="flex-1 rounded-full bg-[color:var(--gold)] px-8 py-3 max-md:py-4 text-xs uppercase tracking-widest text-white transition hover:bg-yellow-600 md:flex-none"
               >
                 Buy Now
               </button>

@@ -157,7 +157,7 @@ function CartPage() {
             </Link>
           </motion.div>
         ) : (
-          <div className="mt-16 flex flex-col lg:flex-row gap-16 relative">
+          <div className="mt-16 flex flex-col lg:flex-row gap-16 max-md:gap-10 relative">
             <div className="flex-1 w-full">
               <ul className="flex flex-col gap-6">
                 <AnimatePresence initial={false}>
@@ -196,7 +196,7 @@ function CartPage() {
                           )}
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
-                          <div className="flex justify-between items-start">
+                          <div className="flex justify-between items-start max-md:flex-col max-md:gap-2">
                             <div>
                               <div className="text-display text-2xl text-[color:var(--foreground)]">{name}</div>
                               {product ? (
@@ -237,7 +237,7 @@ function CartPage() {
                                   if (user) updateQuantity.mutate({ id: item.id, quantity: item.quantity - 1 });
                                   else localUpdateQuantity(item.id, item.quantity - 1);
                                 }}
-                                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:text-black"
+                                className="w-8 h-8 max-md:w-10 max-md:h-10 rounded-full flex items-center justify-center transition-colors hover:text-black"
                                 aria-label="Decrease"
                                 disabled={user ? updateQuantity.isPending : false}
                               >
@@ -251,7 +251,7 @@ function CartPage() {
                                   if (user) updateQuantity.mutate({ id: item.id, quantity: item.quantity + 1 });
                                   else localUpdateQuantity(item.id, item.quantity + 1);
                                 }}
-                                className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:text-black"
+                                className="w-8 h-8 max-md:w-10 max-md:h-10 rounded-full flex items-center justify-center transition-colors hover:text-black"
                                 aria-label="Increase"
                                 disabled={user ? updateQuantity.isPending : false}
                               >
@@ -273,7 +273,7 @@ function CartPage() {
                                   if (user) removeFromCart.mutate(item.id);
                                   else localRemoveFromCart(item.id);
                                 }}
-                                className="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] text-[color:var(--muted-foreground)] transition hover:text-red-500"
+                                className="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] text-[color:var(--muted-foreground)] transition hover:text-red-500 max-md:py-2"
                               >
                                 <Trash2 size={14} />
                                 <span className="hidden sm:inline">Remove</span>
@@ -355,7 +355,7 @@ function CartPage() {
                 
                 <button 
                   onClick={handleCheckout} 
-                  className="btn-lux mt-10 w-full justify-center shadow-lg hover:shadow-[color:var(--gold)]/20"
+                  className="btn-lux mt-10 w-full justify-center max-md:py-4 shadow-lg hover:shadow-[color:var(--gold)]/20"
                 >
                   Proceed to Checkout
                 </button>

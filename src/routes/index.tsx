@@ -55,12 +55,12 @@ function Index() {
         <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--ivory)]/40 via-transparent to-[color:var(--ivory)]" />
         <motion.div
           style={{ opacity: heroOpacity }}
-          className="relative z-10 mx-auto grid w-full max-w-[1400px] gap-10 px-6 pb-24 md:px-12"
+          className="relative z-10 mx-auto grid w-full max-w-[1400px] gap-10 max-md:gap-6 px-6 pb-24 md:px-12"
         >
-          <Reveal preset="label" delay={0.1} className="text-eyebrow text-[color:var(--foreground)]/70">
+          <Reveal preset="label" delay={0.1} className="text-eyebrow text-[color:var(--foreground)]/70 max-md:text-center">
             Est. Nature · Doctor Formulated
           </Reveal>
-          <h1 className="text-display flex flex-col font-serif text-3xl md:text-4xl leading-[1.05] tracking-normal sm:text-4xl md:text-3xl md:text-4xl md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl md:max-w-[55%]">
+          <h1 className="text-display flex flex-col font-serif text-3xl max-md:text-4xl max-md:items-center md:text-4xl leading-[1.05] tracking-normal sm:text-4xl md:max-w-[55%]">
             <Reveal preset="heading" delay={0.2} className="text-left">
               Nature
             </Reveal>
@@ -71,7 +71,7 @@ function Index() {
               luxury.
             </Reveal>
           </h1>
-          <Reveal as="p" preset="paragraph" delay={0.8} className="mt-8 max-w-lg text-lg leading-relaxed tracking-wide text-[color:var(--foreground)]/70">
+          <Reveal as="p" preset="paragraph" delay={0.8} className="mt-8 max-w-lg text-lg leading-relaxed tracking-wide text-[color:var(--foreground)]/70 max-md:text-center">
             Five botanical chapters. Eleven handcrafted soaps. A slow, cold-processed
             ritual for the senses.
           </Reveal>
@@ -79,15 +79,15 @@ function Index() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
-            className="flex flex-wrap gap-4"
+            className="flex flex-wrap gap-4 max-md:flex-col max-md:w-full"
           >
             <Magnetic>
-              <Link to="/collections/$slug" params={{ slug: "radiance" }} className="btn-lux">
+              <Link to="/collections/$slug" params={{ slug: "radiance" }} className="btn-lux max-md:w-full max-md:justify-center">
                 Enter the world
               </Link>
             </Magnetic>
             <Magnetic>
-              <Link to="/customize" className="btn-ghost-lux">
+              <Link to="/customize" className="btn-ghost-lux max-md:w-full max-md:justify-center">
                 Design your soap
               </Link>
             </Magnetic>
@@ -104,9 +104,9 @@ function Index() {
             <Reveal preset="label" className="text-eyebrow text-[color:var(--muted-foreground)]">
               Signature Bars
             </Reveal>
-            <SplitText as="h2" text="The Atelier's Favourites" delay={0.1} className="text-display mt-4 text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl" />
+            <SplitText as="h2" text="The Atelier's Favourites" delay={0.1} className="text-display mt-4 text-3xl max-md:text-4xl md:text-4xl" />
           </div>
-          <div className="grid gap-10 md:grid-cols-3">
+          <div className="grid gap-10 md:grid-cols-3 max-md:gap-8 max-md:grid-cols-1">
             {featured.map((p, i) => (
               <ProductCard key={p.slug} product={p} index={i} />
             ))}
@@ -117,13 +117,13 @@ function Index() {
       {/* TRUST PILLARS */}
       <section className="relative py-32">
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-          <div className="mb-16 max-w-2xl">
+          <div className="mb-16 max-w-2xl max-md:text-center">
             <Reveal preset="label" className="text-eyebrow text-[color:var(--muted-foreground)]">
               The House of Lenoraa
             </Reveal>
-            <SplitText as="h2" text="Why we pour by hand." delay={0.1} className="text-display mt-4 text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl" />
+            <SplitText as="h2" text="Why we pour by hand." delay={0.1} className="text-display mt-4 text-3xl max-md:text-4xl md:text-4xl" />
           </div>
-          <div className="grid gap-px overflow-hidden rounded-md bg-[color:var(--border)] md:grid-cols-3">
+          <div className="grid gap-px overflow-hidden rounded-md bg-[color:var(--border)] md:grid-cols-3 max-md:grid-cols-1">
             {trustPillars.map((p, i) => (
               <Reveal key={p.title} delay={i * 0.05}>
                 <div className="group relative bg-[color:var(--card)] p-10 h-full">
@@ -145,18 +145,18 @@ function Index() {
       {/* CTA */}
       <section className="relative py-32">
         <div className="mx-auto max-w-4xl px-6 text-center md:px-12">
-          <SplitText as="h2" text="Begin where the light is warmest." className="text-display text-4xl leading-tight md:text-4xl md:text-3xl md:text-4xl" />
+          <SplitText as="h2" text="Begin where the light is warmest." className="text-display text-3xl max-md:text-4xl md:text-4xl leading-tight" />
           <Reveal as="p" preset="paragraph" delay={0.1} className="mt-6 text-[color:var(--muted-foreground)]">
             Step into the first chapter — the Radiance collection.
           </Reveal>
-          <div className="mt-10 flex justify-center gap-3">
+          <div className="mt-10 flex justify-center gap-3 max-md:flex-col max-md:w-full">
             <Magnetic>
-              <Link to="/collections/$slug" params={{ slug: "radiance" }} className="btn-lux">
+              <Link to="/collections/$slug" params={{ slug: "radiance" }} className="btn-lux max-md:w-full max-md:justify-center">
                 Begin the ritual
               </Link>
             </Magnetic>
             <Magnetic>
-              <Link to="/customize" className="btn-ghost-lux">
+              <Link to="/customize" className="btn-ghost-lux max-md:w-full max-md:justify-center">
                 Design your own
               </Link>
             </Magnetic>

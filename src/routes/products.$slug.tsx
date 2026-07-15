@@ -129,7 +129,7 @@ function ProductPage() {
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
           
           {/* Two Column Layout */}
-          <div className="grid gap-16 lg:grid-cols-[48%_1fr]">
+          <div className="grid gap-16 max-md:gap-8 lg:grid-cols-[48%_1fr]">
             
             {/* Left Column: Gallery (Scrolling Cinematic) */}
             <div className="w-full">
@@ -160,7 +160,7 @@ function ProductPage() {
                 as="h1"
                 text={product.name}
                 delay={0.1}
-                className="text-display text-4xl md:text-5xl lg:text-6xl leading-[0.95]"
+                className="text-display text-4xl max-md:text-4xl md:text-5xl lg:text-6xl leading-[0.95]"
               />
               
               <Reveal as="p" preset="subheading" delay={0.2} className="mt-6 text-xl italic text-[color:var(--muted-foreground)]">

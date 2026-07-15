@@ -148,7 +148,7 @@ function AdminProductsPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse hidden md:table">
             <thead>
               <tr className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950/50 text-xs font-bold uppercase tracking-widest text-neutral-500">
                 <th className="p-4 w-12"></th>
@@ -222,6 +222,52 @@ function AdminProductsPage() {
               )}
             </tbody>
           </table>
+
+          {/* Mobile Cards View */}
+          <div className="md:hidden space-y-4 p-4">
+            {isLoading ? (
+              <div className="animate-pulse space-y-4">
+                {[1,2,3].map(i => <div key={i} className="h-24 bg-neutral-100 dark:bg-neutral-800 rounded-xl w-full"></div>)}
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="p-12 text-center text-neutral-500">
+                <Package size={32} className="mx-auto mb-3 opacity-30" />
+                <p>No products found.</p>
+              </div>
+            ) : (
+              filteredProducts.map((product) => (
+                <div key={product.id} className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 bg-white dark:bg-neutral-900 shadow-sm flex gap-4 items-start">
+                  <div className="w-16 h-16 rounded-lg bg-neutral-100 dark:bg-neutral-800 overflow-hidden border border-neutral-200 dark:border-neutral-700 flex-shrink-0">
+                    {product.images && product.images[0] ? (
+                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Package className="w-full h-full p-3 text-neutral-300" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-neutral-900 dark:text-white truncate">{product.name}</div>
+                    <div className="text-xs text-neutral-500 mt-1">{product.category || 'Uncategorized'}</div>
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                      <div className="text-sm font-medium">₹{product.price}</div>
+                      <div className={`text-xs ${product.stock < 10 ? 'text-rose-600 font-bold' : 'text-neutral-500'}`}>
+                        · {product.stock} in stock
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => openEditModal(product)} className="p-1.5 text-neutral-400 hover:text-blue-500 transition-colors rounded bg-neutral-50 dark:bg-neutral-800">
+                        <Edit3 size={14} />
+                      </button>
+                      <button onClick={() => handleDelete(product.id)} className="p-1.5 text-neutral-400 hover:text-rose-500 transition-colors rounded bg-neutral-50 dark:bg-neutral-800">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 

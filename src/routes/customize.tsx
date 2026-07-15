@@ -112,7 +112,7 @@ function CustomizePage() {
           Every choice reshapes the atmosphere. Watch the world respond as you build.
         </Reveal>
 
-        <div className="mt-16 grid gap-16 md:grid-cols-[1.1fr_1fr]">
+        <div className="mt-16 grid gap-16 max-md:gap-10 md:grid-cols-[1.1fr_1fr]">
           {/* Preview */}
           <div className="sticky top-32 self-start">
             <div className="relative">
@@ -161,7 +161,7 @@ function CustomizePage() {
                 </div>
                 <div className="text-display text-2xl">₹{price}</div>
               </div>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3 max-md:flex-col max-md:w-full">
                 <Magnetic>
                   <button
                     disabled={isSaving}
@@ -192,7 +192,7 @@ function CustomizePage() {
                         console.error("Failed to save customization:", err);
                       }
                     }}
-                    className="btn-ghost-lux"
+                    className="btn-ghost-lux max-md:w-full max-md:justify-center"
                   >
                     {saved ? "Saved ♥" : isSaving ? "Saving..." : "Save design"}
                   </button>
@@ -230,7 +230,7 @@ function CustomizePage() {
                         console.error("Failed to add to cart:", err);
                       }
                     }}
-                    className="btn-lux"
+                    className="btn-lux max-md:w-full max-md:justify-center"
                   >
                     {added ? "Added ✓" : isAdding ? "Adding..." : "Add to bag"}
                   </button>
@@ -261,7 +261,7 @@ function CustomizePage() {
                     key={c.name}
                     onClick={() => setColor(c)}
                     data-lux-hover
-                    className={`group flex items-center gap-3 rounded-full border px-3 py-2 text-xs uppercase tracking-[0.24em] transition ${color.name === c.name ? "border-[color:var(--gold)] text-[color:var(--gold)]" : "border-[color:var(--border)] text-[color:var(--muted-foreground)] hover:border-[color:var(--gold)]"}`}
+                    className={`group flex items-center gap-3 rounded-full border px-3 py-2 max-md:py-3 max-md:px-4 text-xs uppercase tracking-[0.24em] transition ${color.name === c.name ? "border-[color:var(--gold)] text-[color:var(--gold)]" : "border-[color:var(--border)] text-[color:var(--muted-foreground)] hover:border-[color:var(--gold)]"}`}
                   >
                     <span className="h-5 w-5 rounded-full" style={{ background: c.val }} />
                     {c.name}
@@ -340,7 +340,7 @@ function Chips({
           key={o}
           onClick={() => onChange(o)}
           data-lux-hover
-          className={`rounded-full border px-4 py-2 text-xs uppercase tracking-[0.24em] transition ${active(o) ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10 text-[color:var(--gold)]" : "border-[color:var(--border)] text-[color:var(--muted-foreground)] hover:border-[color:var(--gold)]"}`}
+          className={`rounded-full border px-4 py-2 max-md:py-3 max-md:px-5 text-xs uppercase tracking-[0.24em] transition ${active(o) ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10 text-[color:var(--gold)]" : "border-[color:var(--border)] text-[color:var(--muted-foreground)] hover:border-[color:var(--gold)]"}`}
         >
           {o}
         </button>

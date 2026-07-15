@@ -99,7 +99,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             }}
             disabled={toggleSupabaseWishlist.isPending}
             aria-label="Save"
-            className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white disabled:opacity-50 disabled:hover:bg-white/70"
+            className="absolute top-4 right-4 z-10 grid h-9 w-9 max-md:h-12 max-md:w-12 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white disabled:opacity-50 disabled:hover:bg-white/70"
             data-lux-hover
           >
             <span

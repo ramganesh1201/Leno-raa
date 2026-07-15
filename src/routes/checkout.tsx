@@ -96,9 +96,9 @@ function CheckoutPage() {
         </Reveal>
         <SplitText as="h1" text="Shipping Details" delay={0.1} className="text-display mt-3 text-3xl md:text-4xl" />
 
-        <div className="mt-16 flex flex-col lg:flex-row gap-16 relative">
+        <div className="mt-16 flex flex-col lg:flex-row gap-16 max-md:gap-10 relative">
           <div className="flex-1 w-full">
-            <form onSubmit={handleSubmit} className="space-y-6 surface-glass p-8 rounded-[20px] border border-[color:var(--border)]">
+            <form onSubmit={handleSubmit} className="space-y-6 surface-glass p-8 max-md:p-5 rounded-[20px] border border-[color:var(--border)]">
               <div className="space-y-4">
                 <h3 className="text-display text-xl mb-4">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -107,7 +107,7 @@ function CheckoutPage() {
                     <input 
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.full_name}
                       onChange={e => setFormData(p => ({ ...p, full_name: e.target.value }))}
                     />
@@ -117,7 +117,7 @@ function CheckoutPage() {
                     <input 
                       required
                       type="tel"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.phone}
                       onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
                     />
@@ -130,7 +130,7 @@ function CheckoutPage() {
                   <input 
                     required
                     type="text"
-                    className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                    className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                     value={formData.address}
                     onChange={e => setFormData(p => ({ ...p, address: e.target.value }))}
                   />
@@ -142,7 +142,7 @@ function CheckoutPage() {
                     <input 
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.city}
                       onChange={e => setFormData(p => ({ ...p, city: e.target.value }))}
                     />
@@ -152,7 +152,7 @@ function CheckoutPage() {
                     <input 
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.state}
                       onChange={e => setFormData(p => ({ ...p, state: e.target.value }))}
                     />
@@ -162,7 +162,7 @@ function CheckoutPage() {
                     <input 
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.pincode}
                       onChange={e => setFormData(p => ({ ...p, pincode: e.target.value }))}
                     />
@@ -185,7 +185,7 @@ function CheckoutPage() {
           </div>
 
           <div className="w-full lg:w-[380px] shrink-0">
-            <div className="sticky top-32 surface-glass p-8 rounded-[20px] border border-[color:var(--border)] shadow-xl">
+            <div className="sticky top-32 surface-glass p-8 max-md:p-5 rounded-[20px] border border-[color:var(--border)] shadow-xl">
               <h2 className="text-display mb-8 text-2xl">Order Summary</h2>
               
               <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">

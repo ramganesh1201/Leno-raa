@@ -122,10 +122,10 @@ function DashboardPage() {
           </div>
           
           <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3 w-full md:w-auto">
-            <Link to="/collections/$slug" params={{ slug: "radiance" }} className="btn-lux justify-center whitespace-nowrap shadow-md">
+            <Link to="/collections/$slug" params={{ slug: "radiance" }} className="btn-lux justify-center whitespace-nowrap shadow-md max-md:w-full max-md:py-4">
               <ShoppingBag size={16} className="mr-2" /> Browse Collection
             </Link>
-            <Link to="/customize" className="btn-ghost-lux justify-center whitespace-nowrap bg-black/5 dark:bg-white/5">
+            <Link to="/customize" className="btn-ghost-lux justify-center whitespace-nowrap bg-black/5 dark:bg-white/5 max-md:w-full max-md:py-4">
               <Sparkles size={16} className="mr-2" /> Customize Soap
             </Link>
           </div>

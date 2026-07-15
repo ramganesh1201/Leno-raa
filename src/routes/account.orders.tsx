@@ -153,17 +153,17 @@ function OrdersPage() {
               ))}
             </div>
             
-            <div className="mt-6 flex justify-end gap-4">
-              <Link to="/account/orders/$orderId" params={{ orderId: order.id }} className="text-xs uppercase tracking-widest text-[color:var(--foreground)] hover:text-[color:var(--gold)] transition-colors flex items-center gap-1 font-medium">
+            <div className="mt-6 flex flex-wrap justify-end gap-4 max-md:flex-col max-md:gap-3">
+              <Link to="/account/orders/$orderId" params={{ orderId: order.id }} className="text-xs uppercase tracking-widest text-[color:var(--foreground)] hover:text-[color:var(--gold)] transition-colors flex items-center gap-1 font-medium max-md:justify-center max-md:p-3 max-md:border max-md:border-[color:var(--border)] max-md:rounded-lg">
                 View Details
               </Link>
               {(order.payment_status === 'Pending' || order.payment_status === 'Rejected') && (
-                <Link to="/payment/$orderId" params={{ orderId: order.id }} className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium">
+                <Link to="/payment/$orderId" params={{ orderId: order.id }} className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium max-md:justify-center max-md:p-3 max-md:border max-md:border-[color:var(--gold)] max-md:rounded-lg">
                   Complete Payment <ChevronRight size={14} />
                 </Link>
               )}
               {order.payment_status === 'Awaiting Verification' && (
-                <Link to="/order-success/$orderId" params={{ orderId: order.id }} className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium">
+                <Link to="/order-success/$orderId" params={{ orderId: order.id }} className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium max-md:justify-center max-md:p-3 max-md:border max-md:border-[color:var(--gold)] max-md:rounded-lg">
                   Check Status <ChevronRight size={14} />
                 </Link>
               )}
