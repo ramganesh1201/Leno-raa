@@ -11,37 +11,51 @@ export const Route = createFileRoute("/admin/customers")({
 function AdminCustomersPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: customers, isLoading, isError, error } = useQuery({
-    queryKey: ['admin_customers'],
+  const {
+    data: customers,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["admin_customers"],
     queryFn: async () => {
       // Get all profiles and join with orders to calculate spending
       const { data: profiles, error } = await supabase
-        .from('profiles')
-        .select('id, email, full_name, role, created_at')
-        .order('created_at', { ascending: false });
-      
+        .from("profiles")
+        .select("id, email, full_name, role, created_at")
+        .order("created_at", { ascending: false });
+
       if (error) {
         console.error("Customers query error:", error);
         throw new Error(error.message);
       }
-      
-      const { data: orders } = await supabase.from('orders').select('id, user_id, total, payment_status, created_at');
-      const { data: shipping } = await supabase.from('shipping_addresses').select('order_id, city, state');
 
-      return (profiles || []).map(p => {
-        const customerOrders = (orders || []).filter((o: any) => o.user_id === p.id).map((o: any) => ({
-          ...o,
-          shipping_addresses: (shipping || []).filter((s: any) => s.order_id === o.id)
-        }));
+      const { data: orders } = await supabase
+        .from("orders")
+        .select("id, user_id, total, payment_status, created_at");
+      const { data: shipping } = await supabase
+        .from("shipping_addresses")
+        .select("order_id, city, state");
 
-        const verifiedOrders = customerOrders.filter((o: any) => o.payment_status === 'Verified');
+      return (profiles || []).map((p) => {
+        const customerOrders = (orders || [])
+          .filter((o: any) => o.user_id === p.id)
+          .map((o: any) => ({
+            ...o,
+            shipping_addresses: (shipping || []).filter((s: any) => s.order_id === o.id),
+          }));
+
+        const verifiedOrders = customerOrders.filter((o: any) => o.payment_status === "Verified");
         const totalSpent = verifiedOrders.reduce((sum: number, o: any) => sum + o.total, 0);
-        const lastOrder = customerOrders.length > 0 
-          ? customerOrders.reduce((latest: any, o: any) => new Date(o.created_at) > new Date(latest.created_at) ? o : latest) 
-          : null;
+        const lastOrder =
+          customerOrders.length > 0
+            ? customerOrders.reduce((latest: any, o: any) =>
+                new Date(o.created_at) > new Date(latest.created_at) ? o : latest,
+              )
+            : null;
 
         // Extract latest location from their orders if possible
-        let location = 'Unknown';
+        let location = "Unknown";
         if (lastOrder && lastOrder.shipping_addresses && lastOrder.shipping_addresses.length > 0) {
           location = `${lastOrder.shipping_addresses[0].city}, ${lastOrder.shipping_addresses[0].state}`;
         }
@@ -52,15 +66,16 @@ function AdminCustomersPage() {
           orderCount: customerOrders.length,
           verifiedOrderCount: verifiedOrders.length,
           lastOrderDate: lastOrder ? lastOrder.created_at : null,
-          location
+          location,
         };
       });
-    }
+    },
   });
 
-  const filteredCustomers = (customers || []).filter((c) => 
-    (c.full_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (c.email || "").toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCustomers = (customers || []).filter(
+    (c) =>
+      (c.full_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (c.email || "").toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -68,16 +83,21 @@ function AdminCustomersPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Customers</h1>
-          <p className="text-neutral-500 mt-1">Manage users, view purchase history, and update roles.</p>
+          <p className="text-neutral-500 mt-1">
+            Manage users, view purchase history, and update roles.
+          </p>
         </div>
       </div>
 
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden flex flex-col">
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950/50">
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
-            <input 
-              type="text" 
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
+              size={16}
+            />
+            <input
+              type="text"
               placeholder="Search by name or email..."
               className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors outline-none"
               value={searchQuery}
@@ -103,7 +123,12 @@ function AdminCustomersPage() {
                 <tr>
                   <td colSpan={6} className="p-8 text-center">
                     <div className="animate-pulse space-y-4">
-                      {[1,2,3,4,5].map(i => <div key={i} className="h-12 bg-neutral-100 dark:bg-neutral-800 rounded w-full"></div>)}
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div
+                          key={i}
+                          className="h-12 bg-neutral-100 dark:bg-neutral-800 rounded w-full"
+                        ></div>
+                      ))}
                     </div>
                   </td>
                 </tr>
@@ -124,7 +149,10 @@ function AdminCustomersPage() {
                 </tr>
               ) : (
                 filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors">
+                  <tr
+                    key={customer.id}
+                    className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors"
+                  >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">
@@ -132,8 +160,8 @@ function AdminCustomersPage() {
                         </div>
                         <div>
                           <div className="font-medium text-neutral-900 dark:text-white flex items-center gap-2">
-                            {customer.full_name || 'Guest'}
-                            {customer.role === 'admin' && (
+                            {customer.full_name || "Guest"}
+                            {customer.role === "admin" && (
                               <Shield size={12} className="text-blue-500" title="Admin User" />
                             )}
                           </div>
@@ -153,11 +181,15 @@ function AdminCustomersPage() {
                     <td className="p-4">
                       <div className="text-sm font-medium">{customer.orderCount}</div>
                       {customer.lastOrderDate && (
-                        <div className="text-xs text-neutral-500">Last: {new Date(customer.lastOrderDate).toLocaleDateString()}</div>
+                        <div className="text-xs text-neutral-500">
+                          Last: {new Date(customer.lastOrderDate).toLocaleDateString()}
+                        </div>
                       )}
                     </td>
                     <td className="p-4">
-                      <div className="font-bold text-neutral-900 dark:text-white">₹{customer.totalSpent.toLocaleString()}</div>
+                      <div className="font-bold text-neutral-900 dark:text-white">
+                        ₹{customer.totalSpent.toLocaleString()}
+                      </div>
                       <div className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 inline-block px-2 py-0.5 rounded-full mt-1">
                         {customer.verifiedOrderCount} verified
                       </div>

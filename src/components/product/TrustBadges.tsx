@@ -16,7 +16,10 @@ export function TrustBadges() {
         {badges.map((badge, i) => {
           const Icon = badge.icon;
           return (
-            <div key={i} className="flex flex-col items-center justify-center gap-3 text-center group cursor-default">
+            <div
+              key={i}
+              className="flex flex-col items-center justify-center gap-3 text-center group cursor-default"
+            >
               <div className="rounded-full bg-[color:var(--muted)] p-3 text-[color:var(--muted-foreground)] transition-colors duration-300 group-hover:bg-[color:var(--gold)]/10 group-hover:text-[color:var(--gold)]">
                 <Icon className="h-5 w-5" strokeWidth={1.5} />
               </div>

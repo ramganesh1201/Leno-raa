@@ -21,7 +21,7 @@ export function useAddresses() {
 
   useEffect(() => {
     if (!user || !user.id) return;
-    
+
     const channelId = `addresses_${user.id}_${Math.random().toString(36).substring(7)}`;
     const channel = supabase
       .channel(channelId)
@@ -35,7 +35,7 @@ export function useAddresses() {
         },
         () => {
           queryClient.invalidateQueries({ queryKey: addressKeys.lists(user.id) });
-        }
+        },
       )
       .subscribe();
 

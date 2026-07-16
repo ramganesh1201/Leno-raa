@@ -11,9 +11,7 @@ import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
-    meta: [
-      { title: "Checkout — Lenoraa" },
-    ],
+    meta: [{ title: "Checkout — Lenoraa" }],
   }),
   component: CheckoutPage,
 });
@@ -33,7 +31,7 @@ function CheckoutPage() {
     state: "",
     pincode: "",
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -74,7 +72,9 @@ function CheckoutPage() {
   if (isLoading) {
     return (
       <div className="relative pt-32 text-center h-screen flex items-center justify-center">
-        <div className="text-[color:var(--muted-foreground)] tracking-widest text-sm uppercase">Loading...</div>
+        <div className="text-[color:var(--muted-foreground)] tracking-widest text-sm uppercase">
+          Loading...
+        </div>
       </div>
     );
   }
@@ -83,7 +83,9 @@ function CheckoutPage() {
     return (
       <div className="relative pt-32 pb-40 min-h-screen text-center">
         <h2 className="text-display text-2xl mb-4">Your bag is empty.</h2>
-        <Link to="/cart" className="btn-lux inline-flex">Return to Bag</Link>
+        <Link to="/cart" className="btn-lux inline-flex">
+          Return to Bag
+        </Link>
       </div>
     );
   }
@@ -94,110 +96,186 @@ function CheckoutPage() {
         <Reveal preset="label" className="text-eyebrow text-[color:var(--muted-foreground)]">
           Secure Checkout
         </Reveal>
-        <SplitText as="h1" text="Shipping Details" delay={0.1} className="text-display mt-3 text-3xl md:text-4xl" />
+        <SplitText
+          as="h1"
+          text="Shipping Details"
+          delay={0.1}
+          className="text-display mt-3 text-3xl md:text-4xl"
+        />
 
-        <div className="mt-16 flex flex-col lg:flex-row gap-16 max-md:gap-10 relative">
+        <div className="mt-16 max-md:mt-8 flex flex-col lg:flex-row gap-16 max-md:gap-8 relative max-md:flex-col-reverse">
           <div className="flex-1 w-full">
-            <form onSubmit={handleSubmit} className="space-y-6 surface-glass p-8 max-md:p-5 rounded-[20px] border border-[color:var(--border)]">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6 surface-glass p-8 max-md:p-5 rounded-[20px] border border-[color:var(--border)]"
+            >
               <div className="space-y-4">
                 <h3 className="text-display text-xl mb-4">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">Full Name</label>
-                    <input 
+                    <label
+                      htmlFor="full_name"
+                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
+                    >
+                      Full Name
+                    </label>
+                    <input
+                      id="full_name"
+                      name="full_name"
                       required
                       type="text"
                       className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.full_name}
-                      onChange={e => setFormData(p => ({ ...p, full_name: e.target.value }))}
+                      onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))}
+                      autoComplete="name"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">Phone Number</label>
-                    <input 
+                    <label
+                      htmlFor="phone"
+                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      id="phone"
+                      name="phone"
                       required
                       type="tel"
                       className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.phone}
-                      onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
+                      onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
+                      autoComplete="tel"
                     />
                   </div>
                 </div>
 
-                <h3 className="text-display text-xl mb-4 pt-4 border-t border-[color:var(--border)] mt-8">Delivery Address</h3>
+                <h3 className="text-display text-xl mb-4 pt-4 border-t border-[color:var(--border)] mt-8">
+                  Delivery Address
+                </h3>
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">Street Address</label>
-                  <input 
+                  <label
+                    htmlFor="address"
+                    className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
+                  >
+                    Street Address
+                  </label>
+                  <input
+                    id="address"
+                    name="address"
                     required
                     type="text"
                     className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                     value={formData.address}
-                    onChange={e => setFormData(p => ({ ...p, address: e.target.value }))}
+                    onChange={(e) => setFormData((p) => ({ ...p, address: e.target.value }))}
+                    autoComplete="street-address"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">City</label>
-                    <input 
+                    <label
+                      htmlFor="city"
+                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
+                    >
+                      City
+                    </label>
+                    <input
+                      id="city"
+                      name="city"
                       required
                       type="text"
                       className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.city}
-                      onChange={e => setFormData(p => ({ ...p, city: e.target.value }))}
+                      onChange={(e) => setFormData((p) => ({ ...p, city: e.target.value }))}
+                      autoComplete="address-level2"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">State</label>
-                    <input 
+                    <label
+                      htmlFor="state"
+                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
+                    >
+                      State
+                    </label>
+                    <input
+                      id="state"
+                      name="state"
                       required
                       type="text"
                       className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.state}
-                      onChange={e => setFormData(p => ({ ...p, state: e.target.value }))}
+                      onChange={(e) => setFormData((p) => ({ ...p, state: e.target.value }))}
+                      autoComplete="address-level1"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">PIN Code</label>
-                    <input 
+                    <label
+                      htmlFor="pincode"
+                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
+                    >
+                      PIN Code
+                    </label>
+                    <input
+                      id="pincode"
+                      name="pincode"
                       required
                       type="text"
                       className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.pincode}
-                      onChange={e => setFormData(p => ({ ...p, pincode: e.target.value }))}
+                      onChange={(e) => setFormData((p) => ({ ...p, pincode: e.target.value }))}
+                      autoComplete="postal-code"
                     />
                   </div>
                 </div>
               </div>
-              
-              <div className="pt-8">
-                <button type="submit" disabled={isSubmitting} className="btn-lux w-full justify-center text-lg py-4">
+
+              <div className="pt-8 max-md:pt-4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-lux w-full justify-center text-lg py-4 max-md:py-5 shadow-lg"
+                >
                   {isSubmitting ? "Processing..." : "Continue to Payment"}
                 </button>
               </div>
             </form>
 
             <div className="mt-8">
-              <Link to="/cart" className="flex items-center gap-2 text-sm uppercase tracking-widest text-[color:var(--foreground)] hover:text-[color:var(--gold)] transition-colors">
+              <Link
+                to="/cart"
+                className="flex items-center gap-2 text-sm uppercase tracking-widest text-[color:var(--foreground)] hover:text-[color:var(--gold)] transition-colors"
+              >
                 <ArrowLeft size={16} /> Return to Cart
               </Link>
             </div>
           </div>
 
           <div className="w-full lg:w-[380px] shrink-0">
-            <div className="sticky top-32 surface-glass p-8 max-md:p-5 rounded-[20px] border border-[color:var(--border)] shadow-xl">
-              <h2 className="text-display mb-8 text-2xl">Order Summary</h2>
-              
+            <details
+              className="sticky top-32 group surface-glass p-8 max-md:p-5 rounded-[20px] max-md:rounded-2xl border border-[color:var(--border)] shadow-xl"
+              open
+            >
+              <summary className="text-display mb-8 max-md:mb-4 text-2xl flex justify-between items-center cursor-pointer list-none">
+                Order Summary
+                <span className="md:hidden transition group-open:rotate-180">+</span>
+              </summary>
+
               <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                {cart.map(item => {
+                {cart.map((item) => {
                   const product = item.product;
                   const price = product?.price || item.customization?.calculated_price || 0;
                   const name = product?.name || "Custom Design";
                   return (
-                    <div key={item.id} className="flex justify-between items-center text-sm border-b border-[color:var(--border)] pb-4 last:border-0 last:pb-0">
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center text-sm border-b border-[color:var(--border)] pb-4 last:border-0 last:pb-0"
+                    >
                       <div className="flex-1">
                         <div className="text-[color:var(--foreground)] font-medium">{name}</div>
-                        <div className="text-xs text-[color:var(--muted-foreground)]">Qty: {item.quantity}</div>
+                        <div className="text-xs text-[color:var(--muted-foreground)]">
+                          Qty: {item.quantity}
+                        </div>
                       </div>
                       <div className="text-[color:var(--foreground)]">₹{price * item.quantity}</div>
                     </div>
@@ -215,12 +293,16 @@ function CheckoutPage() {
                   <span className="text-[color:var(--foreground)]">₹{shippingCost}</span>
                 </div>
               </div>
-              
+
               <div className="mt-6 flex justify-between items-end border-t border-[color:var(--border)] pt-6">
-                <span className="text-sm tracking-widest uppercase text-[color:var(--muted-foreground)]">Total</span>
-                <span className="text-2xl tracking-widest text-[color:var(--foreground)] font-medium">₹{total}</span>
+                <span className="text-sm tracking-widest uppercase text-[color:var(--muted-foreground)]">
+                  Total
+                </span>
+                <span className="text-2xl tracking-widest text-[color:var(--foreground)] font-medium max-md:text-xl">
+                  ₹{total}
+                </span>
               </div>
-            </div>
+            </details>
           </div>
         </div>
       </div>

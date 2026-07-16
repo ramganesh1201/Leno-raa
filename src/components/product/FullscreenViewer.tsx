@@ -81,7 +81,7 @@ export function FullscreenViewer({ images, initialIndex, onClose }: FullscreenVi
       )}
 
       {/* Image Area */}
-      <div 
+      <div
         className="relative h-full w-full overflow-hidden flex items-center justify-center cursor-zoom-in"
         onClick={() => setScale(scale === 1 ? 1.5 : 1)}
       >
@@ -100,7 +100,7 @@ export function FullscreenViewer({ images, initialIndex, onClose }: FullscreenVi
           />
         </AnimatePresence>
       </div>
-      
+
       {/* Hint */}
       {scale === 1 && (
         <div className="absolute bottom-10 flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs text-white/70 backdrop-blur-md">

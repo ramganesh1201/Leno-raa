@@ -8,8 +8,8 @@ import { useShop } from "@/lib/store";
 
 // We curate a few products for the showcase
 const signatureProduct = products.find((p) => p.slug === "orange")!;
-const curatedProducts = products.filter(
-  (p) => ["aloe-vera", "goat-milk", "lavender"].includes(p.slug)
+const curatedProducts = products.filter((p) =>
+  ["aloe-vera", "goat-milk", "lavender"].includes(p.slug),
 );
 
 function LuxuryProductCard({
@@ -49,13 +49,17 @@ function LuxuryProductCard({
             background: "radial-gradient(circle at 50% 50%, var(--theme) 0%, transparent 80%)",
           }}
         />
-        
+
         {/* Glass Overlay on Hover */}
         <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-0 transition-opacity duration-700 group-hover:opacity-100 z-10 pointer-events-none" />
 
-        <div className={`relative z-20 flex h-full flex-col ${isSignature ? "md:flex-row md:items-center md:gap-16" : "gap-8"}`}>
+        <div
+          className={`relative z-20 flex h-full flex-col ${isSignature ? "md:flex-row md:items-center md:gap-16" : "gap-8"}`}
+        >
           {/* Product Image Wrapper - Reduced size, lots of whitespace */}
-          <div className={`relative flex items-center justify-center ${isSignature ? "w-full md:w-1/2 aspect-square" : "w-full aspect-[4/5]"} mx-auto p-8`}>
+          <div
+            className={`relative flex items-center justify-center ${isSignature ? "w-full md:w-1/2 aspect-square" : "w-full aspect-[4/5]"} mx-auto p-8`}
+          >
             {product.image ? (
               <motion.img
                 src={product.image}
@@ -77,10 +81,10 @@ function LuxuryProductCard({
 
           {/* Product Info */}
           <div className={`flex flex-col ${isSignature ? "w-full md:w-1/2" : "w-full"}`}>
-            <div className="text-eyebrow mb-2 text-[color:var(--theme)]">
-              {product.collection}
-            </div>
-            <h3 className={`text-display ${isSignature ? "text-3xl md:text-4xl" : "text-3xl md:text-4xl"}`}>
+            <div className="text-eyebrow mb-2 text-[color:var(--theme)]">{product.collection}</div>
+            <h3
+              className={`text-display ${isSignature ? "text-3xl md:text-4xl" : "text-3xl md:text-4xl"}`}
+            >
               {product.name}
             </h3>
             <p className="mt-4 text-sm text-[color:var(--muted-foreground)] tracking-wide">
@@ -124,22 +128,28 @@ function LuxuryProductCard({
             >
               <div className="flex flex-col gap-6 w-full max-w-sm ml-auto bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-2xl">
                 <div>
-                  <div className="text-xs uppercase tracking-widest text-[color:var(--theme)] mb-1">Fragrance Notes</div>
+                  <div className="text-xs uppercase tracking-widest text-[color:var(--theme)] mb-1">
+                    Fragrance Notes
+                  </div>
                   <div className="text-sm font-medium leading-relaxed">{product.notes}</div>
                 </div>
                 <div>
-                  <div className="text-xs uppercase tracking-widest text-[color:var(--theme)] mb-1">Key Ingredients</div>
+                  <div className="text-xs uppercase tracking-widest text-[color:var(--theme)] mb-1">
+                    Key Ingredients
+                  </div>
                   <div className="text-sm leading-relaxed text-[color:var(--foreground)]/80">
                     {product.ingredients.slice(0, 3).join(" · ")}
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs uppercase tracking-widest text-[color:var(--theme)] mb-1">Skin Benefits</div>
+                  <div className="text-xs uppercase tracking-widest text-[color:var(--theme)] mb-1">
+                    Skin Benefits
+                  </div>
                   <div className="text-sm leading-relaxed text-[color:var(--foreground)]/80">
                     {product.benefits[0]}
                   </div>
                 </div>
-                
+
                 <div className="mt-4 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-[color:var(--theme)]">
                   Explore full ritual <span aria-hidden>→</span>
                 </div>
@@ -157,7 +167,9 @@ function LuxuryProductCard({
           className="absolute top-6 right-6 z-40 grid h-10 w-10 place-items-center rounded-full bg-white/5 backdrop-blur-sm border border-white/10 transition-colors hover:bg-white hover:text-black"
           data-lux-hover
         >
-          <span className={`text-xl ${saved ? "text-[color:var(--gold)]" : "text-[color:var(--foreground)]/40"}`}>
+          <span
+            className={`text-xl ${saved ? "text-[color:var(--gold)]" : "text-[color:var(--foreground)]/40"}`}
+          >
             {saved ? "♥" : "♡"}
           </span>
         </button>
@@ -172,7 +184,7 @@ export function LuxuryCollectionShowcase() {
       <div className="mx-auto max-w-[1600px] px-6 md:px-12">
         {/* Section Header */}
         <div className="mb-24 flex flex-col items-center text-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -181,10 +193,10 @@ export function LuxuryCollectionShowcase() {
           >
             Curated Showcase
           </motion.div>
-          <SplitText 
-            as="h2" 
-            text="The Artisanal Collection" 
-            className="text-display text-3xl md:text-4xl md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl lg:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl tracking-tight" 
+          <SplitText
+            as="h2"
+            text="The Artisanal Collection"
+            className="text-display text-3xl md:text-4xl md:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl lg:text-3xl md:text-4xl md:text-4xl md:text-3xl md:text-4xl tracking-tight"
           />
           <motion.p
             initial={{ opacity: 0 }}
@@ -193,37 +205,38 @@ export function LuxuryCollectionShowcase() {
             transition={{ duration: 1, delay: 0.5 }}
             className="mt-8 max-w-xl text-lg text-[color:var(--muted-foreground)] leading-relaxed"
           >
-            A cinematic journey through our most requested formulations. 
-            Cold-processed, cured for weeks, and poured by hand.
+            A cinematic journey through our most requested formulations. Cold-processed, cured for
+            weeks, and poured by hand.
           </motion.p>
         </div>
 
         {/* Asymmetric Masonry / Editorial Layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
           <LuxuryProductCard product={signatureProduct} isSignature={true} index={0} />
-          
+
           <div className="md:col-span-1 flex flex-col gap-6 md:gap-10">
             {curatedProducts.slice(0, 2).map((product, i) => (
               <LuxuryProductCard key={product.slug} product={product} index={i + 1} />
             ))}
           </div>
-          
+
           <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-6 md:mt-0">
-             {/* We can feature one more product in a wide format to complete the masonry look */}
-             <div className="hidden md:block">
-               {/* Decorative empty space or quote for editorial feel */}
-               <div className="h-full flex flex-col justify-center p-12 border-l border-[color:var(--border)]">
-                 <div className="text-2xl text-display leading-snug text-[color:var(--foreground)]/60">
-                   "A soap is a small thing. So is a morning. So is skin. We treat all three as sacred."
-                 </div>
-               </div>
-             </div>
-             <LuxuryProductCard product={curatedProducts[2]} index={3} />
+            {/* We can feature one more product in a wide format to complete the masonry look */}
+            <div className="hidden md:block">
+              {/* Decorative empty space or quote for editorial feel */}
+              <div className="h-full flex flex-col justify-center p-12 border-l border-[color:var(--border)]">
+                <div className="text-2xl text-display leading-snug text-[color:var(--foreground)]/60">
+                  "A soap is a small thing. So is a morning. So is skin. We treat all three as
+                  sacred."
+                </div>
+              </div>
+            </div>
+            <LuxuryProductCard product={curatedProducts[2]} index={3} />
           </div>
         </div>
 
         {/* Luxury CTA */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -231,10 +244,16 @@ export function LuxuryCollectionShowcase() {
           className="mt-32 flex justify-center"
         >
           <Magnetic>
-            <Link to="/collections/$slug" params={{ slug: "radiance" }} className="group relative inline-flex items-center gap-4 text-lg text-[color:var(--foreground)] transition-colors hover:text-[color:var(--theme,var(--gold))]">
+            <Link
+              to="/collections/$slug"
+              params={{ slug: "radiance" }}
+              className="group relative inline-flex items-center gap-4 text-lg text-[color:var(--foreground)] transition-colors hover:text-[color:var(--theme,var(--gold))]"
+            >
               <span className="uppercase tracking-[0.25em]">Discover the Collection</span>
               <span className="relative flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--border)] transition-all duration-500 group-hover:border-[color:var(--theme,var(--gold))] group-hover:bg-[color:var(--theme,var(--gold))]/10">
-                <span className="transition-transform duration-500 group-hover:translate-x-1">→</span>
+                <span className="transition-transform duration-500 group-hover:translate-x-1">
+                  →
+                </span>
               </span>
               <span className="absolute -bottom-2 left-0 h-[1px] w-0 bg-[color:var(--theme,var(--gold))] transition-all duration-700 ease-out group-hover:w-full" />
             </Link>

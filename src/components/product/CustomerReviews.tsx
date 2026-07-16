@@ -14,12 +14,13 @@ interface CustomerReviewsProps {
 export function CustomerReviews({ productName, productId }: CustomerReviewsProps) {
   const [sort, setSort] = useState("Newest");
   const [visibleCount, setVisibleCount] = useState(3);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { user } = useAuth();
-  
+
   const { reviews, isLoading, submitReview } = useReviews(productId);
 
   const handleLoadMore = () => {
-    setVisibleCount(prev => Math.min(prev + 5, reviews.length));
+    setVisibleCount((prev) => Math.min(prev + 5, reviews.length));
   };
 
   const handleReviewSubmit = async (rating: number, content: string) => {
@@ -27,12 +28,12 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
       alert("Please log in to submit a review.");
       return;
     }
-    
+
     try {
       await submitReview.mutateAsync({
         rating,
         comment: content,
-        userId: user.id
+        userId: user.id,
       });
       alert("Thank you for your review! It has been submitted for moderation.");
     } catch (e) {
@@ -41,13 +42,15 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
   };
 
   // Calculate average rating
-  const averageRating = reviews.length > 0 
-    ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)
-    : "0.0";
+  const averageRating =
+    reviews.length > 0
+      ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)
+      : "0.0";
 
   // Sort reviews
   const sortedReviews = [...reviews].sort((a, b) => {
-    if (sort === "Newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    if (sort === "Newest")
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     if (sort === "Highest Rated") return b.rating - a.rating;
     if (sort === "Lowest Rated") return a.rating - b.rating;
     return 0;
@@ -56,30 +59,51 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
   return (
     <section id="reviews" className="py-24 border-t border-[color:var(--border)]">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        <div className="grid md:grid-cols-[300px_1fr] gap-16">
-          
+        <div
+          className="md:hidden flex justify-between items-center mb-6 cursor-pointer border-b border-[color:var(--border)] pb-4"
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+        >
+          <SplitText as="h2" text="Customer Reviews" className="text-display text-3xl" />
+          <span
+            className="text-2xl transition-transform duration-300"
+            style={{ transform: isMobileOpen ? "rotate(180deg)" : "none" }}
+          >
+            +
+          </span>
+        </div>
+        <div
+          className={`grid md:grid-cols-[300px_1fr] gap-16 ${!isMobileOpen ? "max-md:hidden" : ""}`}
+        >
           {/* Summary */}
           <div>
-            <SplitText as="h2" text="Customer Reviews" className="text-display text-3xl mb-6" />
+            <SplitText
+              as="h2"
+              text="Customer Reviews"
+              className="text-display text-3xl mb-6 max-md:hidden"
+            />
             <div className="flex items-end gap-4 mb-8">
               <div className="text-6xl font-serif text-[color:var(--gold)]">{averageRating}</div>
               <div className="pb-2">
                 <div className="flex text-[color:var(--gold)] mb-1">
-                  {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="h-4 w-4 fill-[color:var(--gold)]" />)}
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star key={s} className="h-4 w-4 fill-[color:var(--gold)]" />
+                  ))}
                 </div>
-                <div className="text-sm text-[color:var(--muted-foreground)]">Based on {reviews.length} reviews</div>
+                <div className="text-sm text-[color:var(--muted-foreground)]">
+                  Based on {reviews.length} reviews
+                </div>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               {[5, 4, 3, 2, 1].map((star) => {
-                const count = reviews.filter(r => r.rating === star).length;
+                const count = reviews.filter((r) => r.rating === star).length;
                 const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
                 return (
                   <div key={star} className="flex items-center gap-3 text-sm">
                     <div className="w-12 text-[color:var(--muted-foreground)]">{star} Stars</div>
                     <div className="flex-1 h-1.5 bg-[color:var(--muted)]/50 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-[color:var(--gold)] rounded-full"
                         style={{ width: `${percentage}%` }}
                       />
@@ -94,7 +118,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
           <div>
             <div className="flex justify-between items-center mb-8 pb-4 border-b border-[color:var(--border)]">
               <div className="text-sm font-medium">{reviews.length} Reviews</div>
-              <select 
+              <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
                 className="bg-transparent text-sm text-[color:var(--muted-foreground)] outline-none cursor-pointer focus:text-[color:var(--gold)]"
@@ -108,7 +132,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
             <div className="space-y-10">
               <AnimatePresence>
                 {sortedReviews.slice(0, visibleCount).map((review) => (
-                  <motion.div 
+                  <motion.div
                     key={review.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -120,11 +144,16 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
                       <div>
                         <div className="flex text-[color:var(--gold)] mb-2">
                           {[1, 2, 3, 4, 5].map((s) => (
-                            <Star key={s} className={`h-3 w-3 ${s <= review.rating ? "fill-[color:var(--gold)]" : "fill-transparent text-[color:var(--border)]"}`} />
+                            <Star
+                              key={s}
+                              className={`h-3 w-3 ${s <= review.rating ? "fill-[color:var(--gold)]" : "fill-transparent text-[color:var(--border)]"}`}
+                            />
                           ))}
                         </div>
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="font-medium">{review.profiles?.full_name || "Anonymous"}</span>
+                          <span className="font-medium">
+                            {review.profiles?.full_name || "Anonymous"}
+                          </span>
                           <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-green-600/80">
                             <CheckCircle2 className="h-3 w-3" /> Verified Buyer
                           </span>
@@ -166,9 +195,9 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
                 </div>
               )}
             </div>
-            
+
             {visibleCount < reviews.length && (
-              <button 
+              <button
                 onClick={handleLoadMore}
                 className="mt-12 w-full py-4 rounded-full border border-[color:var(--border)] text-sm uppercase tracking-widest transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]"
               >

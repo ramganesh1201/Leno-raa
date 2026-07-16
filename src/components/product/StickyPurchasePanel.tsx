@@ -9,7 +9,13 @@ interface StickyPurchasePanelProps {
   image?: string;
 }
 
-export function StickyPurchasePanel({ productName, price, onAdd, onBuyNow, image }: StickyPurchasePanelProps) {
+export function StickyPurchasePanel({
+  productName,
+  price,
+  onAdd,
+  onBuyNow,
+  image,
+}: StickyPurchasePanelProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -46,7 +52,7 @@ export function StickyPurchasePanel({ productName, price, onAdd, onBuyNow, image
                 <div className="text-xs text-[color:var(--muted-foreground)]">₹{price}</div>
               </div>
             </div>
-            
+
             <div className="flex w-full gap-3 md:w-auto">
               <button
                 onClick={onAdd}

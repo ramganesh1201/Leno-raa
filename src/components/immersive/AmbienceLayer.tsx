@@ -146,10 +146,7 @@ export function AmbienceLayer() {
   }, [ambience, cfg, density, mounted]);
 
   return (
-    <div
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
-      aria-hidden
-    >
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
       {/* Ambient wash — smoothly transitions between worlds */}
       <div
         className="absolute inset-0 opacity-70 transition-all duration-[1600ms] ease-out"
@@ -177,33 +174,35 @@ export function AmbienceLayer() {
       {/* Light ray sweep */}
       <div className="light-ray absolute inset-0 opacity-25 mix-blend-overlay" />
 
-      {!reducedMotion && mounted && items.map((p) => {
-        const style: React.CSSProperties = {
-          width: p.size,
-          height: p.size,
-          top: `${p.top}%`,
-          left: `${p.left}%`,
-          opacity: p.opacity,
-          animationDelay: `${p.delay}s`,
-          animationDuration: `${p.duration}s`,
-          background: cfg.color,
-          filter: cfg.blur ? `blur(${cfg.blur}px)` : undefined,
-          transform: `rotate(${p.rotate}deg)`,
-        };
-        const cls =
-          cfg.shape === "petal"
-            ? "ambient-petal petal-drift"
-            : cfg.shape === "leaf"
-              ? "ambient-leaf leaf-drift"
-              : cfg.shape === "smoke"
-                ? "ambient-blob smoke-drift"
-                : cfg.shape === "steam"
-                  ? "ambient-blob steam-rise"
-                  : cfg.shape === "cream"
-                    ? "ambient-blob cream-drift"
-                    : "ambient-dot dot-float";
-        return <span key={p.id} className={cls} style={style} />;
-      })}
+      {!reducedMotion &&
+        mounted &&
+        items.map((p) => {
+          const style: React.CSSProperties = {
+            width: p.size,
+            height: p.size,
+            top: `${p.top}%`,
+            left: `${p.left}%`,
+            opacity: p.opacity,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+            background: cfg.color,
+            filter: cfg.blur ? `blur(${cfg.blur}px)` : undefined,
+            transform: `rotate(${p.rotate}deg)`,
+          };
+          const cls =
+            cfg.shape === "petal"
+              ? "ambient-petal petal-drift"
+              : cfg.shape === "leaf"
+                ? "ambient-leaf leaf-drift"
+                : cfg.shape === "smoke"
+                  ? "ambient-blob smoke-drift"
+                  : cfg.shape === "steam"
+                    ? "ambient-blob steam-rise"
+                    : cfg.shape === "cream"
+                      ? "ambient-blob cream-drift"
+                      : "ambient-dot dot-float";
+          return <span key={p.id} className={cls} style={style} />;
+        })}
     </div>
   );
 }

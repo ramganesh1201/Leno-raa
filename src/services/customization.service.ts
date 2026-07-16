@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 export interface CustomizationType {
   id: string;
   user_id: string;
-  soap_base: string;
+  base_soap: string;
   shape: string;
   size: string;
   color: string;
@@ -16,13 +16,17 @@ export interface CustomizationType {
   preview_image: string | null;
   notes: string | null;
   estimated_price: number;
+  skin_type?: string | null;
+  core_active?: string | null;
   created_at: string;
   updated_at: string;
 }
 
 export const customizationService = {
   async getCustomizations() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return [];
 
     const { data, error } = await supabase
@@ -32,22 +36,26 @@ export const customizationService = {
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    return data.map(item => ({
+    return data.map((item) => ({
       ...item,
       engraving_text: item.message,
-      estimated_price: item.calculated_price
+      estimated_price: item.calculated_price,
     })) as unknown as CustomizationType[];
   },
 
-  async addCustomization(customization: Omit<CustomizationType, "id" | "user_id" | "created_at" | "updated_at">) {
-    const { data: { user } } = await supabase.auth.getUser();
+  async addCustomization(
+    customization: Omit<CustomizationType, "id" | "user_id" | "created_at" | "updated_at">,
+  ) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) throw new Error("Must be logged in to save a design");
 
     const dbItem = {
       ...customization,
       user_id: user.id,
       message: customization.engraving_text,
-      calculated_price: customization.estimated_price
+      calculated_price: customization.estimated_price,
     };
     delete (dbItem as any).engraving_text;
     delete (dbItem as any).estimated_price;
@@ -62,12 +70,14 @@ export const customizationService = {
     return {
       ...data,
       engraving_text: data.message,
-      estimated_price: data.calculated_price
+      estimated_price: data.calculated_price,
     } as unknown as CustomizationType;
   },
 
   async updateCustomization(id: string, updates: Partial<CustomizationType>) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) throw new Error("Must be logged in to update a design");
 
     const dbUpdates = { ...updates } as any;
@@ -88,12 +98,14 @@ export const customizationService = {
     return {
       ...data,
       engraving_text: data.message,
-      estimated_price: data.calculated_price
+      estimated_price: data.calculated_price,
     } as unknown as CustomizationType;
   },
 
   async deleteCustomization(id: string) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) throw new Error("Must be logged in to delete a design");
 
     const { error } = await supabase
@@ -103,5 +115,5 @@ export const customizationService = {
       .eq("user_id", user.id);
 
     if (error) throw error;
-  }
+  },
 };

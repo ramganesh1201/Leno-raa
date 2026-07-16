@@ -6,7 +6,7 @@ export interface UserProfile {
   full_name: string | null;
   phone: string | null;
   avatar_url: string | null;
-  role: 'customer' | 'admin';
+  role: "customer" | "admin";
   created_at: string;
   updated_at: string;
 }
@@ -14,7 +14,7 @@ export interface UserProfile {
 export const profileService = {
   async getProfile(user: any): Promise<UserProfile | null> {
     if (!user || !user.id) return null;
-    
+
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
@@ -26,10 +26,10 @@ export const profileService = {
         code: error.code,
         message: error.message,
         details: error.details,
-        hint: error.hint
+        hint: error.hint,
       });
     }
-    
+
     if (!data) {
       try {
         const newProfile = {
@@ -37,15 +37,15 @@ export const profileService = {
           email: user.email,
           full_name: user.user_metadata?.full_name || null,
           avatar_url: user.user_metadata?.avatar_url || null,
-          role: 'customer' as const,
+          role: "customer" as const,
         };
-        
+
         const { data: createdData, error: createError } = await supabase
           .from("profiles")
           .insert(newProfile)
           .select()
           .single();
-          
+
         if (createError) {
           console.error("Supabase Error creating profile:", createError);
           throw createError;
@@ -72,11 +72,11 @@ export const profileService = {
         code: error.code,
         message: error.message,
         details: error.details,
-        hint: error.hint
+        hint: error.hint,
       });
       throw error;
     }
-    
+
     if (!data) throw new Error("Profile not found to update");
     return data;
   },

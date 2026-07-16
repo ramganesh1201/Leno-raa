@@ -18,7 +18,7 @@ export const Route = createFileRoute("/auth/verify")({
 function VerifyEmailPage() {
   const { email } = Route.useSearch();
   const { resendVerification } = useAuth();
-  
+
   const [isResending, setIsResending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -28,7 +28,7 @@ function VerifyEmailPage() {
       setErrorMsg("No email address provided.");
       return;
     }
-    
+
     setIsResending(true);
     setErrorMsg("");
     try {
@@ -38,9 +38,9 @@ function VerifyEmailPage() {
     } catch (err: any) {
       // Supabase rate limits resends, so handle gracefully
       if (err.status === 429) {
-         setErrorMsg("Please wait a moment before requesting another email.");
+        setErrorMsg("Please wait a moment before requesting another email.");
       } else {
-         setErrorMsg(err.message || "Failed to resend verification email.");
+        setErrorMsg(err.message || "Failed to resend verification email.");
       }
     } finally {
       setIsResending(false);
@@ -54,13 +54,21 @@ function VerifyEmailPage() {
         <AuthCard>
           <div className="text-center mb-8">
             <div className="text-eyebrow text-[color:var(--muted-foreground)]">Almost there</div>
-            <SplitText as="h1" text="Verify Your Email" className="text-display mt-3 text-3xl md:text-4xl" />
+            <SplitText
+              as="h1"
+              text="Verify Your Email"
+              className="text-display mt-3 text-3xl md:text-4xl"
+            />
           </div>
 
           <div className="text-center mb-8 text-[color:var(--muted-foreground)] text-sm md:text-base leading-relaxed">
-            We have sent a verification link to<br />
-            <strong className="text-[color:var(--foreground)] mt-2 inline-block text-lg">{email || "your email address"}</strong>
-            <br /><br />
+            We have sent a verification link to
+            <br />
+            <strong className="text-[color:var(--foreground)] mt-2 inline-block text-lg">
+              {email || "your email address"}
+            </strong>
+            <br />
+            <br />
             Please click the link in that email to complete your registration and enter the atelier.
           </div>
 
@@ -83,7 +91,11 @@ function VerifyEmailPage() {
               Resend Verification Email
             </AuthButton>
 
-            <Link to="/auth/login" className="w-full" disabled={resendVerification.isPending || isResending}>
+            <Link
+              to="/auth/login"
+              className="w-full"
+              disabled={resendVerification.isPending || isResending}
+            >
               <AuthButton type="button" disabled={resendVerification.isPending || isResending}>
                 Go to Sign In
               </AuthButton>

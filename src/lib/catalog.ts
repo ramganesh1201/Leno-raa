@@ -21,14 +21,7 @@ import coffeelatte from "@/assets/soaps/coffee.png";
 export type ThemeKey = "radiance" | "calm" | "nourish" | "relax" | "herbal";
 
 export type AmbiencePreset =
-  | "goldDust"
-  | "mist"
-  | "pollen"
-  | "petals"
-  | "leaves"
-  | "smoke"
-  | "cream"
-  | "steam";
+  "goldDust" | "mist" | "pollen" | "petals" | "leaves" | "smoke" | "cream" | "steam";
 
 export interface Product {
   id: string;
@@ -108,11 +101,7 @@ export const collections: Collection[] = [
     scene: "Milk & Honey Bath",
     environment:
       "Thick, warm steam rolling over white marble. A rich, heavy calm settles into the bones.",
-    benefits: [
-      "Deeply moisturizes",
-      "Softens skin",
-      "Helps restore skin barrier",
-    ],
+    benefits: ["Deeply moisturizes", "Softens skin", "Helps restore skin barrier"],
     image: envNourish,
     ambience: "steam",
   },
@@ -138,11 +127,7 @@ export const collections: Collection[] = [
     scene: "Ancient Apothecary",
     environment:
       "An old apothecary. Mortar and pestle, wooden shelves, herbs measured by hand for centuries.",
-    benefits: [
-      "Traditional herbal blend",
-      "Supports skin health",
-      "Helps maintain balance",
-    ],
+    benefits: ["Traditional herbal blend", "Supports skin health", "Helps maintain balance"],
     image: envHerbal,
     ambience: "leaves",
   },

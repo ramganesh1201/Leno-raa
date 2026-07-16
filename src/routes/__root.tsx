@@ -31,7 +31,9 @@ function NotFoundComponent() {
           This page has drifted away like a petal in the breeze.
         </p>
         <div className="mt-8">
-          <Link to="/" className="btn-lux">Return home</Link>
+          <Link to="/" className="btn-lux">
+            Return home
+          </Link>
         </div>
       </div>
     </div>
@@ -53,12 +55,17 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="btn-lux"
           >
             Try again
           </button>
-          <a href="/" className="btn-ghost-lux">Home</a>
+          <a href="/" className="btn-ghost-lux">
+            Home
+          </a>
         </div>
       </div>
     </div>
@@ -80,8 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Lenoraa — Nature Crafted Into Luxury" },
       {
         property: "og:description",
-        content:
-          "An immersive world of handcrafted luxury soap. Explore five botanical chapters.",
+        content: "An immersive world of handcrafted luxury soap. Explore five botanical chapters.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -89,6 +95,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
     ],
   }),
   shellComponent: RootShell,
@@ -116,7 +126,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const routerState = useRouter();
-  const isAdmin = routerState.state.location.pathname.startsWith('/admin');
+  const isAdmin = routerState.state.location.pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>

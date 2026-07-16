@@ -22,32 +22,47 @@ export function LuxuryEditorialCollections() {
   return (
     <section className="relative pt-6 md:pt-10 pb-16 md:pb-24 bg-transparent transition-colors duration-1000">
       <div className="mx-auto w-full px-6 md:px-12 max-w-[1400px]">
-        
         {/* Section Header */}
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="flex-1">
-            <Reveal preset="label" className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--muted-foreground)] mb-4 font-semibold">
+            <Reveal
+              preset="label"
+              className="text-[10px] uppercase tracking-[0.3em] text-[color:var(--muted-foreground)] mb-4 font-semibold"
+            >
               Our Collections
             </Reveal>
-            <SplitText as="h2" text="Find Your Perfect Soap" delay={0.1} className="text-display text-4xl md:text-5xl text-[color:var(--foreground)] tracking-tight" />
-            <Reveal as="p" preset="paragraph" delay={0.2} className="mt-4 max-w-lg text-[color:var(--muted-foreground)] leading-relaxed">
-              Every soap tells a different story. Discover the perfect ritual for your skin through our curated chapters.
+            <SplitText
+              as="h2"
+              text="Find Your Perfect Soap"
+              delay={0.1}
+              className="text-display text-4xl md:text-5xl text-[color:var(--foreground)] tracking-tight"
+            />
+            <Reveal
+              as="p"
+              preset="paragraph"
+              delay={0.2}
+              className="mt-4 max-w-lg text-[color:var(--muted-foreground)] leading-relaxed"
+            >
+              Every soap tells a different story. Discover the perfect ritual for your skin through
+              our curated chapters.
             </Reveal>
           </div>
         </div>
 
         {/* Bento Grid Editorial Layout */}
-        <div 
+        <div
           onMouseLeave={() => handleCardHover(null)}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-6"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-12 gap-3 md:gap-6"
         >
           {collections.map((collection, index) => {
             const isFeatured = index === 0;
             const isHovered = hoveredIndex === index;
             const isOthersHovered = hoveredIndex !== null && hoveredIndex !== index;
-            
-            const opacityClass = isOthersHovered ? "opacity-60 saturate-50" : "opacity-100 saturate-100";
-            
+
+            const opacityClass = isOthersHovered
+              ? "opacity-60 saturate-50"
+              : "opacity-100 saturate-100";
+
             // Positioning configuration
             const config = {
               radiance: {
@@ -83,14 +98,18 @@ export function LuxuryEditorialCollections() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 onMouseEnter={() => handleCardHover(index, collection)}
-                className={`group relative rounded-[24px] overflow-hidden transition-all duration-700 ease-[0.16,1,0.3,1] shadow-sm hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 ${opacityClass} ${
-                  isFeatured 
-                    ? "sm:col-span-2 lg:col-span-6 lg:row-span-2 h-[450px] md:h-[500px] lg:h-[520px]" 
-                    : "sm:col-span-1 lg:col-span-3 lg:row-span-1 h-[280px] lg:h-[248px]"
+                className={`group relative rounded-[24px] max-md:rounded-2xl overflow-hidden transition-all duration-700 ease-[0.16,1,0.3,1] shadow-sm hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 ${opacityClass} ${
+                  isFeatured
+                    ? "col-span-2 sm:col-span-2 lg:col-span-6 lg:row-span-2 h-[350px] md:h-[500px] lg:h-[520px]"
+                    : "col-span-1 sm:col-span-1 lg:col-span-3 lg:row-span-1 h-[200px] lg:h-[248px]"
                 }`}
               >
-                <Link to="/collections/$slug" params={{ slug: collection.slug }} className="block w-full h-full relative focus:outline-none" draggable={false}>
-                  
+                <Link
+                  to="/collections/$slug"
+                  params={{ slug: collection.slug }}
+                  className="block w-full h-full relative focus:outline-none"
+                  draggable={false}
+                >
                   {/* Background Image */}
                   <div className="absolute inset-0 w-full h-full bg-[color:var(--card)] overflow-hidden">
                     <img
@@ -102,22 +121,28 @@ export function LuxuryEditorialCollections() {
                   </div>
 
                   {/* Localized Cinematic Overlay */}
-                  <div 
+                  <div
                     className="absolute bottom-0 left-0 w-full h-full pointer-events-none transition-opacity duration-500 opacity-80 group-hover:opacity-100"
-                    style={{ background: `radial-gradient(110% 80% at 0% 100%, rgba(17,17,17,${config.overlayOpacity}) 0%, rgba(17,17,17,0) 100%)` }}
+                    style={{
+                      background: `radial-gradient(110% 80% at 0% 100%, rgba(17,17,17,${config.overlayOpacity}) 0%, rgba(17,17,17,0) 100%)`,
+                    }}
                   />
-                  
+
                   {/* Readability Layer Gradient */}
                   <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none transition-opacity duration-700 opacity-90 group-hover:opacity-100" />
 
                   {/* Content Wrapper */}
-                  <div className={`relative h-full w-full flex flex-col justify-end z-10 transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:-translate-y-2 ${isFeatured ? 'p-8 md:p-10 pb-10' : 'p-6 pb-6'}`}>
+                  <div
+                    className={`relative h-full w-full flex flex-col justify-end z-10 transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:-translate-y-2 ${isFeatured ? "p-8 md:p-10 pb-10" : "p-6 pb-6"}`}
+                  >
                     <div className="flex items-end justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <span className="block text-[color:var(--gold)]/90 mb-2 md:mb-3 uppercase tracking-[0.25em] text-[10px] font-medium opacity-90 transition-all duration-[400ms] group-hover:opacity-100 group-hover:brightness-110">
                           {collection.eyebrow}
                         </span>
-                        <h3 className={`font-serif text-white/95 mb-2 transition-all duration-[400ms] group-hover:text-white truncate ${isFeatured ? 'text-3xl md:text-4xl' : 'text-2xl'}`}>
+                        <h3
+                          className={`font-serif text-white/95 mb-2 transition-all duration-[400ms] group-hover:text-white truncate ${isFeatured ? "text-3xl md:text-4xl" : "text-2xl"}`}
+                        >
                           {collection.name}
                         </h3>
                         {isFeatured && (
@@ -134,8 +159,12 @@ export function LuxuryEditorialCollections() {
 
                       {/* Ripple Arrow Button */}
                       <div className="shrink-0 mb-1">
-                        <div className={`flex items-center justify-center rounded-full border border-white/20 transition-all duration-[400ms] group-hover:border-[color:var(--gold)] group-hover:bg-[color:var(--gold)]/20 backdrop-blur-sm relative overflow-hidden ${isFeatured ? 'h-12 w-12' : 'h-10 w-10'}`}>
-                          <span className={`text-white transition-transform duration-[400ms] group-hover:translate-x-1 group-hover:text-[color:var(--gold)] z-10 ${isFeatured ? 'text-base' : 'text-sm'}`}>
+                        <div
+                          className={`flex items-center justify-center rounded-full border border-white/20 transition-all duration-[400ms] group-hover:border-[color:var(--gold)] group-hover:bg-[color:var(--gold)]/20 backdrop-blur-sm relative overflow-hidden ${isFeatured ? "h-12 w-12" : "h-10 w-10"}`}
+                        >
+                          <span
+                            className={`text-white transition-transform duration-[400ms] group-hover:translate-x-1 group-hover:text-[color:var(--gold)] z-10 ${isFeatured ? "text-base" : "text-sm"}`}
+                          >
                             →
                           </span>
                           <div className="absolute inset-0 bg-[color:var(--gold)] scale-0 rounded-full transition-transform duration-[400ms] ease-out group-hover:scale-100 opacity-10" />
@@ -148,7 +177,6 @@ export function LuxuryEditorialCollections() {
             );
           })}
         </div>
-
       </div>
     </section>
   );

@@ -24,7 +24,7 @@ export function useCustomizations() {
 
   useEffect(() => {
     if (!user || !user.id) return;
-    
+
     const channelId = `customizations_${user.id}_${Math.random().toString(36).substring(7)}`;
     const channel = supabase
       .channel(channelId)
@@ -38,7 +38,7 @@ export function useCustomizations() {
         },
         () => {
           queryClient.invalidateQueries({ queryKey: customizationKeys.lists(user.id) });
-        }
+        },
       )
       .subscribe();
 
@@ -48,8 +48,9 @@ export function useCustomizations() {
   }, [user?.id, queryClient]);
 
   const addCustomization = useMutation({
-    mutationFn: (customization: Omit<CustomizationType, "id" | "user_id" | "created_at" | "updated_at">) =>
-      customizationService.addCustomization(customization),
+    mutationFn: (
+      customization: Omit<CustomizationType, "id" | "user_id" | "created_at" | "updated_at">,
+    ) => customizationService.addCustomization(customization),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: customizationKeys.lists(user?.id) });
     },

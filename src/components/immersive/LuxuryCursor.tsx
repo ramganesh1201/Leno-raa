@@ -39,7 +39,7 @@ export function LuxuryCursor() {
       const target = e.target as HTMLElement | null;
       const interactive = target?.closest("a, button, [data-lux-hover]");
       ring.classList.toggle("is-hover", !!interactive);
-      
+
       const btn = target?.closest(".btn-lux, .btn-ghost-lux, .nav-icon-btn") as HTMLElement;
       if (btn) {
         const rect = btn.getBoundingClientRect();

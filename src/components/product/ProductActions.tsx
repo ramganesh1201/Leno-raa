@@ -11,7 +11,14 @@ interface ProductActionsProps {
   isSaving?: boolean;
 }
 
-export function ProductActions({ onAdd, onSave, isSaved, onBuyNow, isAdding, isSaving }: ProductActionsProps) {
+export function ProductActions({
+  onAdd,
+  onSave,
+  isSaved,
+  onBuyNow,
+  isAdding,
+  isSaving,
+}: ProductActionsProps) {
   const [buying, setBuying] = useState(false);
 
   const handleAdd = () => {
@@ -42,12 +49,14 @@ export function ProductActions({ onAdd, onSave, isSaved, onBuyNow, isAdding, isS
             </span>
           )}
         </button>
-        
+
         <button
           onClick={onSave}
           disabled={isSaving}
           className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[color:var(--border)] bg-transparent transition-all hover:border-[color:var(--gold)] disabled:opacity-50 ${
-            isSaved ? "text-red-500 border-red-500/30 bg-red-500/5" : "text-[color:var(--foreground)]"
+            isSaved
+              ? "text-red-500 border-red-500/30 bg-red-500/5"
+              : "text-[color:var(--foreground)]"
           }`}
         >
           <Heart className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />

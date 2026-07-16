@@ -16,7 +16,7 @@ export function AuthCard({ children, className = "" }: AuthCardProps) {
     >
       {/* Ambient golden glow behind card */}
       <div className="pointer-events-none absolute inset-0 -z-10 rounded-[22px] bg-[color:var(--gold)]/5 blur-2xl" />
-      
+
       {/* Staggered children container */}
       <motion.div
         initial="hidden"

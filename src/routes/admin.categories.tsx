@@ -13,10 +13,34 @@ function AdminCategoriesPage() {
 
   // Mock categories for now. Later this will fetch from a categories table.
   const [categories] = useState([
-    { id: 1, name: "Cold Process Soaps", description: "Handcrafted natural soaps.", itemsCount: 12, status: "Active" },
-    { id: 2, name: "Glycerin Soaps", description: "Gentle and moisturizing.", itemsCount: 8, status: "Active" },
-    { id: 3, name: "Luxury Gift Sets", description: "Perfect for gifting.", itemsCount: 4, status: "Active" },
-    { id: 4, name: "Custom Soaps", description: "Personalized skin care.", itemsCount: 2, status: "Active" },
+    {
+      id: 1,
+      name: "Cold Process Soaps",
+      description: "Handcrafted natural soaps.",
+      itemsCount: 12,
+      status: "Active",
+    },
+    {
+      id: 2,
+      name: "Glycerin Soaps",
+      description: "Gentle and moisturizing.",
+      itemsCount: 8,
+      status: "Active",
+    },
+    {
+      id: 3,
+      name: "Luxury Gift Sets",
+      description: "Perfect for gifting.",
+      itemsCount: 4,
+      status: "Active",
+    },
+    {
+      id: 4,
+      name: "Custom Soaps",
+      description: "Personalized skin care.",
+      itemsCount: 2,
+      status: "Active",
+    },
   ]);
 
   return (
@@ -26,8 +50,8 @@ function AdminCategoriesPage() {
           <h1 className="text-2xl font-bold tracking-tight">Categories</h1>
           <p className="text-neutral-500 mt-1">Organize your products into categories.</p>
         </div>
-        
-        <button 
+
+        <button
           onClick={() => setIsAddModalOpen(true)}
           className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
         >
@@ -39,9 +63,12 @@ function AdminCategoriesPage() {
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden flex flex-col">
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950/50">
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
-            <input 
-              type="text" 
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
+              size={16}
+            />
+            <input
+              type="text"
               placeholder="Search categories..."
               className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors outline-none"
               value={searchQuery}
@@ -64,7 +91,10 @@ function AdminCategoriesPage() {
             </thead>
             <tbody>
               {categories.map((category) => (
-                <tr key={category.id} className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors group">
+                <tr
+                  key={category.id}
+                  className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors group"
+                >
                   <td className="p-4">
                     <button className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-grab active:cursor-grabbing">
                       <GripVertical size={16} />
@@ -75,7 +105,9 @@ function AdminCategoriesPage() {
                       <div className="w-10 h-10 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 border border-neutral-200 dark:border-neutral-700">
                         <ImageIcon size={18} />
                       </div>
-                      <span className="font-medium text-neutral-900 dark:text-white">{category.name}</span>
+                      <span className="font-medium text-neutral-900 dark:text-white">
+                        {category.name}
+                      </span>
                     </div>
                   </td>
                   <td className="p-4">
@@ -105,12 +137,12 @@ function AdminCategoriesPage() {
           </table>
         </div>
       </div>
-      
+
       {/* Add Modal Mock */}
       <AnimatePresence>
         {isAddModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -118,18 +150,27 @@ function AdminCategoriesPage() {
             >
               <div className="p-6 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
                 <h2 className="text-xl font-bold">New Category</h2>
-                <button onClick={() => setIsAddModalOpen(false)} className="text-neutral-500 hover:text-neutral-900 dark:hover:text-white">
+                <button
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                >
                   Close
                 </button>
               </div>
               <div className="p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Name</label>
-                  <input type="text" className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none" />
+                  <input
+                    type="text"
+                    className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Description</label>
-                  <textarea rows={3} className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"></textarea>
+                  <textarea
+                    rows={3}
+                    className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"
+                  ></textarea>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Category Image</label>
@@ -139,8 +180,15 @@ function AdminCategoriesPage() {
                 </div>
               </div>
               <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 flex justify-end gap-3">
-                <button onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 font-medium text-neutral-600 dark:text-neutral-300">Cancel</button>
-                <button className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-6 py-2 rounded-lg font-medium">Save</button>
+                <button
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-4 py-2 font-medium text-neutral-600 dark:text-neutral-300"
+                >
+                  Cancel
+                </button>
+                <button className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-6 py-2 rounded-lg font-medium">
+                  Save
+                </button>
               </div>
             </motion.div>
           </div>

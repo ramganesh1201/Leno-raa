@@ -14,7 +14,7 @@ function AdminProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
-  
+
   // Form State
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -25,17 +25,21 @@ function AdminProductsPage() {
   const { createProduct, updateProduct, deleteProduct } = useAdminProductsActions();
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ['admin_products'],
+    queryKey: ["admin_products"],
     queryFn: async () => {
-      const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
-    }
+    },
   });
 
-  const filteredProducts = (products || []).filter((product: any) => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.category_id?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProducts = (products || []).filter(
+    (product: any) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.category_id?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const openAddModal = () => {
@@ -59,8 +63,9 @@ function AdminProductsPage() {
   };
 
   const handleSave = async () => {
-    if (!name || !price || !stock || !slug) return alert("Please fill required fields (Name, Slug, Price, Stock)");
-    
+    if (!name || !price || !stock || !slug)
+      return alert("Please fill required fields (Name, Slug, Price, Stock)");
+
     try {
       if (editingProduct) {
         await updateProduct.mutateAsync({
@@ -70,8 +75,8 @@ function AdminProductsPage() {
             slug,
             price: parseFloat(price),
             stock: parseInt(stock),
-            description
-          }
+            description,
+          },
         });
       } else {
         await createProduct.mutateAsync({
@@ -80,12 +85,12 @@ function AdminProductsPage() {
           price: parseFloat(price),
           stock: parseInt(stock),
           description,
-          status: 'active',
+          status: "active",
           featured: false,
           new_arrival: false,
           rating: 0,
           review_count: 0,
-          seo_metadata: {}
+          seo_metadata: {},
         });
       }
       setIsAddModalOpen(false);
@@ -111,9 +116,9 @@ function AdminProductsPage() {
           <h1 className="text-2xl font-bold tracking-tight">Products</h1>
           <p className="text-neutral-500 mt-1">Manage your catalog, inventory, and pricing.</p>
         </div>
-        
+
         <div className="flex gap-3">
-          <button 
+          <button
             onClick={openAddModal}
             className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
           >
@@ -126,9 +131,12 @@ function AdminProductsPage() {
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden flex flex-col">
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row gap-4 justify-between items-center bg-neutral-50 dark:bg-neutral-950/50">
           <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
-            <input 
-              type="text" 
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
+              size={16}
+            />
+            <input
+              type="text"
               placeholder="Search products..."
               className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors outline-none"
               value={searchQuery}
@@ -165,7 +173,12 @@ function AdminProductsPage() {
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-neutral-500">
                     <div className="animate-pulse space-y-4">
-                      {[1,2,3].map(i => <div key={i} className="h-10 bg-neutral-100 dark:bg-neutral-800 rounded w-full"></div>)}
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="h-10 bg-neutral-100 dark:bg-neutral-800 rounded w-full"
+                        ></div>
+                      ))}
                     </div>
                   </td>
                 </tr>
@@ -178,27 +191,40 @@ function AdminProductsPage() {
                 </tr>
               ) : (
                 filteredProducts.map((product) => (
-                  <tr key={product.id} className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors">
+                  <tr
+                    key={product.id}
+                    className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors"
+                  >
                     <td className="p-4">
                       <div className="w-10 h-10 rounded-lg bg-neutral-100 dark:bg-neutral-800 overflow-hidden border border-neutral-200 dark:border-neutral-700">
                         {product.images && product.images[0] ? (
-                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                          <img
+                            src={product.images[0]}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <Package className="w-full h-full p-2 text-neutral-300" />
                         )}
                       </div>
                     </td>
                     <td className="p-4">
-                      <div className="font-medium text-neutral-900 dark:text-white">{product.name}</div>
+                      <div className="font-medium text-neutral-900 dark:text-white">
+                        {product.name}
+                      </div>
                     </td>
                     <td className="p-4">
-                      <div className="text-sm text-neutral-500">{product.category || 'Uncategorized'}</div>
+                      <div className="text-sm text-neutral-500">
+                        {product.category || "Uncategorized"}
+                      </div>
                     </td>
                     <td className="p-4">
                       <div className="text-sm font-medium">₹{product.price}</div>
                     </td>
                     <td className="p-4">
-                      <div className={`text-sm ${product.stock < 10 ? 'text-rose-600 font-bold' : 'text-neutral-500'}`}>
+                      <div
+                        className={`text-sm ${product.stock < 10 ? "text-rose-600 font-bold" : "text-neutral-500"}`}
+                      >
                         {product.stock} in stock
                       </div>
                     </td>
@@ -209,10 +235,16 @@ function AdminProductsPage() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => openEditModal(product)} className="p-1.5 text-neutral-400 hover:text-blue-500 transition-colors rounded">
+                        <button
+                          onClick={() => openEditModal(product)}
+                          className="p-1.5 text-neutral-400 hover:text-blue-500 transition-colors rounded"
+                        >
                           <Edit3 size={16} />
                         </button>
-                        <button onClick={() => handleDelete(product.id)} className="p-1.5 text-neutral-400 hover:text-rose-500 transition-colors rounded">
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="p-1.5 text-neutral-400 hover:text-rose-500 transition-colors rounded"
+                        >
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -227,7 +259,12 @@ function AdminProductsPage() {
           <div className="md:hidden space-y-4 p-4">
             {isLoading ? (
               <div className="animate-pulse space-y-4">
-                {[1,2,3].map(i => <div key={i} className="h-24 bg-neutral-100 dark:bg-neutral-800 rounded-xl w-full"></div>)}
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-24 bg-neutral-100 dark:bg-neutral-800 rounded-xl w-full"
+                  ></div>
+                ))}
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="p-12 text-center text-neutral-500">
@@ -236,30 +273,49 @@ function AdminProductsPage() {
               </div>
             ) : (
               filteredProducts.map((product) => (
-                <div key={product.id} className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 bg-white dark:bg-neutral-900 shadow-sm flex gap-4 items-start">
+                <div
+                  key={product.id}
+                  className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 bg-white dark:bg-neutral-900 shadow-sm flex gap-4 items-start"
+                >
                   <div className="w-16 h-16 rounded-lg bg-neutral-100 dark:bg-neutral-800 overflow-hidden border border-neutral-200 dark:border-neutral-700 flex-shrink-0">
                     {product.images && product.images[0] ? (
-                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <Package className="w-full h-full p-3 text-neutral-300" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-neutral-900 dark:text-white truncate">{product.name}</div>
-                    <div className="text-xs text-neutral-500 mt-1">{product.category || 'Uncategorized'}</div>
+                    <div className="font-medium text-neutral-900 dark:text-white truncate">
+                      {product.name}
+                    </div>
+                    <div className="text-xs text-neutral-500 mt-1">
+                      {product.category || "Uncategorized"}
+                    </div>
                     <div className="flex flex-wrap items-center gap-2 mt-2">
                       <div className="text-sm font-medium">₹{product.price}</div>
-                      <div className={`text-xs ${product.stock < 10 ? 'text-rose-600 font-bold' : 'text-neutral-500'}`}>
+                      <div
+                        className={`text-xs ${product.stock < 10 ? "text-rose-600 font-bold" : "text-neutral-500"}`}
+                      >
                         · {product.stock} in stock
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
                     <div className="flex items-center gap-1">
-                      <button onClick={() => openEditModal(product)} className="p-1.5 text-neutral-400 hover:text-blue-500 transition-colors rounded bg-neutral-50 dark:bg-neutral-800">
+                      <button
+                        onClick={() => openEditModal(product)}
+                        className="p-1.5 text-neutral-400 hover:text-blue-500 transition-colors rounded bg-neutral-50 dark:bg-neutral-800"
+                      >
                         <Edit3 size={14} />
                       </button>
-                      <button onClick={() => handleDelete(product.id)} className="p-1.5 text-neutral-400 hover:text-rose-500 transition-colors rounded bg-neutral-50 dark:bg-neutral-800">
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="p-1.5 text-neutral-400 hover:text-rose-500 transition-colors rounded bg-neutral-50 dark:bg-neutral-800"
+                      >
                         <Trash2 size={14} />
                       </button>
                     </div>
@@ -275,15 +331,20 @@ function AdminProductsPage() {
       <AnimatePresence>
         {isAddModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               className="bg-white dark:bg-neutral-900 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl custom-scrollbar flex flex-col"
             >
               <div className="p-6 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center sticky top-0 bg-white dark:bg-neutral-900 z-10">
-                <h2 className="text-xl font-bold">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
-                <button onClick={() => setIsAddModalOpen(false)} className="text-neutral-500 hover:text-neutral-900 dark:hover:text-white">
+                <h2 className="text-xl font-bold">
+                  {editingProduct ? "Edit Product" : "Add New Product"}
+                </h2>
+                <button
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                >
                   <span>Close</span>
                 </button>
               </div>
@@ -291,36 +352,68 @@ function AdminProductsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Product Name</label>
-                    <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none" />
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Slug (URL friendly)</label>
-                    <input type="text" value={slug} onChange={e => setSlug(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none" />
+                    <input
+                      type="text"
+                      value={slug}
+                      onChange={(e) => setSlug(e.target.value)}
+                      className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Price (₹)</label>
-                    <input type="number" value={price} onChange={e => setPrice(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none" />
+                    <input
+                      type="number"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Stock</label>
-                    <input type="number" value={stock} onChange={e => setStock(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none" />
+                    <input
+                      type="number"
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                      className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"
+                    />
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Description</label>
-                  <textarea rows={4} value={description} onChange={e => setDescription(e.target.value)} className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"></textarea>
+                  <textarea
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-2 outline-none"
+                  ></textarea>
                 </div>
               </div>
               <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 mt-auto flex justify-end gap-3 sticky bottom-0">
-                <button onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 font-medium text-neutral-600 dark:text-neutral-300">Cancel</button>
-                <button 
-                  onClick={handleSave} 
+                <button
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-4 py-2 font-medium text-neutral-600 dark:text-neutral-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
                   disabled={createProduct.isPending || updateProduct.isPending}
                   className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-6 py-2 rounded-lg font-medium disabled:opacity-50"
                 >
-                  {createProduct.isPending || updateProduct.isPending ? 'Saving...' : 'Save Product'}
+                  {createProduct.isPending || updateProduct.isPending
+                    ? "Saving..."
+                    : "Save Product"}
                 </button>
               </div>
             </motion.div>

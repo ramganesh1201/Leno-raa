@@ -38,7 +38,7 @@ function PaymentPage() {
       const { data, error } = await supabase.from("site_settings").select("*").single();
       if (error && error.code !== "PGRST116") throw error; // PGRST116 is no rows returned
       return data;
-    }
+    },
   });
 
   useEffect(() => {
@@ -51,12 +51,12 @@ function PaymentPage() {
     setError(null);
     const selected = e.target.files?.[0];
     if (!selected) return;
-    
-    if (!['image/jpeg', 'image/png', 'image/jpg'].includes(selected.type)) {
+
+    if (!["image/jpeg", "image/png", "image/jpg"].includes(selected.type)) {
       setError("Please upload a valid image file (JPG or PNG).");
       return;
     }
-    
+
     if (selected.size > 10 * 1024 * 1024) {
       setError("Image size must be less than 10MB.");
       return;
@@ -86,7 +86,7 @@ function PaymentPage() {
       await uploadProof.mutateAsync({
         orderId,
         utrNumber,
-        file
+        file,
       });
       navigate({ to: `/order-success/${orderId}` });
     } catch (err: any) {
@@ -100,7 +100,9 @@ function PaymentPage() {
   if (isOrderLoading || isSettingsLoading) {
     return (
       <div className="relative pt-32 text-center h-screen flex items-center justify-center">
-        <div className="text-[color:var(--muted-foreground)] tracking-widest text-sm uppercase">Loading Payment Details...</div>
+        <div className="text-[color:var(--muted-foreground)] tracking-widest text-sm uppercase">
+          Loading Payment Details...
+        </div>
       </div>
     );
   }
@@ -121,9 +123,20 @@ function PaymentPage() {
           <Reveal preset="label" className="text-eyebrow text-[color:var(--gold)]">
             Final Step
           </Reveal>
-          <SplitText as="h1" text="Complete Your Payment" delay={0.1} className="text-display mt-3 text-3xl md:text-4xl" />
-          <Reveal as="p" preset="paragraph" delay={0.2} className="mt-4 text-[color:var(--muted-foreground)]">
-            Please complete the payment using any UPI application and upload the payment screenshot below.
+          <SplitText
+            as="h1"
+            text="Complete Your Payment"
+            delay={0.1}
+            className="text-display mt-3 text-3xl md:text-4xl"
+          />
+          <Reveal
+            as="p"
+            preset="paragraph"
+            delay={0.2}
+            className="mt-4 text-[color:var(--muted-foreground)]"
+          >
+            Please complete the payment using any UPI application and upload the payment screenshot
+            below.
           </Reveal>
         </div>
 
@@ -135,22 +148,29 @@ function PaymentPage() {
           </div>
 
           <div className="pt-12 grid grid-cols-1 md:grid-cols-2 gap-12">
-            
             {/* Left: QR Code */}
             <div className="flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-[color:var(--border)] pb-10 md:pb-0 md:pr-10">
               <h3 className="text-display text-xl mb-6 text-center">Scan to Pay</h3>
-              
+
               <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-100 mb-6 w-56 h-56 flex items-center justify-center overflow-hidden">
                 {siteSettings?.upi_qr_url ? (
-                  <img src={siteSettings.upi_qr_url} alt="UPI QR Code" className="w-full h-full object-contain" />
+                  <img
+                    src={siteSettings.upi_qr_url}
+                    alt="UPI QR Code"
+                    className="w-full h-full object-contain"
+                  />
                 ) : (
                   <div className="w-full h-full bg-gray-50 rounded-xl flex flex-col items-center justify-center text-gray-400 p-4 text-center border-2 border-dashed border-gray-200">
                     <AlertCircle size={32} className="mb-2 opacity-50" />
-                    <span className="text-xs">QR Code<br/>Not Configured</span>
+                    <span className="text-xs">
+                      QR Code
+                      <br />
+                      Not Configured
+                    </span>
                   </div>
                 )}
               </div>
-              
+
               <div className="text-center w-full max-w-[240px]">
                 {siteSettings?.merchant_name && (
                   <p className="text-sm font-medium text-[color:var(--foreground)] mb-3">
@@ -158,11 +178,16 @@ function PaymentPage() {
                   </p>
                 )}
                 <div className="flex items-center justify-between gap-2 bg-black/5 dark:bg-white/5 py-3 px-4 rounded-full">
-                  <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] shrink-0">UPI</span>
-                  <span className="font-medium tracking-wide truncate max-w-[120px]" title={siteSettings?.upi_id || "Not configured"}>
+                  <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] shrink-0">
+                    UPI
+                  </span>
+                  <span
+                    className="font-medium tracking-wide truncate max-w-[120px]"
+                    title={siteSettings?.upi_id || "Not configured"}
+                  >
                     {siteSettings?.upi_id || "Not configured"}
                   </span>
-                  <button 
+                  <button
                     onClick={() => navigator.clipboard.writeText(siteSettings?.upi_id || "")}
                     className="text-[color:var(--gold)] hover:text-white transition-colors shrink-0"
                     title="Copy UPI ID"
@@ -181,13 +206,13 @@ function PaymentPage() {
                   <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
                     UTR / Transaction ID *
                   </label>
-                  <input 
+                  <input
                     required
                     type="text"
                     placeholder="e.g. 123456789012"
                     className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                     value={utrNumber}
-                    onChange={e => setUtrNumber(e.target.value)}
+                    onChange={(e) => setUtrNumber(e.target.value)}
                   />
                 </div>
 
@@ -195,19 +220,27 @@ function PaymentPage() {
                   <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
                     Payment Screenshot *
                   </label>
-                  
+
                   {!previewUrl ? (
-                    <div 
+                    <div
                       onClick={() => fileInputRef.current?.click()}
                       className="border-2 border-dashed border-[color:var(--border)] rounded-lg p-8 text-center cursor-pointer hover:border-[color:var(--gold)] transition-colors flex flex-col items-center justify-center bg-black/5 dark:bg-white/5"
                     >
                       <UploadCloud className="w-10 h-10 text-[color:var(--muted-foreground)] mb-4" />
-                      <p className="text-sm text-[color:var(--foreground)] mb-1">Click to upload screenshot</p>
-                      <p className="text-xs text-[color:var(--muted-foreground)]">JPG, PNG (max 10MB)</p>
+                      <p className="text-sm text-[color:var(--foreground)] mb-1">
+                        Click to upload screenshot
+                      </p>
+                      <p className="text-xs text-[color:var(--muted-foreground)]">
+                        JPG, PNG (max 10MB)
+                      </p>
                     </div>
                   ) : (
                     <div className="relative rounded-lg overflow-hidden border border-[color:var(--border)]">
-                      <img src={previewUrl} alt="Screenshot Preview" className="w-full h-auto max-h-64 object-contain bg-black/5" />
+                      <img
+                        src={previewUrl}
+                        alt="Screenshot Preview"
+                        className="w-full h-auto max-h-64 object-contain bg-black/5"
+                      />
                       <button
                         type="button"
                         onClick={handleRemoveImage}
@@ -217,8 +250,8 @@ function PaymentPage() {
                       </button>
                     </div>
                   )}
-                  
-                  <input 
+
+                  <input
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
@@ -234,16 +267,21 @@ function PaymentPage() {
                   </div>
                 )}
 
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting || !file || !utrNumber}
                   className="btn-lux w-full justify-center text-lg py-4 flex items-center gap-2 mt-4 shadow-lg"
                 >
-                  {isSubmitting ? "Submitting..." : <><CheckCircle2 size={20} /> I've Paid</>}
+                  {isSubmitting ? (
+                    "Submitting..."
+                  ) : (
+                    <>
+                      <CheckCircle2 size={20} /> I've Paid
+                    </>
+                  )}
                 </button>
               </form>
             </div>
-
           </div>
         </div>
       </div>

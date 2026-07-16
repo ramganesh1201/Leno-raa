@@ -7,16 +7,15 @@ import { useShop } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 
-
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { user } = useAuth();
   const { wishlist: supabaseWishlist, toggleWishlist: toggleSupabaseWishlist } = useWishlist();
-  
+
   const localToggleWishlist = useShop((s) => s.toggleWishlist);
   const localSaved = useShop((s) => s.wishlist.includes(product.slug));
-  
+
   const saved = user ? supabaseWishlist.some((w) => w.product_id === product.id) : localSaved;
-  
+
   const tiltRef = useRef<HTMLDivElement>(null);
 
   const onMove = (e: React.PointerEvent) => {
@@ -44,12 +43,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       className="group relative"
       data-theme={product.collection}
     >
-      <Link
-        to="/products/$slug"
-        params={{ slug: product.slug }}
-        className="block"
-        data-lux-hover
-      >
+      <Link to="/products/$slug" params={{ slug: product.slug }} className="block" data-lux-hover>
         <div
           className="soap-bar-wrap aspect-[4/3] relative"
           onPointerMove={onMove}

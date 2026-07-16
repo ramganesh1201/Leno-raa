@@ -30,7 +30,7 @@ export function useCart() {
   // Realtime subscription
   useEffect(() => {
     if (!user || !user.id) return;
-    
+
     if (cartSubscribers === 0) {
       cartChannel = supabase.channel(`cart_items_${user.id}`);
       cartChannel
@@ -44,11 +44,11 @@ export function useCart() {
           },
           () => {
             queryClient.invalidateQueries({ queryKey: cartKeys.lists(user.id) });
-          }
+          },
         )
         .subscribe();
     }
-    
+
     cartSubscribers++;
 
     return () => {
@@ -61,8 +61,11 @@ export function useCart() {
   }, [user?.id, queryClient]);
 
   const addToCart = useMutation({
-    mutationFn: (params: { productId: string | null; quantity?: number; customizationId?: string | null }) =>
-      cartService.addToCart(params.productId, params.quantity, params.customizationId),
+    mutationFn: (params: {
+      productId: string | null;
+      quantity?: number;
+      customizationId?: string | null;
+    }) => cartService.addToCart(params.productId, params.quantity, params.customizationId),
     onMutate: async (newItem) => {
       await queryClient.cancelQueries({ queryKey: cartKeys.lists(user?.id) });
       const previousCart = queryClient.getQueryData<CartItemType[]>(cartKeys.lists(user?.id));
@@ -86,7 +89,9 @@ export function useCart() {
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             product: mockProduct || undefined,
-            customization: newItem.customizationId ? { estimated_price: 480, preview_image: null } : undefined
+            customization: newItem.customizationId
+              ? { estimated_price: 480, preview_image: null }
+              : undefined,
           },
         ]);
       }
@@ -114,7 +119,7 @@ export function useCart() {
       if (previousCart) {
         queryClient.setQueryData<CartItemType[]>(
           cartKeys.lists(user?.id),
-          previousCart.map((item) => (item.id === id ? { ...item, quantity } : item))
+          previousCart.map((item) => (item.id === id ? { ...item, quantity } : item)),
         );
       }
       return { previousCart };
@@ -137,7 +142,7 @@ export function useCart() {
       if (previousCart) {
         queryClient.setQueryData<CartItemType[]>(
           cartKeys.lists(user?.id),
-          previousCart.filter((item) => item.id !== id)
+          previousCart.filter((item) => item.id !== id),
         );
       }
       return { previousCart };

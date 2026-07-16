@@ -23,14 +23,14 @@ export const Route = createFileRoute("/auth/signup")({
 function SignupPage() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
-  
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  
+
   const [isSuccess, setIsSuccess] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -43,13 +43,13 @@ function SignupPage() {
       return;
     }
     try {
-      const { user, session } = await signUp.mutateAsync({ 
-        email, 
-        password, 
-        fullName: `${firstName} ${lastName}`.trim() 
+      const { user, session } = await signUp.mutateAsync({
+        email,
+        password,
+        fullName: `${firstName} ${lastName}`.trim(),
       });
       setIsSuccess(true);
-      
+
       // If session is null, email confirmation is required
       // If user.identities is empty, it means the email is already registered (if email enumeration protection is on)
       if (!session || (user?.identities && user.identities.length === 0)) {
@@ -72,7 +72,7 @@ function SignupPage() {
     setErrorMsg("");
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/account`,
         },
@@ -90,8 +90,14 @@ function SignupPage() {
       <div className="relative flex min-h-[90vh] items-center justify-center pt-32 pb-24 px-4">
         <AuthCard>
           <div className="text-center mb-8">
-            <div className="text-eyebrow text-[color:var(--muted-foreground)]">Begin your journey</div>
-            <SplitText as="h1" text="Create Account" className="text-display mt-3 text-3xl md:text-4xl" />
+            <div className="text-eyebrow text-[color:var(--muted-foreground)]">
+              Begin your journey
+            </div>
+            <SplitText
+              as="h1"
+              text="Create Account"
+              className="text-display mt-3 text-3xl md:text-4xl"
+            />
           </div>
 
           {errorMsg && (
@@ -116,6 +122,7 @@ function SignupPage() {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
+                autoComplete="given-name"
               />
               <AuthInput
                 label="Last Name"
@@ -123,15 +130,17 @@ function SignupPage() {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
+                autoComplete="family-name"
               />
             </div>
-            
+
             <AuthInput
               label="Email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
             />
             <AuthInput
               label="Password"
@@ -142,6 +151,7 @@ function SignupPage() {
                 setPasswordError("");
               }}
               required
+              autoComplete="new-password"
             />
             <AuthInput
               label="Confirm Password"
@@ -153,6 +163,7 @@ function SignupPage() {
               }}
               error={passwordError}
               required
+              autoComplete="new-password"
             />
 
             <AuthButton
@@ -166,7 +177,10 @@ function SignupPage() {
             </AuthButton>
 
             <div className="mt-8 text-center text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
-              <Link to="/auth/login" className="relative transition-colors duration-300 hover:text-[color:var(--gold)] before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-0 before:bg-[color:var(--gold)] before:transition-all before:duration-300 hover:before:w-full pb-1">
+              <Link
+                to="/auth/login"
+                className="relative transition-colors duration-300 hover:text-[color:var(--gold)] before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-0 before:bg-[color:var(--gold)] before:transition-all before:duration-300 hover:before:w-full pb-1"
+              >
                 Already have an account?
               </Link>
             </div>

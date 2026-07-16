@@ -6,7 +6,7 @@ export function ProductSkeleton() {
       <div className="mx-auto grid max-w-[1400px] gap-16 px-6 md:grid-cols-2 md:px-12">
         {/* Gallery Skeleton */}
         <div className="space-y-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0.5 }}
             animate={{ opacity: 1 }}
             transition={{ repeat: Infinity, duration: 1.5, repeatType: "reverse" }}
@@ -18,7 +18,12 @@ export function ProductSkeleton() {
                 key={i}
                 initial={{ opacity: 0.3 }}
                 animate={{ opacity: 0.7 }}
-                transition={{ repeat: Infinity, duration: 1.5, repeatType: "reverse", delay: i * 0.1 }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.5,
+                  repeatType: "reverse",
+                  delay: i * 0.1,
+                }}
                 className="h-20 w-20 shrink-0 rounded-[12px] bg-[color:var(--muted)]/50"
               />
             ))}

@@ -43,7 +43,9 @@ export const Route = createFileRoute("/products/$slug")({
   notFoundComponent: () => (
     <div className="pt-40 text-center">
       <h1 className="text-display text-4xl">Not in the atelier</h1>
-      <Link to="/" className="btn-lux mt-8">Return home</Link>
+      <Link to="/" className="btn-lux mt-8">
+        Return home
+      </Link>
     </div>
   ),
 });
@@ -59,7 +61,7 @@ function ProductPage() {
   const { addToCart } = useCart();
   const { wishlist: supabaseWishlist, toggleWishlist: toggleSupabaseWishlist } = useWishlist();
   const navigate = useNavigate();
-  
+
   const saved = user ? supabaseWishlist.some((w) => w.product_id === product.id) : localSaved;
 
   useEffect(() => {
@@ -80,7 +82,7 @@ function ProductPage() {
     if (user) {
       addToCart.mutate(
         { productId: product.id, quantity: 1 },
-        { onSuccess: () => navigate({ to: "/cart" }) }
+        { onSuccess: () => navigate({ to: "/cart" }) },
       );
     } else {
       addToLocalCart(product.slug);
@@ -96,12 +98,17 @@ function ProductPage() {
   };
 
   const hasImages = product.images && product.images.length > 0;
-  const galleryImages = hasImages ? product.images : (product.image ? [product.image, collection.image, product.image] : [collection.image, collection.image]);
+  const galleryImages = hasImages
+    ? product.images
+    : product.image
+      ? [product.image, collection.image, product.image]
+      : [collection.image, collection.image];
 
   const expandableItems = [
     {
       title: "Ingredients",
-      content: "All our ingredients are sustainably sourced and cold-processed to preserve their natural potency. See the interactive ingredients section above for a detailed breakdown."
+      content:
+        "All our ingredients are sustainably sourced and cold-processed to preserve their natural potency. See the interactive ingredients section above for a detailed breakdown.",
     },
     {
       title: "How to Use",
@@ -111,30 +118,31 @@ function ProductPage() {
           <li>Trace slow circles across the skin. Breathe.</li>
           <li>Rinse in cool water. Pat dry. Notice.</li>
         </ol>
-      )
+      ),
     },
     {
       title: "Skin Type",
-      content: product.skinType ? product.skinType : `Ideal for all skin types, specifically formulated for the ${collection.name} experience. Dermatologically tested and safe for sensitive skin.`
+      content: product.skinType
+        ? product.skinType
+        : `Ideal for all skin types, specifically formulated for the ${collection.name} experience. Dermatologically tested and safe for sensitive skin.`,
     },
     {
       title: "Shipping & Returns",
-      content: "Free standard shipping on all orders. Expedited shipping available at checkout. If you are not completely satisfied, we offer easy returns within 30 days of purchase."
-    }
+      content:
+        "Free standard shipping on all orders. Expedited shipping available at checkout. If you are not completely satisfied, we offer easy returns within 30 days of purchase.",
+    },
   ];
 
   return (
     <ProductEnvironment product={product} collectionImage={collection.image}>
       <div className="relative pt-32 pb-24">
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-          
           {/* Two Column Layout */}
           <div className="grid gap-16 max-md:gap-8 lg:grid-cols-[48%_1fr]">
-            
             {/* Left Column: Gallery (Scrolling Cinematic) */}
             <div className="w-full">
-              <ProductGallery 
-                images={galleryImages} 
+              <ProductGallery
+                images={galleryImages}
                 productName={product.name}
                 benefits={<FloatingBenefits product={product} />}
               />
@@ -162,24 +170,36 @@ function ProductPage() {
                 delay={0.1}
                 className="text-display text-4xl max-md:text-4xl md:text-5xl lg:text-6xl leading-[0.95]"
               />
-              
-              <Reveal as="p" preset="subheading" delay={0.2} className="mt-6 text-xl italic text-[color:var(--muted-foreground)]">
+
+              <Reveal
+                as="p"
+                preset="subheading"
+                delay={0.2}
+                className="mt-6 text-xl italic text-[color:var(--muted-foreground)]"
+              >
                 {product.tagline}
               </Reveal>
 
-              <Reveal as="p" preset="paragraph" delay={0.3} className="mt-8 text-base leading-relaxed text-[color:var(--muted-foreground)] max-w-[65ch]">
+              <Reveal
+                as="p"
+                preset="paragraph"
+                delay={0.3}
+                className="mt-8 text-base leading-relaxed text-[color:var(--muted-foreground)] max-w-[65ch]"
+              >
                 {product.description}
               </Reveal>
 
               <div className="mt-10 flex items-baseline gap-6 border-b border-[color:var(--border)] pb-10">
-                <div className="text-display text-4xl text-[color:var(--foreground)]">₹{product.price}</div>
+                <div className="text-display text-4xl text-[color:var(--foreground)]">
+                  ₹{product.price}
+                </div>
                 <div className="text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
                   100g · Cold-pressed
                 </div>
               </div>
 
-              <ProductActions 
-                onAdd={handleAdd} 
+              <ProductActions
+                onAdd={handleAdd}
                 isAdding={addToCart.isPending}
                 onSave={() => {
                   if (user) {
@@ -205,18 +225,17 @@ function ProductPage() {
               <div className="mt-16">
                 <ExpandableInfo items={expandableItems} />
               </div>
-              
             </div>
           </div>
         </div>
       </div>
 
       <WhyThisSoap collection={collection.name} />
-      
+
       <CustomerReviews productName={product.name} productId={product.id} />
 
       {/* Sticky Purchase Panel */}
-      <StickyPurchasePanel 
+      <StickyPurchasePanel
         productName={product.name}
         price={product.price}
         onAdd={handleAdd}

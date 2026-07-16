@@ -9,9 +9,9 @@ export const productService = {
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    
-    return data.map(row => {
-      const meta = row.ui_metadata as any || {};
+
+    return data.map((row) => {
+      const meta = (row.ui_metadata as any) || {};
       return {
         id: row.id,
         slug: row.slug,
@@ -28,7 +28,7 @@ export const productService = {
         accentColor: meta.accentColor || "#000",
         bgTint: meta.bgTint || "transparent",
         image: meta.image || "",
-        images: meta.images || []
+        images: meta.images || [],
       } as Product;
     });
   },
@@ -41,8 +41,8 @@ export const productService = {
       .maybeSingle();
 
     if (error || !data) return undefined;
-    
-    const meta = data.ui_metadata as any || {};
+
+    const meta = (data.ui_metadata as any) || {};
     return {
       id: data.id,
       slug: data.slug,
@@ -59,20 +59,16 @@ export const productService = {
       accentColor: meta.accentColor || "#000",
       bgTint: meta.bgTint || "transparent",
       image: meta.image || "",
-      images: meta.images || []
+      images: meta.images || [],
     } as Product;
   },
 
   async getProductById(id: string): Promise<Product | undefined> {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
+    const { data, error } = await supabase.from("products").select("*").eq("id", id).maybeSingle();
 
     if (error || !data) return undefined;
-    
-    const meta = data.ui_metadata as any || {};
+
+    const meta = (data.ui_metadata as any) || {};
     return {
       id: data.id,
       slug: data.slug,
@@ -89,7 +85,7 @@ export const productService = {
       accentColor: meta.accentColor || "#000",
       bgTint: meta.bgTint || "transparent",
       image: meta.image || "",
-      images: meta.images || []
+      images: meta.images || [],
     } as Product;
-  }
+  },
 };

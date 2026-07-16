@@ -33,10 +33,7 @@ export function LivingEnvironment({ density = 22 }: { density?: number }) {
   );
 
   return (
-    <div
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
-      aria-hidden
-    >
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
       {/* Soft ambient wash */}
       <div
         className="absolute inset-0 opacity-60 transition-all duration-[1500ms]"
@@ -54,35 +51,37 @@ export function LivingEnvironment({ density = 22 }: { density?: number }) {
         }}
       />
       {/* Particles are client-only to avoid SSR hydration mismatch */}
-      {mounted && particles.map((p) => (
-        <span
-          key={p.id}
-          className="particle float-slow"
-          style={{
-            width: p.size,
-            height: p.size,
-            top: `${p.top}%`,
-            left: `${p.left}%`,
-            opacity: p.opacity,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${p.duration}s`,
-          }}
-        />
-      ))}
-      {mounted && drifters.map((p) => (
-        <span
-          key={`d-${p.id}`}
-          className="particle drift"
-          style={{
-            width: p.size,
-            height: p.size,
-            top: `${p.top}%`,
-            left: 0,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${p.duration}s`,
-          }}
-        />
-      ))}
+      {mounted &&
+        particles.map((p) => (
+          <span
+            key={p.id}
+            className="particle float-slow"
+            style={{
+              width: p.size,
+              height: p.size,
+              top: `${p.top}%`,
+              left: `${p.left}%`,
+              opacity: p.opacity,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`,
+            }}
+          />
+        ))}
+      {mounted &&
+        drifters.map((p) => (
+          <span
+            key={`d-${p.id}`}
+            className="particle drift"
+            style={{
+              width: p.size,
+              height: p.size,
+              top: `${p.top}%`,
+              left: 0,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`,
+            }}
+          />
+        ))}
     </div>
   );
 }

@@ -7,7 +7,14 @@ interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export function AuthInput({ label, error, className = "", value, onChange, ...props }: AuthInputProps) {
+export function AuthInput({
+  label,
+  error,
+  className = "",
+  value,
+  onChange,
+  ...props
+}: AuthInputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const hasValue = value !== undefined && value !== "";
 

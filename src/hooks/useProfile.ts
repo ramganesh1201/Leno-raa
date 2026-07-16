@@ -11,7 +11,11 @@ export function useProfile() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: profile, isLoading, error } = useQuery({
+  const {
+    data: profile,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: profileKeys.user(user?.id ?? ""),
     queryFn: async () => {
       if (!user?.id) return null;

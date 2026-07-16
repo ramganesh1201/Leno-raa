@@ -11,7 +11,9 @@ export interface NotificationType {
 
 export const notificationsService = {
   async getNotifications() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return [];
 
     const { data, error } = await supabase
@@ -25,11 +27,13 @@ export const notificationsService = {
   },
 
   async markAsRead(notificationId?: string) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) throw new Error("Must be logged in");
 
     let query = supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id);
-    
+
     if (notificationId) {
       query = query.eq("id", notificationId);
     } else {
@@ -39,5 +43,5 @@ export const notificationsService = {
 
     const { error } = await query;
     if (error) throw error;
-  }
+  },
 };

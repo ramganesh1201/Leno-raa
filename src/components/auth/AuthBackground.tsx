@@ -2,7 +2,9 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export function AuthBackground() {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; duration: number }>>([]);
+  const [particles, setParticles] = useState<
+    Array<{ id: number; x: number; y: number; size: number; duration: number }>
+  >([]);
 
   useEffect(() => {
     // Generate initial particles

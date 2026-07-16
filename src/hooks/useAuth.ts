@@ -24,7 +24,7 @@ export function useAuth() {
   });
 
   const signIn = useMutation({
-    mutationFn: (credentials: {email: string, password: string}) => 
+    mutationFn: (credentials: { email: string; password: string }) =>
       authService.signIn(credentials.email, credentials.password),
     onSuccess: (data) => {
       queryClient.setQueryData(authKeys.user(), data.user);
@@ -32,7 +32,7 @@ export function useAuth() {
   });
 
   const signUp = useMutation({
-    mutationFn: (credentials: {email: string, password: string, fullName: string}) => 
+    mutationFn: (credentials: { email: string; password: string; fullName: string }) =>
       authService.signUp(credentials.email, credentials.password, credentials.fullName),
     onSuccess: (data) => {
       queryClient.setQueryData(authKeys.user(), data.user);
@@ -45,10 +45,10 @@ export function useAuth() {
       // Clear React Query cache entirely
       queryClient.removeQueries();
       queryClient.clear();
-      
+
       // Clear local guest cache to prevent leak
       useShop.getState().clearAll();
-      
+
       // Force redirect to clean state
       window.location.href = "/";
     },

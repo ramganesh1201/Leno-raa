@@ -1,26 +1,32 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import heroIntro from "@/assets/hero-intro.png";
 
 const KEY = "lenoraa-intro-seen";
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export function CinematicIntro() {
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (typeof window === "undefined") return;
     const seen = sessionStorage.getItem(KEY);
-    if (!seen) setVisible(true);
-    setReady(true);
     if (!seen) {
+      setVisible(true);
+    }
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (visible && ready) {
       const t = setTimeout(() => {
         sessionStorage.setItem(KEY, "1");
         setVisible(false);
       }, 4800);
       return () => clearTimeout(t);
     }
-  }, []);
+  }, [visible, ready]);
 
   if (!ready) return null;
 

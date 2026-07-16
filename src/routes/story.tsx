@@ -87,9 +87,21 @@ function Story() {
               className="aspect-[4/5] rounded-md object-cover"
             />
             <div>
-              <Reveal preset="label" className="text-eyebrow text-[color:var(--gold)]">{c.eyebrow}</Reveal>
-              <SplitText as="h2" text={c.title} delay={0.1} className="text-display mt-4 text-4xl leading-tight md:text-4xl md:text-3xl md:text-4xl" />
-              <Reveal as="p" preset="paragraph" delay={0.2} className="mt-6 max-w-md text-base leading-relaxed text-[color:var(--foreground)]/80">
+              <Reveal preset="label" className="text-eyebrow text-[color:var(--gold)]">
+                {c.eyebrow}
+              </Reveal>
+              <SplitText
+                as="h2"
+                text={c.title}
+                delay={0.1}
+                className="text-display mt-4 text-4xl leading-tight md:text-4xl md:text-3xl md:text-4xl"
+              />
+              <Reveal
+                as="p"
+                preset="paragraph"
+                delay={0.2}
+                className="mt-6 max-w-md text-base leading-relaxed text-[color:var(--foreground)]/80"
+              >
                 {c.body}
               </Reveal>
             </div>
@@ -99,9 +111,21 @@ function Story() {
 
       <section className="relative py-32">
         <div className="mx-auto max-w-3xl px-6 text-center md:px-12">
-          <Reveal preset="label" className="ornament-rule text-eyebrow mb-10">A closing thought</Reveal>
-          <SplitText as="h2" text='"A bar of soap should feel like something someone loved into being."' delay={0.1} className="text-display text-4xl leading-tight md:text-4xl md:text-3xl md:text-4xl" />
-          <Reveal as="p" preset="paragraph" delay={0.2} className="mt-8 text-sm uppercase tracking-[0.28em] text-[color:var(--muted-foreground)]">
+          <Reveal preset="label" className="ornament-rule text-eyebrow mb-10">
+            A closing thought
+          </Reveal>
+          <SplitText
+            as="h2"
+            text='"A bar of soap should feel like something someone loved into being."'
+            delay={0.1}
+            className="text-display text-4xl leading-tight md:text-4xl md:text-3xl md:text-4xl"
+          />
+          <Reveal
+            as="p"
+            preset="paragraph"
+            delay={0.2}
+            className="mt-8 text-sm uppercase tracking-[0.28em] text-[color:var(--muted-foreground)]"
+          >
             — The Founder
           </Reveal>
         </div>

@@ -15,7 +15,7 @@ export function ProductRecommendations({ title, products }: ProductRecommendatio
         <Reveal preset="label" className="ornament-rule text-eyebrow mb-12">
           {title}
         </Reveal>
-        
+
         {/* Horizontal scroll on mobile, grid on desktop */}
         <div className="flex overflow-x-auto pb-8 snap-x scrollbar-hide md:grid md:grid-cols-4 md:gap-10 md:overflow-visible md:pb-0 md:snap-none -mx-6 px-6 md:mx-0 md:px-0 gap-6">
           {products.map((p) => (
@@ -29,11 +29,11 @@ export function ProductRecommendations({ title, products }: ProductRecommendatio
             >
               <div className="aspect-[4/5] relative overflow-hidden rounded-[18px]">
                 {p.image ? (
-                  <img 
-                    src={p.image} 
-                    alt={p.name} 
-                    loading="lazy" 
-                    className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]" 
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
                   />
                 ) : (
                   <div className="soap-bar breathe shimmer-sweep h-full w-full transition-transform duration-1000 group-hover:scale-105">
@@ -47,11 +47,11 @@ export function ProductRecommendations({ title, products }: ProductRecommendatio
               <div className="mt-5 flex items-baseline justify-between">
                 <div>
                   <div className="text-display text-xl">{p.name}</div>
-                  <div className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)] mt-1">{p.collection}</div>
+                  <div className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)] mt-1">
+                    {p.collection}
+                  </div>
                 </div>
-                <div className="text-sm text-[color:var(--muted-foreground)]">
-                  ₹{p.price}
-                </div>
+                <div className="text-sm text-[color:var(--muted-foreground)]">₹{p.price}</div>
               </div>
             </Link>
           ))}

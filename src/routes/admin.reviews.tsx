@@ -1,6 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, Star, ThumbsUp, MessageSquare, Trash2, ShieldCheck, ShieldAlert, BadgeCheck } from "lucide-react";
+import {
+  Search,
+  Star,
+  ThumbsUp,
+  MessageSquare,
+  Trash2,
+  ShieldCheck,
+  ShieldAlert,
+  BadgeCheck,
+} from "lucide-react";
 import { useAdminReviews } from "@/hooks/useReviews";
 
 export const Route = createFileRoute("/admin/reviews")({
@@ -14,18 +23,19 @@ function AdminReviewsPage() {
   const { reviews, isLoading, updateReviewStatus, deleteReview } = useAdminReviews();
 
   const filteredReviews = (reviews || []).filter((review: any) => {
-    const customerName = review.profiles?.full_name || 'Guest';
-    const productName = review.products?.name || 'Unknown Product';
-    const comment = review.comment || '';
-    
-    const matchesSearch = customerName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          comment.toLowerCase().includes(searchQuery.toLowerCase());
+    const customerName = review.profiles?.full_name || "Guest";
+    const productName = review.products?.name || "Unknown Product";
+    const comment = review.comment || "";
+
+    const matchesSearch =
+      customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      comment.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || review.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const handleUpdateStatus = async (id: string, status: 'approved' | 'rejected') => {
+  const handleUpdateStatus = async (id: string, status: "approved" | "rejected") => {
     try {
       await updateReviewStatus.mutateAsync({ id, status });
     } catch (e: any) {
@@ -48,16 +58,21 @@ function AdminReviewsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Product Reviews</h1>
-          <p className="text-neutral-500 mt-1">Moderate customer feedback and feature top reviews.</p>
+          <p className="text-neutral-500 mt-1">
+            Moderate customer feedback and feature top reviews.
+          </p>
         </div>
       </div>
 
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden flex flex-col">
         <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950/50 flex flex-col sm:flex-row gap-4 justify-between items-center">
           <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
-            <input 
-              type="text" 
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
+              size={16}
+            />
+            <input
+              type="text"
               placeholder="Search reviews..."
               className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors outline-none"
               value={searchQuery}
@@ -65,27 +80,27 @@ function AdminReviewsPage() {
             />
           </div>
           <div className="flex gap-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-1 rounded-lg w-full sm:w-auto overflow-x-auto">
-            <button 
-              onClick={() => setStatusFilter("pending")} 
-              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === 'pending' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600' : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'}`}
+            <button
+              onClick={() => setStatusFilter("pending")}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === "pending" ? "bg-amber-50 dark:bg-amber-500/10 text-amber-600" : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
             >
               Pending
             </button>
-            <button 
-              onClick={() => setStatusFilter("approved")} 
-              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === 'approved' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600' : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'}`}
+            <button
+              onClick={() => setStatusFilter("approved")}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === "approved" ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600" : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
             >
               Approved
             </button>
-            <button 
-              onClick={() => setStatusFilter("rejected")} 
-              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === 'rejected' ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600' : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'}`}
+            <button
+              onClick={() => setStatusFilter("rejected")}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === "rejected" ? "bg-rose-50 dark:bg-rose-500/10 text-rose-600" : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
             >
               Rejected
             </button>
-            <button 
-              onClick={() => setStatusFilter("all")} 
-              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === 'all' ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white' : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'}`}
+            <button
+              onClick={() => setStatusFilter("all")}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${statusFilter === "all" ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white" : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
             >
               All
             </button>
@@ -105,36 +120,53 @@ function AdminReviewsPage() {
             </div>
           ) : (
             filteredReviews.map((review: any) => (
-              <div key={review.id} className="p-6 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors flex flex-col md:flex-row gap-6 items-start">
+              <div
+                key={review.id}
+                className="p-6 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors flex flex-col md:flex-row gap-6 items-start"
+              >
                 <div className="w-full md:w-64 shrink-0 space-y-2">
                   <div className="font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                    {review.profiles?.full_name || 'Guest'}
+                    {review.profiles?.full_name || "Guest"}
                   </div>
-                  <div className="text-sm text-neutral-500">{review.products?.name || 'Unknown Product'}</div>
+                  <div className="text-sm text-neutral-500">
+                    {review.products?.name || "Unknown Product"}
+                  </div>
                   <div className="flex text-amber-400">
-                    {[1,2,3,4,5].map(star => (
-                      <Star key={star} size={14} className={star <= review.rating ? "fill-current" : "text-neutral-200 dark:text-neutral-700"} />
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={14}
+                        className={
+                          star <= review.rating
+                            ? "fill-current"
+                            : "text-neutral-200 dark:text-neutral-700"
+                        }
+                      />
                     ))}
                   </div>
-                  <div className="text-xs text-neutral-400">{new Date(review.created_at).toLocaleDateString()}</div>
+                  <div className="text-xs text-neutral-400">
+                    {new Date(review.created_at).toLocaleDateString()}
+                  </div>
                 </div>
-                
+
                 <div className="flex-1">
-                  <p className="text-neutral-700 dark:text-neutral-300 italic">"{review.comment}"</p>
+                  <p className="text-neutral-700 dark:text-neutral-300 italic">
+                    "{review.comment}"
+                  </p>
                 </div>
 
                 <div className="shrink-0 flex flex-wrap gap-2 w-full md:w-auto mt-4 md:mt-0">
-                  {review.status === 'pending' && (
+                  {review.status === "pending" && (
                     <>
-                      <button 
-                        onClick={() => handleUpdateStatus(review.id, 'approved')}
+                      <button
+                        onClick={() => handleUpdateStatus(review.id, "approved")}
                         disabled={updateReviewStatus.isPending}
                         className="flex-1 md:flex-none px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1 disabled:opacity-50"
                       >
                         <ShieldCheck size={16} /> Approve
                       </button>
-                      <button 
-                        onClick={() => handleUpdateStatus(review.id, 'rejected')}
+                      <button
+                        onClick={() => handleUpdateStatus(review.id, "rejected")}
                         disabled={updateReviewStatus.isPending}
                         className="flex-1 md:flex-none px-3 py-1.5 bg-rose-50 dark:bg-rose-500/10 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-500/20 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-1 disabled:opacity-50"
                       >
@@ -142,7 +174,7 @@ function AdminReviewsPage() {
                       </button>
                     </>
                   )}
-                  <button 
+                  <button
                     onClick={() => handleDelete(review.id)}
                     disabled={deleteReview.isPending}
                     className="flex-1 md:flex-none p-1.5 text-neutral-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-md transition-colors flex items-center justify-center disabled:opacity-50"

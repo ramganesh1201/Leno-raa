@@ -27,7 +27,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const [isSuccess, setIsSuccess] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -37,13 +37,13 @@ function LoginPage() {
     setErrorMsg("");
     try {
       if (email === "demo@lenoraa.com") {
-        await new Promise(r => setTimeout(r, 1200));
+        await new Promise((r) => setTimeout(r, 1200));
         setIsSuccess(true);
         setTimeout(() => navigate({ to: "/account" }), 1200);
       } else {
         const { user } = await signIn.mutateAsync({ email, password });
         setIsSuccess(true);
-        
+
         setTimeout(async () => {
           try {
             if (!user) {
@@ -51,15 +51,17 @@ function LoginPage() {
               return;
             }
             const profile = await profileService.getProfile(user);
-            
-            if (profile?.role === 'admin') {
+
+            if (profile?.role === "admin") {
               navigate({ to: "/admin" });
             } else {
               navigate({ to: "/" });
             }
           } catch (e: any) {
             console.error("Profile load failed during redirect:", e);
-            setErrorMsg(e.message || "Failed to load user profile. Please try again or contact support.");
+            setErrorMsg(
+              e.message || "Failed to load user profile. Please try again or contact support.",
+            );
             setIsSuccess(false);
           }
         }, 1200);
@@ -80,7 +82,7 @@ function LoginPage() {
     setErrorMsg("");
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/account`,
         },
@@ -123,6 +125,7 @@ function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
             />
             <AuthInput
               label="Password"
@@ -130,6 +133,7 @@ function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
             />
 
             <AuthButton
@@ -149,7 +153,10 @@ function LoginPage() {
             </Link>
             <div className="flex gap-2">
               <span>New to Lenoraa?</span>
-              <Link to="/auth/signup" className="text-[color:var(--foreground)] transition hover:text-[color:var(--gold)]">
+              <Link
+                to="/auth/signup"
+                className="text-[color:var(--foreground)] transition hover:text-[color:var(--gold)]"
+              >
                 Create an account
               </Link>
             </div>

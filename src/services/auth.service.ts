@@ -50,7 +50,7 @@ export const authService = {
 
   async resendVerification(email: string) {
     const { error } = await supabase.auth.resend({
-      type: 'signup',
+      type: "signup",
       email,
     });
     if (error) throw error;

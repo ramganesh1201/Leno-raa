@@ -14,7 +14,9 @@ export function RatingStars({ rating, count, onReviewsClick }: RatingStarsProps)
           <Star
             key={star}
             className={`h-4 w-4 ${
-              star <= rating ? "fill-[color:var(--gold)] text-[color:var(--gold)]" : "fill-transparent text-[color:var(--border)]"
+              star <= rating
+                ? "fill-[color:var(--gold)] text-[color:var(--gold)]"
+                : "fill-transparent text-[color:var(--border)]"
             }`}
           />
         ))}

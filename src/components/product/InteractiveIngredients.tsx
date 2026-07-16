@@ -15,16 +15,16 @@ export function InteractiveIngredients({ ingredients }: InteractiveIngredientsPr
       "Cocoa Butter": "Deeply moisturizes and softens.",
       "Coconut Oil": "Provides a rich, creamy lather.",
       "Tomato Pulp": "Rich in antioxidants that brighten tired skin.",
-      "Lycopene": "Protects against environmental stressors.",
+      Lycopene: "Protects against environmental stressors.",
       "Rice Bran Oil": "Soothes and hydrates gently.",
       "Shea Butter": "Locks in moisture for all-day softness.",
       "Manjistha Root": "Traditionally used to even skin tone.",
-      "Turmeric": "Reduces inflammation and adds a golden glow.",
-      "Sandalwood": "Cools and calms reactive skin.",
+      Turmeric: "Reduces inflammation and adds a golden glow.",
+      Sandalwood: "Cools and calms reactive skin.",
       "Almond Oil": "Rich in Vitamin E for nourishment.",
       "Fresh Aloe Gel": "Instantly cools and hydrates.",
       "Cucumber Extract": "Refreshes and reduces puffiness.",
-      "Glycerin": "Draws moisture deep into the skin.",
+      Glycerin: "Draws moisture deep into the skin.",
       "Olive Oil": "A classic, gentle moisturizer.",
       "Sandalwood Powder": "Provides gentle physical exfoliation.",
       "Rose Water": "Balances skin pH and soothes.",
@@ -32,15 +32,15 @@ export function InteractiveIngredients({ ingredients }: InteractiveIngredientsPr
       "Menthol Crystals": "Provides an icy, awakening sensation.",
       "Peppermint Oil": "Stimulates and refreshes.",
       "Fresh Goat Milk": "Rich in lactic acid for gentle renewal.",
-      "Honey": "A natural humectant that draws in moisture.",
-      "Oatmeal": "Soothes dry, itchy, or irritated skin.",
+      Honey: "A natural humectant that draws in moisture.",
+      Oatmeal: "Soothes dry, itchy, or irritated skin.",
       "Liquorice Root": "Helps fade dark spots naturally.",
       "Milk Cream": "Adds luxurious, fatty hydration.",
       "Sunflower Oil": "Lightweight, non-comedogenic moisture.",
       "Lavender Essential Oil": "Calms the mind and the skin.",
       "Dried Lavender": "Offers a mild, botanical scrub.",
-      "Neem": "Nature's antibacterial powerhouse.",
-      "Tulsi": "Purifies and protects.",
+      Neem: "Nature's antibacterial powerhouse.",
+      Tulsi: "Purifies and protects.",
       "Sesame Oil": "A traditional, warming Ayurvedic base.",
     };
     return map[name] || "Botanical extract for healthy skin.";
@@ -58,7 +58,7 @@ export function InteractiveIngredients({ ingredients }: InteractiveIngredientsPr
             <Sparkles className="h-3 w-3 text-[color:var(--gold)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <span className="text-sm font-medium tracking-wide">{i}</span>
           </div>
-          
+
           <div className="grid grid-rows-[0fr] transition-all duration-300 ease-in-out group-hover:grid-rows-[1fr]">
             <div className="overflow-hidden">
               <div className="pt-2 text-xs leading-relaxed text-[color:var(--muted-foreground)]">

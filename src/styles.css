@@ -127,9 +127,11 @@
   --muted-foreground: oklch(0.58 0.02 60);
 }
 [data-tod="night"] body {
-  background: linear-gradient(180deg,
+  background: linear-gradient(
+    180deg,
     color-mix(in oklab, var(--ivory) 84%, oklch(0.28 0.05 260)) 0%,
-    color-mix(in oklab, var(--ivory) 92%, oklch(0.28 0.05 260)) 100%);
+    color-mix(in oklab, var(--ivory) 92%, oklch(0.28 0.05 260)) 100%
+  );
 }
 
 @layer base {
@@ -146,10 +148,15 @@
     font-weight: 300;
     letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 1.4s ease, color 1.4s ease;
+    transition:
+      background-color 1.4s ease,
+      color 1.4s ease;
   }
   html {
-    transition: --theme 1.2s ease, --theme-soft 1.2s ease, --theme-deep 1.2s ease;
+    transition:
+      --theme 1.2s ease,
+      --theme-soft 1.2s ease,
+      --theme-deep 1.2s ease;
   }
   body {
     font-family: var(--font-sans);
@@ -162,8 +169,24 @@
       font-size: 15px;
       line-height: 1.6;
     }
+    .custom-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .custom-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .btn-lux,
+    .btn-ghost-lux {
+      width: 100%;
+      min-height: 52px;
+      justify-content: center;
+    }
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-serif);
     font-weight: 400;
     letter-spacing: -0.01em;
@@ -224,9 +247,15 @@
   background: var(--forest);
   border: 1px solid var(--forest);
   /* Crisp shadow and inner glow */
-  box-shadow: 0 4px 14px -4px color-mix(in oklab, var(--charcoal) 30%, transparent), inset 0 1px 2px color-mix(in oklab, white 15%, transparent);
+  box-shadow:
+    0 4px 14px -4px color-mix(in oklab, var(--charcoal) 30%, transparent),
+    inset 0 1px 2px color-mix(in oklab, white 15%, transparent);
   /* Hover out timing */
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
   isolation: isolate;
   will-change: transform, box-shadow;
@@ -236,7 +265,11 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), color-mix(in oklab, white 22%, transparent), transparent 100%);
+    background: radial-gradient(
+      120px circle at var(--x, 50%) var(--y, 50%),
+      color-mix(in oklab, white 22%, transparent),
+      transparent 100%
+    );
     opacity: 0;
     transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
@@ -248,7 +281,12 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(120deg, transparent 20%, color-mix(in oklab, white 35%, transparent) 40%, transparent 60%);
+    background: linear-gradient(
+      120deg,
+      transparent 20%,
+      color-mix(in oklab, white 35%, transparent) 40%,
+      transparent 60%
+    );
     transform: translateX(-120%);
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
@@ -259,7 +297,9 @@
     /* Gentle, stable scale */
     transform: scale(1.015);
     /* Slightly deeper, more defined shadow */
-    box-shadow: 0 8px 24px -6px color-mix(in oklab, var(--charcoal) 45%, transparent), inset 0 1px 5px color-mix(in oklab, white 35%, transparent);
+    box-shadow:
+      0 8px 24px -6px color-mix(in oklab, var(--charcoal) 45%, transparent),
+      inset 0 1px 5px color-mix(in oklab, white 35%, transparent);
     border-color: color-mix(in oklab, var(--gold) 40%, var(--forest));
     /* Faster hover-in timing */
     transition-duration: 0.25s;
@@ -277,7 +317,9 @@
     /* Tactile compression */
     transform: scale(0.985);
     transition-duration: 0.15s;
-    box-shadow: 0 2px 8px -2px color-mix(in oklab, var(--charcoal) 25%, transparent), inset 0 2px 8px color-mix(in oklab, white 20%, transparent);
+    box-shadow:
+      0 2px 8px -2px color-mix(in oklab, var(--charcoal) 25%, transparent),
+      inset 0 2px 8px color-mix(in oklab, white 20%, transparent);
   }
 }
 
@@ -294,8 +336,14 @@
   color: var(--foreground);
   background: transparent;
   border: 1px solid color-mix(in oklab, var(--foreground) 30%, transparent);
-  box-shadow: 0 2px 10px -4px transparent, inset 0 1px 2px transparent;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow:
+    0 2px 10px -4px transparent,
+    inset 0 1px 2px transparent;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
   isolation: isolate;
   will-change: transform, box-shadow;
@@ -305,7 +353,11 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), color-mix(in oklab, var(--gold) 15%, transparent), transparent 100%);
+    background: radial-gradient(
+      120px circle at var(--x, 50%) var(--y, 50%),
+      color-mix(in oklab, var(--gold) 15%, transparent),
+      transparent 100%
+    );
     opacity: 0;
     transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
@@ -317,7 +369,12 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(120deg, transparent 20%, color-mix(in oklab, var(--gold) 25%, transparent) 40%, transparent 60%);
+    background: linear-gradient(
+      120deg,
+      transparent 20%,
+      color-mix(in oklab, var(--gold) 25%, transparent) 40%,
+      transparent 60%
+    );
     transform: translateX(-120%);
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
@@ -328,7 +385,9 @@
     transform: scale(1.015);
     border-color: var(--gold);
     color: var(--gold);
-    box-shadow: 0 6px 18px -4px color-mix(in oklab, var(--gold) 20%, transparent), inset 0 1px 4px color-mix(in oklab, var(--gold) 15%, transparent);
+    box-shadow:
+      0 6px 18px -4px color-mix(in oklab, var(--gold) 20%, transparent),
+      inset 0 1px 4px color-mix(in oklab, var(--gold) 15%, transparent);
     transition-duration: 0.25s;
   }
   &:hover::before {
@@ -342,7 +401,9 @@
   &:active {
     transform: scale(0.985);
     transition-duration: 0.15s;
-    box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--gold) 12%, transparent), inset 0 2px 6px color-mix(in oklab, var(--gold) 12%, transparent);
+    box-shadow:
+      0 2px 6px -2px color-mix(in oklab, var(--gold) 12%, transparent),
+      inset 0 2px 6px color-mix(in oklab, var(--gold) 12%, transparent);
   }
 }
 
@@ -358,7 +419,12 @@
   background: transparent;
   border: 1px solid transparent;
   color: color-mix(in oklab, var(--foreground) 70%, transparent);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
   will-change: transform;
   isolation: isolate;
 
@@ -368,7 +434,11 @@
     position: absolute;
     inset: 0;
     border-radius: 9999px;
-    background: radial-gradient(80px circle at var(--x, 50%) var(--y, 50%), color-mix(in oklab, var(--gold) 10%, transparent), transparent 100%);
+    background: radial-gradient(
+      80px circle at var(--x, 50%) var(--y, 50%),
+      color-mix(in oklab, var(--gold) 10%, transparent),
+      transparent 100%
+    );
     opacity: 0;
     transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
@@ -380,7 +450,9 @@
     border-color: color-mix(in oklab, var(--border) 60%, transparent);
     color: var(--gold);
     transform: scale(1.05);
-    box-shadow: 0 4px 12px -2px color-mix(in oklab, var(--charcoal) 10%, transparent), inset 0 0 10px color-mix(in oklab, var(--gold) 10%, transparent);
+    box-shadow:
+      0 4px 12px -2px color-mix(in oklab, var(--charcoal) 10%, transparent),
+      inset 0 0 10px color-mix(in oklab, var(--gold) 10%, transparent);
   }
 
   &:hover::before {
@@ -420,7 +492,9 @@
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   background: color-mix(in oklab, var(--ivory) 80%, transparent);
   backdrop-filter: blur(12px);
   padding: 6px 12px;
@@ -441,10 +515,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn-lux:hover, .btn-ghost-lux:hover, .btn-lux:active, .btn-ghost-lux:active, .nav-icon-btn:hover, .nav-icon-btn:active {
+  .btn-lux:hover,
+  .btn-ghost-lux:hover,
+  .btn-lux:active,
+  .btn-ghost-lux:active,
+  .nav-icon-btn:hover,
+  .nav-icon-btn:active {
     transform: none !important;
   }
-  .btn-lux::before, .btn-lux::after, .btn-ghost-lux::before, .btn-ghost-lux::after, .nav-icon-btn::before {
+  .btn-lux::before,
+  .btn-lux::after,
+  .btn-ghost-lux::before,
+  .btn-ghost-lux::after,
+  .nav-icon-btn::before {
     display: none !important;
   }
 }
@@ -454,7 +537,8 @@
   align-items: center;
   gap: 1rem;
   color: color-mix(in oklab, var(--foreground) 40%, transparent);
-  &::before, &::after {
+  &::before,
+  &::after {
     content: "";
     flex: 1;
     height: 1px;
@@ -464,54 +548,129 @@
 
 /* Ambient animations */
 @keyframes floatY {
-  0%, 100% { transform: translateY(0) rotate(var(--tilt, 0deg)); }
-  50% { transform: translateY(-28px) rotate(calc(var(--tilt, 0deg) + 3deg)); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translateY(-28px) rotate(calc(var(--tilt, 0deg) + 3deg));
+  }
 }
 @keyframes driftDiag {
-  0% { transform: translate(-8vw, 0) rotate(0deg); opacity: 0; }
-  15% { opacity: 0.7; }
-  85% { opacity: 0.7; }
-  100% { transform: translate(108vw, -60vh) rotate(280deg); opacity: 0; }
+  0% {
+    transform: translate(-8vw, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(108vw, -60vh) rotate(280deg);
+    opacity: 0;
+  }
 }
 @keyframes leafFall {
-  0% { transform: translate(0, -20vh) rotate(0deg); opacity: 0; }
-  15% { opacity: 0.7; }
-  85% { opacity: 0.7; }
-  100% { transform: translate(-8vw, 110vh) rotate(360deg); opacity: 0; }
+  0% {
+    transform: translate(0, -20vh) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-8vw, 110vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 @keyframes petalFall {
-  0% { transform: translate(0, -20vh) rotate(0deg); opacity: 0; }
-  15% { opacity: 0.85; }
-  85% { opacity: 0.85; }
-  100% { transform: translate(-14vw, 110vh) rotate(540deg); opacity: 0; }
+  0% {
+    transform: translate(0, -20vh) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-14vw, 110vh) rotate(540deg);
+    opacity: 0;
+  }
 }
 @keyframes smokeDrift {
-  0% { transform: translate(-10vw, 0) scale(0.8); opacity: 0; }
-  30% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { transform: translate(110vw, -20vh) scale(1.3); opacity: 0; }
+  0% {
+    transform: translate(-10vw, 0) scale(0.8);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(110vw, -20vh) scale(1.3);
+    opacity: 0;
+  }
 }
 @keyframes steamRise {
-  0% { transform: translate(0, 20vh) scale(0.6); opacity: 0; }
-  25% { opacity: 1; }
-  75% { opacity: 0.8; }
-  100% { transform: translate(2vw, -80vh) scale(1.4); opacity: 0; }
+  0% {
+    transform: translate(0, 20vh) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(2vw, -80vh) scale(1.4);
+    opacity: 0;
+  }
 }
 @keyframes rotateSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
 }
 @keyframes shimmerSweep {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
 }
 @keyframes lightRay {
-  0%, 100% { opacity: 0.15; transform: translateX(-10%) rotate(15deg); }
-  50% { opacity: 0.4; transform: translateX(10%) rotate(18deg); }
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: translateX(-10%) rotate(15deg);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateX(10%) rotate(18deg);
+  }
 }
 
 @utility ambient-dot {
@@ -535,14 +694,30 @@
   pointer-events: none;
   border-radius: 90% 10% 60% 40% / 60% 40% 60% 40%;
 }
-@utility dot-float { animation: floatY 8s ease-in-out infinite; }
-@utility leaf-drift { animation: leafFall 22s linear infinite; }
-@utility petal-drift { animation: petalFall 20s linear infinite; }
-@utility smoke-drift { animation: smokeDrift 40s linear infinite; }
-@utility steam-rise { animation: steamRise 30s linear infinite; }
-@utility cream-drift { animation: smokeDrift 34s linear infinite; }
-@utility rotate-slow { animation: rotateSlow 60s linear infinite; }
-@utility breathe { animation: breathe 6s ease-in-out infinite; }
+@utility dot-float {
+  animation: floatY 8s ease-in-out infinite;
+}
+@utility leaf-drift {
+  animation: leafFall 22s linear infinite;
+}
+@utility petal-drift {
+  animation: petalFall 20s linear infinite;
+}
+@utility smoke-drift {
+  animation: smokeDrift 40s linear infinite;
+}
+@utility steam-rise {
+  animation: steamRise 30s linear infinite;
+}
+@utility cream-drift {
+  animation: smokeDrift 34s linear infinite;
+}
+@utility rotate-slow {
+  animation: rotateSlow 60s linear infinite;
+}
+@utility breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
 @utility shimmer-sweep {
   position: relative;
   overflow: hidden;
@@ -550,14 +725,24 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(115deg, transparent 30%, color-mix(in oklab, white 45%, transparent) 50%, transparent 70%);
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      color-mix(in oklab, white 45%, transparent) 50%,
+      transparent 70%
+    );
     transform: translateX(-100%);
     animation: shimmerSweep 6s ease-in-out infinite;
   }
 }
 
 @utility light-ray {
-  background: linear-gradient(115deg, transparent 40%, color-mix(in oklab, var(--theme-soft) 40%, transparent) 50%, transparent 60%);
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    color-mix(in oklab, var(--theme-soft) 40%, transparent) 50%,
+    transparent 60%
+  );
   animation: lightRay 16s ease-in-out infinite;
 }
 
@@ -567,21 +752,40 @@
   aspect-ratio: 4 / 3;
   border-radius: 18px;
   background:
-    radial-gradient(120% 80% at var(--shine-x, 30%) var(--shine-y, 20%), color-mix(in oklab, white 70%, var(--theme-soft)) 0%, transparent 55%),
-    radial-gradient(140% 100% at 80% 90%, color-mix(in oklab, var(--theme-deep) 65%, transparent) 0%, transparent 60%),
-    linear-gradient(135deg, color-mix(in oklab, var(--theme) 55%, white), color-mix(in oklab, var(--theme-deep) 60%, var(--theme)));
+    radial-gradient(
+      120% 80% at var(--shine-x, 30%) var(--shine-y, 20%),
+      color-mix(in oklab, white 70%, var(--theme-soft)) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      140% 100% at 80% 90%,
+      color-mix(in oklab, var(--theme-deep) 65%, transparent) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--theme) 55%, white),
+      color-mix(in oklab, var(--theme-deep) 60%, var(--theme))
+    );
   box-shadow:
     inset 0 2px 12px color-mix(in oklab, white 40%, transparent),
     inset 0 -12px 32px color-mix(in oklab, var(--theme-deep) 40%, transparent),
     0 40px 80px -20px color-mix(in oklab, var(--theme-deep) 45%, transparent);
   overflow: hidden;
   transform-style: preserve-3d;
-  transition: background 1.2s ease, box-shadow 1.2s ease;
+  transition:
+    background 1.2s ease,
+    box-shadow 1.2s ease;
 }
 @utility soap-bar-shine {
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, transparent 35%, color-mix(in oklab, white 55%, transparent) 50%, transparent 65%);
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    color-mix(in oklab, white 55%, transparent) 50%,
+    transparent 65%
+  );
   mix-blend-mode: overlay;
   opacity: 0.6;
   pointer-events: none;
@@ -589,7 +793,11 @@
 @utility soap-bar-glow {
   position: absolute;
   inset: -15%;
-  background: radial-gradient(closest-side, color-mix(in oklab, var(--theme) 40%, transparent), transparent);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--theme) 40%, transparent),
+    transparent
+  );
   filter: blur(30px);
   opacity: 0.5;
   z-index: -1;
@@ -602,7 +810,7 @@
 
 /* Product card premium hover */
 @utility card-tilt {
-  transition: transform 0.6s cubic-bezier(.22,1,.36,1);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   transform-style: preserve-3d;
   will-change: transform;
 }
@@ -610,8 +818,10 @@
 /* Luxury cursor — minimal, elegant, never covers button text */
 .lux-cursor-dot {
   position: fixed;
-  top: 0; left: 0;
-  width: 5px; height: 5px;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
   border-radius: 9999px;
   background: var(--charcoal);
   pointer-events: none;
@@ -620,28 +830,45 @@
 }
 .lux-cursor-ring {
   position: fixed;
-  top: 0; left: 0;
-  width: 22px; height: 22px;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
   border-radius: 9999px;
   border: 1px solid color-mix(in oklab, var(--charcoal) 45%, transparent);
   pointer-events: none;
   z-index: 9998;
-  transition: width 0.35s cubic-bezier(.22,1,.36,1), height 0.35s cubic-bezier(.22,1,.36,1), border-color 0.35s ease, opacity 0.35s ease;
+  transition:
+    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    opacity 0.35s ease;
   will-change: transform;
   opacity: 0.85;
 }
 .lux-cursor-ring.is-hover {
-  width: 26px; height: 26px;
+  width: 26px;
+  height: 26px;
   border-color: color-mix(in oklab, var(--gold) 80%, transparent);
   opacity: 1;
 }
 
 /* Reveal keyframe class fallback */
 @keyframes revealUp {
-  from { opacity: 0; transform: translateY(28px); filter: blur(6px); }
-  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
-@utility reveal { animation: revealUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@utility reveal {
+  animation: revealUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* Mega menu / dropdown surface */
 @utility surface-menu {
@@ -652,5 +879,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.15s !important; }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+  }
 }

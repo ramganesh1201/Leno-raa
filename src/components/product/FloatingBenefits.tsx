@@ -52,29 +52,33 @@ export function FloatingBenefits({ product, benefits: staticBenefits }: Floating
   // Generate a diverse list of badges based on product data
   const generateBadges = (): string[] => {
     const badges = new Set<string>();
-    
+
     // Core qualities
     badges.add("Handmade");
     badges.add("100% Natural");
     badges.add("Cruelty Free");
-    
+
     // Dynamic Product data
     if (product?.skinType) badges.add(product.skinType);
-    
+
     // Add up to 2 benefits
     if (product?.benefits && Array.isArray(product.benefits) && product.benefits.length > 0) {
-      product.benefits.slice(0, 2).forEach(b => {
+      product.benefits.slice(0, 2).forEach((b) => {
         if (b) badges.add(b);
       });
     }
-    
+
     // Add up to 2 key ingredients
-    if (product?.ingredients && Array.isArray(product.ingredients) && product.ingredients.length > 0) {
-      product.ingredients.slice(0, 2).forEach(i => {
+    if (
+      product?.ingredients &&
+      Array.isArray(product.ingredients) &&
+      product.ingredients.length > 0
+    ) {
+      product.ingredients.slice(0, 2).forEach((i) => {
         if (i) badges.add(i);
       });
     }
-    
+
     return Array.from(badges).slice(0, 5); // Keep it to 5 floating badges
   };
 

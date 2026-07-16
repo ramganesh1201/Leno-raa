@@ -25,7 +25,7 @@ export function useOrders() {
   // Realtime subscription
   useEffect(() => {
     if (!user || !user.id) return;
-    
+
     const channelId = `orders_${user.id}_${Math.random().toString(36).substring(7)}`;
     const channel = supabase
       .channel(channelId)
@@ -39,7 +39,7 @@ export function useOrders() {
         },
         () => {
           queryClient.invalidateQueries({ queryKey: ordersKeys.lists(user.id) });
-        }
+        },
       )
       .subscribe();
 
@@ -49,13 +49,27 @@ export function useOrders() {
   }, [user?.id, queryClient]);
 
   const createOrder = useMutation({
-    mutationFn: (params: { 
-      shippingDetails: { full_name: string; phone: string; address: string; city: string; state: string; pincode: string };
-      subtotal: number; 
-      shipping_cost: number; 
-      tax?: number; 
-      discount?: number 
-    }) => ordersService.createOrder(params.shippingDetails, params.subtotal, params.shipping_cost, params.tax, params.discount),
+    mutationFn: (params: {
+      shippingDetails: {
+        full_name: string;
+        phone: string;
+        address: string;
+        city: string;
+        state: string;
+        pincode: string;
+      };
+      subtotal: number;
+      shipping_cost: number;
+      tax?: number;
+      discount?: number;
+    }) =>
+      ordersService.createOrder(
+        params.shippingDetails,
+        params.subtotal,
+        params.shipping_cost,
+        params.tax,
+        params.discount,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ordersKeys.lists(user?.id) });
       // cart is cleared in service, invalidate cart too
@@ -82,26 +96,53 @@ export function useOrders() {
 export function useAdminOrders() {
   const queryClient = useQueryClient();
 
-  const { data: orders = [], isLoading, isError, error } = useQuery({
+  const {
+    data: orders = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ordersKeys.admin,
     queryFn: () => ordersService.getAdminOrders(),
   });
 
   const verifyPayment = useMutation({
-    mutationFn: (params: { orderId: string; proofId: string; isApproved: boolean; rejectionReason?: string }) =>
-      ordersService.verifyPayment(params.orderId, params.proofId, params.isApproved, params.rejectionReason),
+    mutationFn: (params: {
+      orderId: string;
+      proofId: string;
+      isApproved: boolean;
+      rejectionReason?: string;
+    }) =>
+      ordersService.verifyPayment(
+        params.orderId,
+        params.proofId,
+        params.isApproved,
+        params.rejectionReason,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ordersKeys.admin });
-      queryClient.invalidateQueries({ queryKey: ['admin_stats'] });
+      queryClient.invalidateQueries({ queryKey: ["admin_stats"] });
     },
   });
 
   const updateStatus = useMutation({
-    mutationFn: (params: { orderId: string; status: string; notes?: string; courier?: string; tracking?: string }) =>
-      ordersService.updateOrderStatus(params.orderId, params.status, params.notes, params.courier, params.tracking),
+    mutationFn: (params: {
+      orderId: string;
+      status: string;
+      notes?: string;
+      courier?: string;
+      tracking?: string;
+    }) =>
+      ordersService.updateOrderStatus(
+        params.orderId,
+        params.status,
+        params.notes,
+        params.courier,
+        params.tracking,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ordersKeys.admin });
-      queryClient.invalidateQueries({ queryKey: ['admin_stats'] });
+      queryClient.invalidateQueries({ queryKey: ["admin_stats"] });
     },
   });
 
@@ -118,18 +159,33 @@ export function useAdminOrders() {
 export function useAdminPayments() {
   const queryClient = useQueryClient();
 
-  const { data: payments = [], isLoading, isError, error } = useQuery({
+  const {
+    data: payments = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ordersKeys.adminPayments,
     queryFn: () => ordersService.getAdminPayments(),
   });
 
   const verifyPayment = useMutation({
-    mutationFn: (params: { orderId: string; proofId: string; isApproved: boolean; rejectionReason?: string }) =>
-      ordersService.verifyPayment(params.orderId, params.proofId, params.isApproved, params.rejectionReason),
+    mutationFn: (params: {
+      orderId: string;
+      proofId: string;
+      isApproved: boolean;
+      rejectionReason?: string;
+    }) =>
+      ordersService.verifyPayment(
+        params.orderId,
+        params.proofId,
+        params.isApproved,
+        params.rejectionReason,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ordersKeys.adminPayments });
       queryClient.invalidateQueries({ queryKey: ordersKeys.admin });
-      queryClient.invalidateQueries({ queryKey: ['admin_stats'] });
+      queryClient.invalidateQueries({ queryKey: ["admin_stats"] });
     },
   });
 

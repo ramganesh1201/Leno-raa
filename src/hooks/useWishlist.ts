@@ -26,7 +26,7 @@ export function useWishlist() {
   // Realtime subscription
   useEffect(() => {
     if (!user || !user.id) return;
-    
+
     if (wishlistSubscribers === 0) {
       wishlistChannel = supabase.channel(`wishlist_${user.id}`);
       wishlistChannel
@@ -40,11 +40,11 @@ export function useWishlist() {
           },
           () => {
             queryClient.invalidateQueries({ queryKey: wishlistKeys.lists(user.id) });
-          }
+          },
         )
         .subscribe();
     }
-    
+
     wishlistSubscribers++;
 
     return () => {

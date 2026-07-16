@@ -23,12 +23,12 @@ export function useNotifications() {
   });
 
   const notifications = query.data || [];
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   // Realtime subscription
   useEffect(() => {
     if (!user || !user.id) return;
-    
+
     if (notificationSubscribers === 0) {
       notificationChannel = supabase.channel(`notifications_${user.id}`);
       notificationChannel
@@ -42,11 +42,11 @@ export function useNotifications() {
           },
           () => {
             queryClient.invalidateQueries({ queryKey: notificationKeys.lists(user.id) });
-          }
+          },
         )
         .subscribe();
     }
-    
+
     notificationSubscribers++;
 
     return () => {

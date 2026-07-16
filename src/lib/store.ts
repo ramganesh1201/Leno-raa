@@ -5,15 +5,17 @@ import type { AmbiencePreset, ThemeKey } from "./catalog";
 export interface CustomDesign {
   id: string;
   name: string;
-  shape: string;
-  color: string;
-  ingredients: string[];
-  fragrance: string;
-  texture: string;
-  packaging: string;
-  engraving: string;
-  ribbon: string;
-  giftBox: boolean;
+  shape?: string;
+  color?: string;
+  ingredients?: string[];
+  fragrance?: string;
+  texture?: string;
+  packaging?: string;
+  engraving?: string;
+  ribbon?: string;
+  giftBox?: boolean;
+  skin_type?: string;
+  core_active?: string;
   createdAt: number;
 }
 
@@ -53,22 +55,16 @@ export const useShop = create<ShopState>()(
           if (existing)
             return {
               cart: s.cart.map((i) =>
-                i.slug === slug && !i.customId
-                  ? { ...i, quantity: i.quantity + 1 }
-                  : i,
+                i.slug === slug && !i.customId ? { ...i, quantity: i.quantity + 1 } : i,
               ),
             };
           return { cart: [...s.cart, { slug, quantity: 1 }] };
         }),
       addCustomToCart: (design) =>
         set((s) => ({
-          cart: [
-            ...s.cart,
-            { slug: `custom-${design.id}`, quantity: 1, customId: design.id },
-          ],
+          cart: [...s.cart, { slug: `custom-${design.id}`, quantity: 1, customId: design.id }],
         })),
-      removeFromCart: (slug) =>
-        set((s) => ({ cart: s.cart.filter((i) => i.slug !== slug) })),
+      removeFromCart: (slug) => set((s) => ({ cart: s.cart.filter((i) => i.slug !== slug) })),
       setQuantity: (slug, q) =>
         set((s) => ({
           cart:
@@ -84,13 +80,9 @@ export const useShop = create<ShopState>()(
         })),
       markRecentlyViewed: (slug) =>
         set((s) => ({
-          recentlyViewed: [slug, ...s.recentlyViewed.filter((x) => x !== slug)].slice(
-            0,
-            12,
-          ),
+          recentlyViewed: [slug, ...s.recentlyViewed.filter((x) => x !== slug)].slice(0, 12),
         })),
-      saveDesign: (d) =>
-        set((s) => ({ savedDesigns: [d, ...s.savedDesigns].slice(0, 30) })),
+      saveDesign: (d) => set((s) => ({ savedDesigns: [d, ...s.savedDesigns].slice(0, 30) })),
       deleteDesign: (id) =>
         set((s) => ({ savedDesigns: s.savedDesigns.filter((d) => d.id !== id) })),
       clearCart: () => set({ cart: [] }),
@@ -155,6 +147,5 @@ const defaultAmbience: Record<ThemeKey | "default", AmbiencePreset> = {
 export const useTheme = create<ThemeState>((set) => ({
   theme: "default",
   ambience: "goldDust",
-  setTheme: (theme, ambience) =>
-    set({ theme, ambience: ambience ?? defaultAmbience[theme] }),
+  setTheme: (theme, ambience) => set({ theme, ambience: ambience ?? defaultAmbience[theme] }),
 }));

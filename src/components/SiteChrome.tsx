@@ -12,7 +12,21 @@ import { productService } from "@/services/product.service";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Reveal } from "@/components/immersive/Reveal";
-import { Heart, ShoppingBag, User, Search, Bell, Check, MapPin, Package, Settings, Sparkles, LogOut, Menu, X } from "lucide-react";
+import {
+  Heart,
+  ShoppingBag,
+  User,
+  Search,
+  Bell,
+  Check,
+  MapPin,
+  Package,
+  Settings,
+  Sparkles,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
 
 export function SiteHeader() {
   const { user, signOut: authSignOut, isLoading: isAuthLoading } = useAuth();
@@ -21,19 +35,21 @@ export function SiteHeader() {
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const localCart = useShop((s) => s.cart);
   const localWishlist = useShop((s) => s.wishlist);
-  
-  const cartCount = user 
+
+  const cartCount = user
     ? supabaseCart.reduce((a, c) => a + c.quantity, 0)
     : localCart.reduce((a, c) => a + c.quantity, 0);
-    
+
   const wishCount = user ? supabaseWishlist.length : localWishlist.length;
   const { profile, isLoading: isProfileLoading } = useProfile();
   const loading = isAuthLoading || (user && isProfileLoading);
   const displayName = profile?.full_name || user?.user_metadata?.full_name;
-  
+
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [scrolled, setScrolled] = useState(false);
-  const [openMenu, setOpenMenu] = useState<null | "collections" | "account" | "notifications">(null);
+  const [openMenu, setOpenMenu] = useState<null | "collections" | "account" | "notifications">(
+    null,
+  );
   const [isSearchHovered, setIsSearchHovered] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,10 +71,10 @@ export function SiteHeader() {
         (p) =>
           p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           p.collection.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.ingredients.some((i) => i.toLowerCase().includes(searchQuery.toLowerCase()))
+          p.ingredients.some((i) => i.toLowerCase().includes(searchQuery.toLowerCase())),
       )
     : [];
-    const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -79,8 +95,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node))
-        setOpenMenu(null);
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpenMenu(null);
     };
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
@@ -89,14 +104,16 @@ export function SiteHeader() {
   return (
     <header
       ref={menuRef}
-      className={`fixed top-0 z-50 w-full transition-all duration-700 ${
-        scrolled ? "bg-[color:var(--ivory)]/80 backdrop-blur-md shadow-sm border-b border-[color:var(--border)] py-3 max-md:py-3" : "bg-transparent py-6 max-md:py-4"
+      className={`fixed top-0 z-50 w-full transition-all duration-700 max-md:h-[60px] max-md:flex max-md:items-center ${
+        scrolled
+          ? "bg-[color:var(--ivory)]/80 backdrop-blur-md shadow-sm border-b border-[color:var(--border)] py-3 max-md:py-0"
+          : "bg-transparent py-6 max-md:py-0"
       }`}
     >
-      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-6 md:px-12 relative">
+      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-6 md:px-12 relative max-md:w-full">
         <div className="flex md:hidden items-center">
-          <button 
-            onClick={() => setMobileMenuOpen(true)} 
+          <button
+            onClick={() => setMobileMenuOpen(true)}
             className="nav-icon-btn group -ml-2"
             aria-label="Open menu"
             data-lux-hover
@@ -153,7 +170,7 @@ export function SiteHeader() {
           </button>
 
           {/* DESKTOP SEARCH WRAPPER */}
-          <div 
+          <div
             className="relative items-center justify-end h-11 w-11 hidden md:flex"
             onMouseEnter={() => setIsSearchHovered(true)}
             onMouseLeave={() => setIsSearchHovered(false)}
@@ -181,32 +198,35 @@ export function SiteHeader() {
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Escape") {
-                         setIsSearchFocused(false);
-                         setIsSearchHovered(false);
-                         searchInputRef.current?.blur();
+                        setIsSearchFocused(false);
+                        setIsSearchHovered(false);
+                        searchInputRef.current?.blur();
                       }
                       if (e.key === "ArrowDown") {
-                         e.preventDefault();
-                         setSearchIndex((i) => Math.min(i + 1, searchResults.length - 1));
+                        e.preventDefault();
+                        setSearchIndex((i) => Math.min(i + 1, searchResults.length - 1));
                       }
                       if (e.key === "ArrowUp") {
-                         e.preventDefault();
-                         setSearchIndex((i) => Math.max(i - 1, 0));
+                        e.preventDefault();
+                        setSearchIndex((i) => Math.max(i - 1, 0));
                       }
                       if (e.key === "Enter" && searchResults[searchIndex]) {
-                         e.preventDefault();
-                         navigate({ to: "/products/$slug", params: { slug: searchResults[searchIndex].slug } });
-                         setIsSearchFocused(false);
-                         setIsSearchHovered(false);
-                         setSearchQuery("");
+                        e.preventDefault();
+                        navigate({
+                          to: "/products/$slug",
+                          params: { slug: searchResults[searchIndex].slug },
+                        });
+                        setIsSearchFocused(false);
+                        setIsSearchHovered(false);
+                        setSearchQuery("");
                       }
                     }}
                   />
-                  
+
                   {/* DROPDOWN */}
                   <AnimatePresence>
                     {(isSearchFocused || isSearchHovered) && searchQuery && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
@@ -214,7 +234,7 @@ export function SiteHeader() {
                       >
                         {searchResults.length > 0 ? (
                           searchResults.slice(0, 6).map((product, idx) => (
-                            <Link 
+                            <Link
                               key={product.slug}
                               to="/products/$slug"
                               params={{ slug: product.slug }}
@@ -226,18 +246,32 @@ export function SiteHeader() {
                               className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${idx === searchIndex ? "bg-[color:var(--ivory)]/60" : "hover:bg-[color:var(--ivory)]/40"}`}
                             >
                               <div className="w-10 h-10 rounded-md overflow-hidden bg-[color:var(--cream)]">
-                                {product.image && <img src={product.image} alt={product.name} className="w-full h-full object-cover" />}
+                                {product.image && (
+                                  <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                )}
                               </div>
                               <div className="flex-1 text-left">
-                                <div className="text-sm font-medium text-[color:var(--foreground)]">{product.name}</div>
-                                <div className="text-[10px] uppercase tracking-wider text-[color:var(--foreground)]/50">{product.collection}</div>
+                                <div className="text-sm font-medium text-[color:var(--foreground)]">
+                                  {product.name}
+                                </div>
+                                <div className="text-[10px] uppercase tracking-wider text-[color:var(--foreground)]/50">
+                                  {product.collection}
+                                </div>
                               </div>
                             </Link>
                           ))
                         ) : (
                           <div className="p-4 text-center">
-                            <div className="text-sm text-[color:var(--foreground)] font-medium">No soaps found</div>
-                            <div className="text-xs text-[color:var(--foreground)]/60 mt-1">Try another ingredient or collection.</div>
+                            <div className="text-sm text-[color:var(--foreground)] font-medium">
+                              No soaps found
+                            </div>
+                            <div className="text-xs text-[color:var(--foreground)]/60 mt-1">
+                              Try another ingredient or collection.
+                            </div>
                           </div>
                         )}
                       </motion.div>
@@ -259,25 +293,23 @@ export function SiteHeader() {
               <Search size={20} strokeWidth={1.5} className="transition-colors duration-250" />
             </button>
           </div>
-          
+
           <Link
             to="/wishlist"
             className="hidden sm:flex nav-icon-btn group"
             aria-label="Saved"
             data-lux-hover
           >
-            <Heart 
-              size={20} 
-              strokeWidth={1.5} 
+            <Heart
+              size={20}
+              strokeWidth={1.5}
               className="transition-colors duration-250"
               fill={wishCount > 0 ? "currentColor" : "none"}
             />
-            {wishCount > 0 && (
-              <span className="nav-badge">{wishCount}</span>
-            )}
+            {wishCount > 0 && <span className="nav-badge">{wishCount}</span>}
             <span className="nav-tooltip">Saved</span>
           </Link>
-          
+
           {user && (
             <button
               onClick={() => setOpenMenu((m) => (m === "notifications" ? null : "notifications"))}
@@ -292,22 +324,15 @@ export function SiteHeader() {
               <span className="nav-tooltip">Updates</span>
             </button>
           )}
-          
-          <Link 
-            to="/cart" 
-            className="flex nav-icon-btn group"
-            aria-label="Bag"
-            data-lux-hover
-          >
+
+          <Link to="/cart" className="flex nav-icon-btn group" aria-label="Bag" data-lux-hover>
             <ShoppingBag size={20} strokeWidth={1.5} className="transition-colors duration-250" />
-            {cartCount > 0 && (
-              <span className="nav-badge">{cartCount}</span>
-            )}
+            {cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
             <span className="nav-tooltip">Bag</span>
           </Link>
-          
+
           {/* PROFILE WRAPPER */}
-          <div 
+          <div
             className="relative flex items-center justify-end h-11 w-11"
             onMouseEnter={() => setIsProfileHovered(true)}
             onMouseLeave={() => setIsProfileHovered(false)}
@@ -322,7 +347,11 @@ export function SiteHeader() {
                   className="absolute right-0 h-11 surface-glass rounded-full border border-[color:var(--border)] flex items-center overflow-hidden z-20 pointer-events-none shadow-sm"
                 >
                   <div className="w-full text-[10px] uppercase tracking-[0.2em] text-[color:var(--foreground)] pl-5 pr-12 whitespace-nowrap overflow-hidden text-left">
-                    {loading ? `👤 Loading...` : user ? `👤 ${displayName || "Guest"}` : `👤 Sign In`}
+                    {loading
+                      ? `👤 Loading...`
+                      : user
+                        ? `👤 ${displayName || "Guest"}`
+                        : `👤 Sign In`}
                   </div>
                 </motion.div>
               )}
@@ -405,7 +434,7 @@ export function SiteHeader() {
             <div className="flex items-center justify-between mb-4">
               <div className="text-display text-xl">Notifications</div>
               {unreadCount > 0 && (
-                <button 
+                <button
                   onClick={() => markAsRead.mutate()}
                   className="text-xs uppercase tracking-[0.1em] text-[color:var(--gold)] transition hover:text-[color:var(--foreground)] flex items-center gap-1"
                 >
@@ -413,7 +442,7 @@ export function SiteHeader() {
                 </button>
               )}
             </div>
-            
+
             {notifications.length === 0 ? (
               <div className="text-sm text-[color:var(--muted-foreground)] text-center py-6">
                 You have no notifications.
@@ -421,11 +450,16 @@ export function SiteHeader() {
             ) : (
               <div className="flex flex-col gap-4">
                 {notifications.map((n) => (
-                  <div key={n.id} className={`p-3 rounded-md transition-colors ${n.is_read ? '' : 'bg-black/5 dark:bg-white/5'}`}>
+                  <div
+                    key={n.id}
+                    className={`p-3 rounded-md transition-colors ${n.is_read ? "" : "bg-black/5 dark:bg-white/5"}`}
+                  >
                     <div className="flex items-center justify-between mb-1">
-                      <div className="font-medium text-sm text-[color:var(--foreground)]">{n.title}</div>
+                      <div className="font-medium text-sm text-[color:var(--foreground)]">
+                        {n.title}
+                      </div>
                       {!n.is_read && (
-                        <button 
+                        <button
                           onClick={() => markAsRead.mutate(n.id)}
                           className="h-2 w-2 rounded-full bg-[color:var(--gold)]"
                           aria-label="Mark as read"
@@ -501,7 +535,11 @@ export function SiteHeader() {
                         onClick={() => setOpenMenu(null)}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-[color:var(--foreground)]/5 hover:text-[color:var(--gold)] text-[color:var(--foreground)] text-sm font-medium"
                       >
-                        <Icon size={16} strokeWidth={1.5} className="text-[color:var(--muted-foreground)]" />
+                        <Icon
+                          size={16}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--muted-foreground)]"
+                        />
                         {label}
                       </Link>
                     </li>
@@ -549,7 +587,7 @@ export function SiteHeader() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button 
+              <button
                 onClick={() => {
                   setIsMobileSearchOpen(false);
                   setSearchQuery("");
@@ -562,10 +600,12 @@ export function SiteHeader() {
             <div className="flex-1 overflow-y-auto p-4 bg-[color:var(--ivory)]">
               {searchQuery ? (
                 <div className="flex flex-col gap-2">
-                  <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-2 font-medium">Results</div>
+                  <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-2 font-medium">
+                    Results
+                  </div>
                   {searchResults.length > 0 ? (
                     searchResults.map((product) => (
-                      <Link 
+                      <Link
                         key={product.slug}
                         to="/products/$slug"
                         params={{ slug: product.slug }}
@@ -576,25 +616,41 @@ export function SiteHeader() {
                         className="flex items-center gap-4 p-3 rounded-xl transition-colors hover:bg-[color:var(--foreground)]/5 active:bg-[color:var(--foreground)]/10"
                       >
                         <div className="w-16 h-16 rounded-lg overflow-hidden bg-[color:var(--cream)] shrink-0">
-                          {product.image && <img src={product.image} alt={product.name} className="w-full h-full object-cover" />}
+                          {product.image && (
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
                         </div>
                         <div className="flex-1 text-left">
-                          <div className="text-base font-medium text-[color:var(--foreground)]">{product.name}</div>
-                          <div className="text-[11px] uppercase tracking-wider text-[color:var(--foreground)]/50 mt-1">{product.collection}</div>
+                          <div className="text-base font-medium text-[color:var(--foreground)]">
+                            {product.name}
+                          </div>
+                          <div className="text-[11px] uppercase tracking-wider text-[color:var(--foreground)]/50 mt-1">
+                            {product.collection}
+                          </div>
                         </div>
                       </Link>
                     ))
                   ) : (
                     <div className="py-12 text-center">
-                      <div className="text-base text-[color:var(--foreground)] font-medium">No soaps found</div>
-                      <div className="text-sm text-[color:var(--foreground)]/60 mt-2">Try another ingredient or collection.</div>
+                      <div className="text-base text-[color:var(--foreground)] font-medium">
+                        No soaps found
+                      </div>
+                      <div className="text-sm text-[color:var(--foreground)]/60 mt-2">
+                        Try another ingredient or collection.
+                      </div>
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="flex flex-col gap-6 pt-4">
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-3 font-medium">Suggested Collections</div>
+                    <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-3 font-medium">
+                      Suggested Collections
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {collections.slice(0, 4).map((c) => (
                         <Link
@@ -610,10 +666,12 @@ export function SiteHeader() {
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-3 font-medium">Trending Soaps</div>
+                    <div className="text-xs uppercase tracking-wider text-[color:var(--muted-foreground)] mb-3 font-medium">
+                      Trending Soaps
+                    </div>
                     <div className="flex flex-col gap-2">
                       {products.slice(0, 3).map((product) => (
-                        <Link 
+                        <Link
                           key={product.slug}
                           to="/products/$slug"
                           params={{ slug: product.slug }}
@@ -621,11 +679,21 @@ export function SiteHeader() {
                           className="flex items-center gap-4 p-2 rounded-xl active:bg-[color:var(--foreground)]/5"
                         >
                           <div className="w-12 h-12 rounded-lg overflow-hidden bg-[color:var(--cream)] shrink-0">
-                            {product.image && <img src={product.image} alt={product.name} className="w-full h-full object-cover" />}
+                            {product.image && (
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
                           </div>
                           <div className="flex-1 text-left">
-                            <div className="text-sm font-medium text-[color:var(--foreground)]">{product.name}</div>
-                            <div className="text-[10px] uppercase tracking-wider text-[color:var(--foreground)]/50 mt-0.5">{product.collection}</div>
+                            <div className="text-sm font-medium text-[color:var(--foreground)]">
+                              {product.name}
+                            </div>
+                            <div className="text-[10px] uppercase tracking-wider text-[color:var(--foreground)]/50 mt-0.5">
+                              {product.collection}
+                            </div>
                           </div>
                         </Link>
                       ))}
@@ -658,8 +726,10 @@ export function SiteHeader() {
               className="fixed inset-y-0 left-0 z-[70] w-[85vw] max-w-[400px] bg-[color:var(--ivory)] shadow-2xl flex flex-col md:hidden overflow-hidden"
             >
               <div className="flex items-center justify-between p-6 border-b border-[color:var(--border)]">
-                <span className="text-display text-2xl tracking-wide text-[color:var(--foreground)]">Lenoraa</span>
-                <button 
+                <span className="text-display text-2xl tracking-wide text-[color:var(--foreground)]">
+                  Lenoraa
+                </span>
+                <button
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-2 -mr-2 text-[color:var(--foreground)] active:bg-black/5 rounded-full transition-colors"
                 >
@@ -668,46 +738,62 @@ export function SiteHeader() {
               </div>
               <div className="flex-1 overflow-y-auto py-6 px-6">
                 <nav className="flex flex-col gap-6">
-                  <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50">
+                  <Link
+                    to="/"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50"
+                  >
                     Home
                   </Link>
                   <div className="flex flex-col gap-4">
-                    <span className="text-display text-3xl text-[color:var(--foreground)]">Collections</span>
+                    <span className="text-display text-3xl text-[color:var(--foreground)]">
+                      Collections
+                    </span>
                     <div className="pl-4 flex flex-col gap-4 border-l border-[color:var(--border)]">
-                      {collections.map(c => (
-                        <Link 
-                          key={c.slug} 
-                          to="/collections/$slug" 
+                      {collections.map((c) => (
+                        <Link
+                          key={c.slug}
+                          to="/collections/$slug"
                           params={{ slug: c.slug }}
                           onClick={() => setMobileMenuOpen(false)}
                           className="text-lg text-[color:var(--foreground)]/80 transition-opacity active:opacity-50 flex items-center justify-between"
                         >
                           <span>{c.name}</span>
-                          <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">{c.eyebrow}</span>
+                          <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+                            {c.eyebrow}
+                          </span>
                         </Link>
                       ))}
                     </div>
                   </div>
-                  <Link to="/customize" onClick={() => setMobileMenuOpen(false)} className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50">
+                  <Link
+                    to="/customize"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50"
+                  >
                     Customize
                   </Link>
-                  <Link to="/story" onClick={() => setMobileMenuOpen(false)} className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50">
+                  <Link
+                    to="/story"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-display text-3xl text-[color:var(--foreground)] transition-opacity active:opacity-50"
+                  >
                     Story
                   </Link>
                 </nav>
               </div>
               <div className="p-6 border-t border-[color:var(--border)] bg-[color:var(--cream)]/30 flex flex-col gap-4">
                 {!user ? (
-                  <Link 
-                    to="/auth/login" 
+                  <Link
+                    to="/auth/login"
                     onClick={() => setMobileMenuOpen(false)}
                     className="btn-lux w-full justify-center"
                   >
                     Sign In / Register
                   </Link>
                 ) : (
-                  <Link 
-                    to="/account" 
+                  <Link
+                    to="/account"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 p-3 rounded-xl bg-[color:var(--foreground)]/5"
                   >
@@ -735,16 +821,26 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="relative mt-32 border-t border-[color:var(--border)] bg-[color:var(--cream)]/60 py-20">
-      <div className="mx-auto grid max-w-[1400px] gap-16 px-6 md:grid-cols-4 md:px-12">
-        <div>
-          <Reveal preset="subheading" className="text-display text-3xl">Lenoraa</Reveal>
-          <Reveal as="p" preset="paragraph" delay={0.1} className="mt-4 max-w-xs text-sm leading-relaxed text-[color:var(--muted-foreground)]">
-            Nature crafted into luxury. Handmade soaps, doctor-formulated,
-            cold-processed in small batches.
+    <footer className="relative mt-32 border-t border-[color:var(--border)] bg-[color:var(--cream)]/60 py-12 md:py-20">
+      <div className="mx-auto grid max-w-[1400px] gap-8 md:gap-16 px-6 md:grid-cols-4 md:px-12">
+        {/* Brand / About - Always visible or open */}
+        <div className="max-md:mb-4">
+          <Reveal preset="subheading" className="text-display text-3xl">
+            Lenoraa
+          </Reveal>
+          <Reveal
+            as="p"
+            preset="paragraph"
+            delay={0.1}
+            className="mt-4 max-w-xs text-sm leading-relaxed text-[color:var(--muted-foreground)]"
+          >
+            Nature crafted into luxury. Handmade soaps, doctor-formulated, cold-processed in small
+            batches.
           </Reveal>
         </div>
-        <div>
+
+        {/* Collections */}
+        <div className="hidden md:block">
           <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             Collections
           </Reveal>
@@ -762,23 +858,104 @@ export function SiteFooter() {
             ))}
           </ul>
         </div>
-        <div>
+        <details className="md:hidden group border-b border-[color:var(--border)] pb-2">
+          <summary className="text-eyebrow text-[color:var(--muted-foreground)] py-2 flex justify-between items-center cursor-pointer list-none">
+            Collections
+            <span className="transition group-open:rotate-180">+</span>
+          </summary>
+          <ul className="space-y-3 text-sm pt-2 pb-4">
+            {collections.map((c) => (
+              <li key={c.slug}>
+                <Link
+                  to="/collections/$slug"
+                  params={{ slug: c.slug }}
+                  className="capitalize transition hover:text-[color:var(--gold)]"
+                >
+                  {c.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </details>
+
+        {/* World */}
+        <div className="hidden md:block">
           <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             World
           </Reveal>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/story" className="transition hover:text-[color:var(--gold)]">Our Story</Link></li>
-            <li><Link to="/customize" className="transition hover:text-[color:var(--gold)]">Custom Soap Studio</Link></li>
-            <li><Link to="/cart" className="transition hover:text-[color:var(--gold)]">Bag</Link></li>
-            <li><Link to="/wishlist" className="transition hover:text-[color:var(--gold)]">Saved</Link></li>
-            <li><Link to="/account" className="transition hover:text-[color:var(--gold)]">Account</Link></li>
+            <li>
+              <Link to="/story" className="transition hover:text-[color:var(--gold)]">
+                Our Story
+              </Link>
+            </li>
+            <li>
+              <Link to="/customize" className="transition hover:text-[color:var(--gold)]">
+                Custom Soap Studio
+              </Link>
+            </li>
+            <li>
+              <Link to="/cart" className="transition hover:text-[color:var(--gold)]">
+                Bag
+              </Link>
+            </li>
+            <li>
+              <Link to="/wishlist" className="transition hover:text-[color:var(--gold)]">
+                Saved
+              </Link>
+            </li>
+            <li>
+              <Link to="/account" className="transition hover:text-[color:var(--gold)]">
+                Account
+              </Link>
+            </li>
           </ul>
         </div>
-        <div>
+        <details className="md:hidden group border-b border-[color:var(--border)] pb-2">
+          <summary className="text-eyebrow text-[color:var(--muted-foreground)] py-2 flex justify-between items-center cursor-pointer list-none">
+            World
+            <span className="transition group-open:rotate-180">+</span>
+          </summary>
+          <ul className="space-y-3 text-sm pt-2 pb-4">
+            <li>
+              <Link to="/story" className="transition hover:text-[color:var(--gold)]">
+                Our Story
+              </Link>
+            </li>
+            <li>
+              <Link to="/customize" className="transition hover:text-[color:var(--gold)]">
+                Custom Soap Studio
+              </Link>
+            </li>
+            <li>
+              <Link to="/cart" className="transition hover:text-[color:var(--gold)]">
+                Bag
+              </Link>
+            </li>
+            <li>
+              <Link to="/wishlist" className="transition hover:text-[color:var(--gold)]">
+                Saved
+              </Link>
+            </li>
+            <li>
+              <Link to="/account" className="transition hover:text-[color:var(--gold)]">
+                Account
+              </Link>
+            </li>
+          </ul>
+        </details>
+
+        {/* Newsletter */}
+        <div className="hidden md:block">
           <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             Newsletter
           </Reveal>
-          <Reveal as="p" preset="paragraph" delay={0.1} className="mb-4 text-sm text-[color:var(--muted-foreground)]">
+          <Reveal
+            as="p"
+            preset="paragraph"
+            delay={0.1}
+            className="mb-4 text-sm text-[color:var(--muted-foreground)]"
+          >
             Letters from the atelier. New rituals, seasonal releases.
           </Reveal>
           <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
@@ -791,8 +968,28 @@ export function SiteFooter() {
             <button className="btn-lux !py-3 !px-5">Join</button>
           </form>
         </div>
+        <details className="md:hidden group border-b border-[color:var(--border)] pb-2">
+          <summary className="text-eyebrow text-[color:var(--muted-foreground)] py-2 flex justify-between items-center cursor-pointer list-none">
+            Newsletter
+            <span className="transition group-open:rotate-180">+</span>
+          </summary>
+          <div className="pt-2 pb-4">
+            <p className="mb-4 text-sm text-[color:var(--muted-foreground)]">
+              Letters from the atelier. New rituals, seasonal releases.
+            </p>
+            <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
+              <input
+                type="email"
+                required
+                placeholder="your@email"
+                className="flex-1 border border-[color:var(--border)] bg-transparent px-4 py-3 text-sm outline-none focus:border-[color:var(--gold)]"
+              />
+              <button className="btn-lux !py-3 !px-5">Join</button>
+            </form>
+          </div>
+        </details>
       </div>
-      <div className="mx-auto mt-16 max-w-[1400px] px-6 text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] md:px-12">
+      <div className="mx-auto mt-12 max-md:mt-8 max-w-[1400px] px-6 text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] md:px-12">
         © {new Date().getFullYear()} Lenoraa · Crafted by hand
       </div>
     </footer>
