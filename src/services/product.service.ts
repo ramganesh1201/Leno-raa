@@ -12,6 +12,12 @@ export const productService = {
 
     return data.map((row) => {
       const meta = (row.ui_metadata as any) || {};
+      const collections = Array.isArray(meta.collections)
+        ? [...new Set(meta.collections.filter(Boolean))]
+        : meta.collection
+          ? [meta.collection]
+          : [];
+
       return {
         id: row.id,
         slug: row.slug,
@@ -20,7 +26,8 @@ export const productService = {
         price: row.price,
         tagline: meta.tagline || "",
         skinType: meta.skinType || "",
-        collection: meta.collection || "radiance",
+        collection: meta.collection ?? collections[0] ?? null,
+        collections,
         ingredients: meta.ingredients || [],
         benefits: meta.benefits || [],
         notes: meta.notes || "",
@@ -43,6 +50,12 @@ export const productService = {
     if (error || !data) return undefined;
 
     const meta = (data.ui_metadata as any) || {};
+    const collections = Array.isArray(meta.collections)
+      ? [...new Set(meta.collections.filter(Boolean))]
+      : meta.collection
+        ? [meta.collection]
+        : [];
+
     return {
       id: data.id,
       slug: data.slug,
@@ -51,7 +64,8 @@ export const productService = {
       price: data.price,
       tagline: meta.tagline || "",
       skinType: meta.skinType || "",
-      collection: meta.collection || "radiance",
+      collection: meta.collection ?? collections[0] ?? null,
+      collections,
       ingredients: meta.ingredients || [],
       benefits: meta.benefits || [],
       notes: meta.notes || "",
@@ -69,6 +83,12 @@ export const productService = {
     if (error || !data) return undefined;
 
     const meta = (data.ui_metadata as any) || {};
+    const collections = Array.isArray(meta.collections)
+      ? [...new Set(meta.collections.filter(Boolean))]
+      : meta.collection
+        ? [meta.collection]
+        : [];
+
     return {
       id: data.id,
       slug: data.slug,
@@ -77,7 +97,8 @@ export const productService = {
       price: data.price,
       tagline: meta.tagline || "",
       skinType: meta.skinType || "",
-      collection: meta.collection || "radiance",
+      collection: meta.collection ?? collections[0] ?? null,
+      collections,
       ingredients: meta.ingredients || [],
       benefits: meta.benefits || [],
       notes: meta.notes || "",

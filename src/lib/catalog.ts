@@ -28,6 +28,7 @@ export interface Product {
   slug: string;
   name: string;
   collection: ThemeKey;
+  collections?: ThemeKey[];
   price: number;
   tagline: string;
   description: string;
@@ -54,6 +55,13 @@ export interface Collection {
   image: string;
   eyebrow: string;
   ambience: AmbiencePreset;
+}
+
+export function getProductCollections(product: Product): ThemeKey[] {
+  if (product.collections?.length) {
+    return [...new Set(product.collections)];
+  }
+  return product.collection ? [product.collection] : [];
 }
 
 export const collections: Collection[] = [

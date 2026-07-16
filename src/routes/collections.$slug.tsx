@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import { getCollection, collections, type ThemeKey } from "@/lib/catalog";
+import { getCollection, collections, type ThemeKey, getProductCollections } from "@/lib/catalog";
 import { productService } from "@/services/product.service";
 import { useTheme } from "@/lib/store";
 import { ProductCard } from "@/components/ProductCard";
@@ -13,7 +13,9 @@ export const Route = createFileRoute("/collections/$slug")({
     const collection = getCollection(params.slug);
     if (!collection) throw notFound();
     const allProducts = await productService.getProducts();
-    const items = allProducts.filter((p) => p.collection === params.slug);
+    const items = allProducts.filter((p) =>
+      getProductCollections(p).includes(params.slug as ThemeKey),
+    );
     return { collection, items };
   },
   head: ({ loaderData }) => ({

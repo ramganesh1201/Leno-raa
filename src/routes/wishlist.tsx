@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { useShop, useTheme } from "@/lib/store";
 import { productService } from "@/services/product.service";
+import { getProductCollections } from "@/lib/catalog";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useCart } from "@/hooks/useCart";
@@ -176,7 +177,7 @@ function Wishlist() {
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
-          (p.collection && p.collection.toLowerCase().includes(q)),
+          getProductCollections(p).some((c) => c.toLowerCase().includes(q)),
       );
     }
 

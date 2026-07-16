@@ -7,7 +7,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useNotifications } from "@/hooks/useNotifications";
-import { collections } from "@/lib/catalog";
+import { collections, getProductCollections } from "@/lib/catalog";
 import { productService } from "@/services/product.service";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -70,7 +70,9 @@ export function SiteHeader() {
     ? products.filter(
         (p) =>
           p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.collection.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          getProductCollections(p).some((c) =>
+            c.toLowerCase().includes(searchQuery.toLowerCase()),
+          ) ||
           p.ingredients.some((i) => i.toLowerCase().includes(searchQuery.toLowerCase())),
       )
     : [];
