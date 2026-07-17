@@ -789,7 +789,7 @@ export function SiteHeader() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 220 }}
-              className="fixed inset-y-0 left-0 z-[70] w-[92vw] max-w-[400px] bg-[color:var(--ivory)] rounded-r-[24px] shadow-[20px_0_50px_rgba(0,0,0,0.15)] flex flex-col md:hidden overflow-hidden bg-gradient-to-br from-[color:var(--ivory)] to-[color:var(--cream)] relative"
+              className="fixed inset-y-0 left-0 z-[70] w-[90vw] max-w-[400px] bg-[color:var(--ivory)] rounded-r-[24px] shadow-[20px_0_50px_rgba(0,0,0,0.15)] flex flex-col md:hidden overflow-hidden bg-gradient-to-br from-[color:var(--ivory)] to-[color:var(--cream)]"
             >
               {/* Subtle ambient floating particles */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
@@ -798,34 +798,41 @@ export function SiteHeader() {
                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute top-1/4 left-1/4 w-32 h-32 bg-[color:var(--gold)]/10 rounded-full blur-3xl"
                 />
-                <motion.div 
-                  animate={{ y: [0, 20, 0], opacity: [0.2, 0.5, 0.2] }} 
-                  transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  className="absolute bottom-1/3 right-1/4 w-40 h-40 bg-[color:var(--gold)]/10 rounded-full blur-3xl"
-                />
               </div>
 
+              {/* Header */}
               <div className="flex items-center justify-between p-6 pb-4 border-b border-[color:var(--border)] relative z-10 bg-[color:var(--ivory)]/50 backdrop-blur-md">
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="text-display text-3xl tracking-wide text-[color:var(--foreground)]"
-                >
-                  Lenoraa
-                </motion.span>
+                <div className="flex flex-col">
+                  <motion.span
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-display text-3xl tracking-wide text-[color:var(--foreground)]"
+                  >
+                    Lenoraa
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15 }}
+                    className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)] mt-1"
+                  >
+                    Handcrafted Botanical Soaps
+                  </motion.span>
+                </div>
                 <motion.button
                   initial={{ opacity: 0, rotate: -90 }}
                   animate={{ opacity: 1, rotate: 0 }}
                   whileTap={{ scale: 0.85, rotate: 90 }}
                   transition={{ type: "spring", damping: 20 }}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 -mr-2 text-[color:var(--foreground)] rounded-full transition-colors active:bg-black/5 flex items-center justify-center min-w-[48px] min-h-[48px]"
+                  className="p-2 -mr-2 text-[color:var(--foreground)] rounded-full transition-colors active:bg-[color:var(--foreground)]/5 flex items-center justify-center min-w-[48px] min-h-[48px]"
                 >
                   <X size={28} strokeWidth={1.5} />
                 </motion.button>
               </div>
               
+              {/* Main Navigation List */}
               <div className="flex-1 overflow-y-auto custom-scrollbar relative z-10">
                 <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]" />
                 
@@ -836,188 +843,282 @@ export function SiteHeader() {
                     hidden: { opacity: 0 },
                     show: {
                       opacity: 1,
-                      transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+                      transition: { staggerChildren: 0.05, delayChildren: 0.1 },
                     },
                   }}
-                  className="flex flex-col gap-8 p-6 relative z-10"
+                  className="flex flex-col p-4 gap-1 relative z-10"
                 >
-                  {/* Collections as Hero Cards */}
-                  <div className="flex flex-col gap-3">
-                    <motion.div variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}>
-                      <span className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)] ml-1">
-                        Collections
-                      </span>
-                    </motion.div>
-                    
-                    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 hide-scrollbar">
-                      {collections.map((c, idx) => (
+                  {/* Home */}
+                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                    <Link
+                      to="/"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
+                    >
+                      {pathname === "/" && (
+                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                      )}
+                      <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
+                        <Home size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                          Home
+                        </span>
+                      </div>
+                      <ArrowRight size={16} className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1" />
+                    </Link>
+                  </motion.div>
+
+                  {/* Collections Accordion */}
+                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }} className="flex flex-col">
+                    <button
+                      onClick={() => setIsMobileCollectionsOpen(!isMobileCollectionsOpen)}
+                      className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative w-full text-left"
+                    >
+                      {pathname.includes("/collections") && (
+                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                      )}
+                      <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
+                        <Droplets size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                          Collections
+                        </span>
+                        <span className="text-[12px] text-[color:var(--muted-foreground)]">
+                          Explore Botanical Chapters
+                        </span>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: isMobileCollectionsOpen ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <ChevronDown size={18} strokeWidth={1.5} className="text-[color:var(--muted-foreground)] opacity-50" />
+                      </motion.div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isMobileCollectionsOpen && (
                         <motion.div
-                          key={c.slug}
-                          variants={{ hidden: { opacity: 0, scale: 0.95 }, show: { opacity: 1, scale: 1 } }}
-                          className="shrink-0 w-[240px] snap-center"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                          className="overflow-hidden"
                         >
-                          <Link
-                            to="/collections/$slug"
-                            params={{ slug: c.slug }}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="block p-5 rounded-2xl bg-[color:var(--cream)] border border-[color:var(--border)] transition-all active:scale-[0.98] shadow-sm active:shadow-md relative overflow-hidden group"
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
-                            <div className="flex flex-col h-full relative z-10">
-                              <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--muted-foreground)] mb-3">
-                                Chapter {["I", "II", "III", "IV", "V", "VI", "VII"][idx] || idx + 1}
-                              </span>
-                              <span className="text-display text-2xl text-[color:var(--foreground)] mb-1">
-                                {c.name}
-                              </span>
-                              <span className="text-[11px] uppercase tracking-widest text-[color:var(--muted-foreground)] group-active:text-[color:var(--gold)] transition-colors line-clamp-1">
-                                {c.eyebrow}
-                              </span>
-                              
-                              <div className="mt-4 flex justify-end">
-                                <div className="w-8 h-8 rounded-full bg-[color:var(--background)] flex items-center justify-center shadow-sm group-active:bg-[color:var(--gold)] group-active:text-[color:var(--background)] transition-colors">
-                                  <ArrowRight size={14} />
-                                </div>
-                              </div>
-                            </div>
-                          </Link>
+                          <div className="pl-[3.25rem] flex flex-col gap-1 border-l border-[color:var(--border)]/50 ml-8 mt-1 mb-2 py-2">
+                            {collections.map((c, idx) => (
+                              <motion.div
+                                key={c.slug}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.05 }}
+                              >
+                                <Link
+                                  to="/collections/$slug"
+                                  params={{ slug: c.slug }}
+                                  onClick={() => setMobileMenuOpen(false)}
+                                  className="flex flex-col justify-center py-2 px-3 rounded-lg transition-colors active:bg-[color:var(--foreground)]/5 group/link"
+                                >
+                                  <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--muted-foreground)] group-active/link:text-[color:var(--gold)] transition-colors">
+                                    Chapter {["I", "II", "III", "IV", "V", "VI", "VII"][idx] || idx + 1}
+                                  </span>
+                                  <span className="text-lg text-[color:var(--foreground)] font-medium">
+                                    {c.name}
+                                  </span>
+                                </Link>
+                              </motion.div>
+                            ))}
+                          </div>
                         </motion.div>
-                      ))}
-                    </div>
-                  </div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
 
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-[color:var(--border)] to-transparent" />
+                  {/* Customize */}
+                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                    <Link
+                      to="/customize"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
+                    >
+                      {pathname === "/customize" && (
+                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                      )}
+                      <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
+                        <Sparkles size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                          Customize
+                        </span>
+                      </div>
+                      <ArrowRight size={16} className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1" />
+                    </Link>
+                  </motion.div>
 
-                  {/* Boutique Navigation Cards */}
-                  <div className="flex flex-col gap-4">
-                    <motion.div variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}>
-                      <Link
-                        to="/"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group"
-                      >
-                        <div className="w-12 h-12 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                          <Home size={20} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
-                            Boutique
+                  {/* Story */}
+                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                    <Link
+                      to="/story"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
+                    >
+                      {pathname === "/story" && (
+                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                      )}
+                      <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
+                        <BookOpen size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                          Story
+                        </span>
+                      </div>
+                      <ArrowRight size={16} className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1" />
+                    </Link>
+                  </motion.div>
+
+                  <div className="h-px w-full bg-[color:var(--border)]/50 my-2" />
+
+                  {/* Wishlist */}
+                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                    <Link
+                      to="/wishlist"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
+                    >
+                      {pathname === "/wishlist" && (
+                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                      )}
+                      <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
+                        <Heart size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                          Wishlist
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
+
+                  {/* Cart */}
+                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                    <Link
+                      to="/cart"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
+                    >
+                      {pathname === "/cart" && (
+                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                      )}
+                      <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors relative">
+                        <ShoppingBag size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        {cartCount > 0 && (
+                          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--gold)] text-[10px] text-white">
+                            {cartCount}
                           </span>
-                          <span className="text-[13px] text-[color:var(--muted-foreground)]">
-                            Return to the main boutique
+                        )}
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                          Cart
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
+
+                  {/* Account */}
+                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                    {!user ? (
+                      <Link
+                        to="/auth/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
+                          <User size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        </div>
+                        <div className="flex flex-col flex-1">
+                          <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                            Sign In / Register
                           </span>
                         </div>
                       </Link>
-                    </motion.div>
-
-                    <motion.div variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}>
+                    ) : (
                       <Link
-                        to="/customize"
+                        to="/account"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group"
+                        className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                       >
-                        <div className="w-12 h-12 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                          <Droplets size={20} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        {pathname.includes("/account") && (
+                          <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                        )}
+                        <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
+                          <User size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
-                            Bespoke
+                        <div className="flex flex-col flex-1">
+                          <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                            {displayName || "My Profile"}
                           </span>
-                          <span className="text-[13px] text-[color:var(--muted-foreground)]">
-                            Craft your personalized soap
+                          <span className="text-[12px] text-[color:var(--muted-foreground)]">
+                            Manage your details
                           </span>
                         </div>
                       </Link>
-                    </motion.div>
-
-                    <motion.div variants={{ hidden: { opacity: 0, y: 15 }, show: { opacity: 1, y: 0 } }}>
-                      <Link
-                        to="/story"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group"
-                      >
-                        <div className="w-12 h-12 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                          <BookOpen size={20} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
-                            Our Story
-                          </span>
-                          <span className="text-[13px] text-[color:var(--muted-foreground)]">
-                            Discover our botanical journey
-                          </span>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  </div>
+                    )}
+                  </motion.div>
                 </motion.div>
+
+                {/* Featured Collection */}
+                {collections.length > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="px-6 pb-6 relative z-10"
+                  >
+                    <div className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)] mb-3 pl-1">
+                      Featured
+                    </div>
+                    <Link
+                      to="/collections/$slug"
+                      params={{ slug: collections[0].slug }}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block p-4 rounded-xl border border-[color:var(--border)] bg-[color:var(--background)] shadow-sm active:scale-[0.98] transition-all group overflow-hidden relative"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--cream)] to-transparent pointer-events-none opacity-50" />
+                      <div className="flex items-center justify-between relative z-10">
+                        <div className="flex flex-col">
+                          <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
+                            {collections[0].name}
+                          </span>
+                          <span className="text-[11px] uppercase tracking-widest text-[color:var(--muted-foreground)] line-clamp-1 mt-1">
+                            {collections[0].eyebrow}
+                          </span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full bg-[color:var(--background)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:bg-[color:var(--gold)] group-active:text-[color:var(--background)] transition-colors">
+                          <ArrowRight size={14} />
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                )}
               </div>
 
-              {/* Integrated Auth & Premium Footer */}
+              {/* Compact Inline Footer */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="pt-4 pb-8 px-8 border-t border-[color:var(--border)] bg-[color:var(--cream)]/50 backdrop-blur-sm flex flex-col relative z-10"
+                className="py-4 px-6 border-t border-[color:var(--border)] bg-[color:var(--ivory)] flex items-center justify-between relative z-10 text-[9px] uppercase tracking-widest text-[color:var(--muted-foreground)]"
               >
-                {!user ? (
-                  <div className="flex flex-col gap-3 pb-6 border-b border-[color:var(--border)]/50 mb-6 mt-4">
-                    <span className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)] text-center">
-                      Continue
-                    </span>
-                    <Link
-                      to="/auth/login"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="text-base text-center font-medium text-[color:var(--foreground)] p-3 rounded-xl transition-all active:scale-[0.98] active:bg-[color:var(--gold)]/10 active:text-[color:var(--gold)] border border-[color:var(--border)] bg-[color:var(--background)] shadow-sm"
-                    >
-                      Sign In or Create Account
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3 pb-6 border-b border-[color:var(--border)]/50 mb-6 mt-4">
-                    <span className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)]">
-                      Your Account
-                    </span>
-                    <Link
-                      to="/account"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-4 p-3 rounded-xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 border border-[color:var(--border)] bg-[color:var(--background)] shadow-sm"
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[color:var(--gold)]/10 text-[color:var(--gold)]">
-                        <User size={18} strokeWidth={1.5} />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm font-medium tracking-wide truncate text-[color:var(--foreground)]">
-                          {displayName || "My Profile"}
-                        </div>
-                        <div className="text-[11px] uppercase tracking-widest text-[color:var(--muted-foreground)] truncate mt-0.5">
-                          Manage details
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                )}
-
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <Leaf size={14} className="text-[color:var(--gold)]/70" />
-                    <span className="text-[11px] uppercase tracking-[0.15em] text-[color:var(--muted-foreground)]">
-                      Natural Ingredients
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Sparkles size={14} className="text-[color:var(--gold)]/70" />
-                    <span className="text-[11px] uppercase tracking-[0.15em] text-[color:var(--muted-foreground)]">
-                      Cold Processed
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Heart size={14} className="text-[color:var(--gold)]/70" />
-                    <span className="text-[11px] uppercase tracking-[0.15em] text-[color:var(--muted-foreground)]">
-                      Handcrafted in India
-                    </span>
-                  </div>
-                </div>
+                <span>🌿 Natural</span>
+                <span className="w-1 h-1 rounded-full bg-[color:var(--border)]"></span>
+                <span>🧼 Cold Processed</span>
+                <span className="w-1 h-1 rounded-full bg-[color:var(--border)]"></span>
+                <span>🇮🇳 India</span>
               </motion.div>
             </motion.div>
           </>
