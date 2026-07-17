@@ -1,12 +1,19 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import { getCollection, collections, type ThemeKey, getProductCollections } from "@/lib/catalog";
+import {
+  getCollection,
+  collections,
+  type ThemeKey,
+  getProductCollections,
+  type Product,
+} from "@/lib/catalog";
 import { productService } from "@/services/product.service";
 import { useTheme } from "@/lib/store";
 import { ProductCard } from "@/components/ProductCard";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
+import { MobileCollectionLayout } from "@/components/MobileCollectionLayout";
 
 export const Route = createFileRoute("/collections/$slug")({
   loader: async ({ params }) => {
@@ -54,6 +61,47 @@ function CollectionPage() {
 
   return (
     <div data-theme={collection.slug} className="relative">
+      <div className="hidden md:block">
+        <DesktopCollectionLayout
+          collection={collection}
+          items={items}
+          otherChapters={otherChapters}
+        />
+      </div>
+      <div className="block md:hidden">
+        <MobileCollectionLayout
+          collection={collection}
+          items={items}
+          otherChapters={otherChapters}
+        />
+      </div>
+    </div>
+  );
+}
+
+export interface CollectionData {
+  slug: string;
+  image: string;
+  name: string;
+  eyebrow?: string;
+  scene?: string;
+  environment?: string;
+  purpose?: string;
+  benefits?: string[];
+  ambience?: string;
+}
+
+function DesktopCollectionLayout({
+  collection,
+  items,
+  otherChapters,
+}: {
+  collection: CollectionData;
+  items: Product[];
+  otherChapters: CollectionData[];
+}) {
+  return (
+    <>
       {/* Cinematic environment */}
       <section className="relative flex min-h-[100svh] items-end overflow-hidden pt-24">
         <motion.img
@@ -166,7 +214,7 @@ function CollectionPage() {
             The Bars
           </Reveal>
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((p, i) => (
+            {items.map((p: Product, i: number) => (
               <ProductCard key={p.slug} product={p} index={i} />
             ))}
           </div>
@@ -180,7 +228,7 @@ function CollectionPage() {
             Continue the journey
           </Reveal>
           <div className="grid gap-4 md:grid-cols-4">
-            {otherChapters.map((c) => (
+            {otherChapters.map((c: CollectionData) => (
               <Link
                 key={c.slug}
                 to="/collections/$slug"
@@ -209,6 +257,6 @@ function CollectionPage() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }

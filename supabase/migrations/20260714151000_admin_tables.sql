@@ -3,7 +3,7 @@
 -- 1. Create reviews table
 CREATE TABLE IF NOT EXISTS public.reviews (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    product_id UUID NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
+    product_id TEXT NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS public.collections (
 -- 4. Create product_collections table
 CREATE TABLE IF NOT EXISTS public.product_collections (
     collection_id UUID NOT NULL REFERENCES public.collections(id) ON DELETE CASCADE,
-    product_id UUID NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
+    product_id TEXT NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
     PRIMARY KEY (collection_id, product_id)
 );
 

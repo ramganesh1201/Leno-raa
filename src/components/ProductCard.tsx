@@ -45,7 +45,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     >
       {/* MOBILE LAYOUT */}
       <Link to="/products/$slug" params={{ slug: product.slug }} className="block md:hidden">
-        <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden shadow-md" style={{ background: product.image ? "color-mix(in oklab, var(--ivory) 92%, var(--theme-soft))" : "var(--ivory)" }}>
+        <div
+          className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden shadow-md"
+          style={{
+            background: product.image
+              ? "color-mix(in oklab, var(--ivory) 92%, var(--theme-soft))"
+              : "var(--ivory)",
+          }}
+        >
           {product.image ? (
             <img
               src={resolveImageUrl(product.image)}
@@ -55,31 +62,33 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <span className="text-display text-lg uppercase tracking-[0.3em] text-[color:var(--foreground)]/20">Lenoraa</span>
+              <span className="text-display text-lg uppercase tracking-[0.3em] text-[color:var(--foreground)]/20">
+                Lenoraa
+              </span>
             </div>
           )}
-          
-          <button
+
+          <div
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               if (user) {
                 toggleSupabaseWishlist.mutate(product.id);
               } else {
                 localToggleWishlist(product.slug);
               }
             }}
-            disabled={toggleSupabaseWishlist.isPending}
             aria-label="Save"
-            className="absolute top-3 right-3 z-10 grid h-[44px] w-[44px] place-items-center rounded-full bg-white/80 backdrop-blur-md shadow-sm active:scale-95 transition-transform"
+            className="absolute top-3 right-3 z-10 grid h-[44px] w-[44px] place-items-center rounded-full bg-white/80 backdrop-blur-md shadow-sm active:scale-95 transition-transform cursor-pointer"
           >
             <span
               className={`text-xl leading-none pt-0.5 ${saved ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/40"}`}
             >
               {saved ? "♥" : "♡"}
             </span>
-          </button>
+          </div>
         </div>
-        
+
         <div className="mt-4 px-1 flex flex-col items-center text-center">
           <div className="text-display text-[22px] leading-tight text-[color:var(--foreground)]">
             {product.name || "Product Name"}
@@ -94,7 +103,12 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       </Link>
 
       {/* DESKTOP LAYOUT */}
-      <Link to="/products/$slug" params={{ slug: product.slug }} className="hidden md:block" data-lux-hover>
+      <Link
+        to="/products/$slug"
+        params={{ slug: product.slug }}
+        className="hidden md:block"
+        data-lux-hover
+      >
         <div
           className="soap-bar-wrap aspect-[4/3] relative"
           onPointerMove={onMove}
@@ -133,18 +147,19 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               </div>
             )}
           </div>
-          <button
+
+          <div
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               if (user) {
                 toggleSupabaseWishlist.mutate(product.id);
               } else {
                 localToggleWishlist(product.slug);
               }
             }}
-            disabled={toggleSupabaseWishlist.isPending}
             aria-label="Save"
-            className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white disabled:opacity-50 disabled:hover:bg-white/70"
+            className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white cursor-pointer"
             data-lux-hover
           >
             <span
@@ -152,7 +167,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             >
               {saved ? "♥" : "♡"}
             </span>
-          </button>
+          </div>
         </div>
         <div className="mt-6 flex items-baseline justify-between">
           <div>

@@ -100,8 +100,8 @@ export function LuxuryEditorialCollections() {
                 onMouseEnter={() => handleCardHover(index, collection)}
                 className={`group relative rounded-2xl md:rounded-[24px] overflow-hidden transition-all duration-700 ease-[0.16,1,0.3,1] shadow-sm hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 ${opacityClass} ${
                   isFeatured
-                    ? "col-span-2 sm:col-span-2 lg:col-span-6 lg:row-span-2 h-[350px] md:h-[500px] lg:h-[520px]"
-                    : "col-span-1 sm:col-span-1 lg:col-span-3 lg:row-span-1 h-[200px] lg:h-[248px]"
+                    ? "col-span-2 sm:col-span-2 lg:col-span-6 lg:row-span-2 h-[350px] min-[375px]:h-[370px] md:h-[500px] lg:h-[520px]"
+                    : "col-span-1 sm:col-span-1 lg:col-span-3 lg:row-span-1 h-[250px] min-[375px]:h-[275px] lg:h-[248px]"
                 }`}
               >
                 <Link
@@ -129,47 +129,50 @@ export function LuxuryEditorialCollections() {
                   />
 
                   {/* Readability Layer Gradient */}
-                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none transition-opacity duration-700 opacity-90 group-hover:opacity-100" />
+                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none transition-opacity duration-700 opacity-90 group-hover:opacity-100" />
 
                   {/* Content Wrapper */}
                   <div
-                    className={`relative h-full w-full flex flex-col justify-end z-10 transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:-translate-y-2 ${isFeatured ? "p-8 md:p-10 pb-10" : "p-6 pb-6"}`}
+                    className={`relative h-full w-full flex flex-col justify-end z-10 transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:-translate-y-2 ${isFeatured ? "p-6 min-[375px]:p-8 md:p-10 pb-8 min-[375px]:pb-10" : "p-4 min-[375px]:p-5 min-[412px]:p-6 pb-5 min-[375px]:pb-6"}`}
                   >
-                    <div className="flex items-end justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <span className="block text-[color:var(--gold)]/90 mb-2 md:mb-3 uppercase tracking-[0.25em] text-[10px] font-medium opacity-90 transition-all duration-[400ms] group-hover:opacity-100 group-hover:brightness-110">
+                    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between w-full gap-3 lg:gap-4 h-full lg:h-auto justify-end">
+                      
+                      {/* Text Block */}
+                      <div className="flex flex-col min-w-0 w-full lg:w-auto lg:flex-1">
+                        <span className="block text-[color:var(--gold)]/80 mb-1.5 md:mb-3 uppercase tracking-[0.25em] text-[8px] min-[375px]:text-[9px] lg:text-[10px] font-medium transition-all duration-[400ms] group-hover:opacity-100 group-hover:brightness-110">
                           {collection.eyebrow}
                         </span>
                         <h3
-                          className={`font-serif text-white/95 mb-2 transition-all duration-[400ms] group-hover:text-white truncate ${isFeatured ? "text-3xl md:text-4xl" : "text-2xl"}`}
+                          className={`font-serif text-white/95 mb-1 lg:mb-2 transition-all duration-[400ms] group-hover:text-white line-clamp-2 text-balance leading-[1.15] ${isFeatured ? "text-3xl md:text-4xl" : "text-xl min-[375px]:text-2xl"}`}
                         >
                           {collection.name}
                         </h3>
                         {isFeatured && (
-                          <p className="text-white/90 text-sm max-w-[280px] font-normal leading-[1.8] transition-all duration-[400ms] group-hover:text-white">
+                          <p className="text-white/90 text-[13px] min-[375px]:text-sm max-w-[280px] font-normal leading-[1.6] min-[375px]:leading-[1.8] transition-all duration-[400ms] group-hover:text-white mt-1 min-[375px]:mt-2">
                             {collection.purpose}
                           </p>
                         )}
                         {!isFeatured && (
-                          <p className="text-white/80 text-xs line-clamp-1 font-normal mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms]">
+                          <p className="text-white/80 text-[11px] lg:text-xs line-clamp-1 font-normal mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] hidden lg:block">
                             {collection.purpose}
                           </p>
                         )}
                       </div>
 
                       {/* Ripple Arrow Button */}
-                      <div className="shrink-0 mb-1">
+                      <div className="shrink-0 flex justify-end w-full lg:w-auto mt-2 lg:mt-0 lg:mb-1">
                         <div
-                          className={`flex items-center justify-center rounded-full border border-white/20 transition-all duration-[400ms] group-hover:border-[color:var(--gold)] group-hover:bg-[color:var(--gold)]/20 backdrop-blur-sm relative overflow-hidden ${isFeatured ? "h-12 w-12" : "h-10 w-10"}`}
+                          className={`flex items-center justify-center rounded-full border border-white/20 transition-all duration-[400ms] group-hover:border-[color:var(--gold)] group-hover:bg-[color:var(--gold)]/20 backdrop-blur-sm relative overflow-hidden ${isFeatured ? "h-12 w-12" : "h-[40px] w-[40px] min-[375px]:h-[44px] min-[375px]:w-[44px]"}`}
                         >
                           <span
-                            className={`text-white transition-transform duration-[400ms] group-hover:translate-x-1 group-hover:text-[color:var(--gold)] z-10 ${isFeatured ? "text-base" : "text-sm"}`}
+                            className={`text-white transition-transform duration-[400ms] group-hover:translate-x-1 group-hover:text-[color:var(--gold)] z-10 ${isFeatured ? "text-base" : "text-[13px] min-[375px]:text-sm"}`}
                           >
                             →
                           </span>
                           <div className="absolute inset-0 bg-[color:var(--gold)] scale-0 rounded-full transition-transform duration-[400ms] ease-out group-hover:scale-100 opacity-10" />
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </Link>
