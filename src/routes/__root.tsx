@@ -41,11 +41,21 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
   const router = useRouter();
+
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
+
+  if (
+    typeof window !== "undefined" &&
+    error.message?.includes("Failed to fetch dynamically imported module")
+  ) {
+    window.location.reload();
+    return null;
+  }
+
+  console.error(error);
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 text-center">
       <div className="max-w-md">
@@ -112,6 +122,15 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('vite:preloadError', function(event) {
+                window.location.reload();
+              });
+            `,
+          }}
+        />
       </head>
       <body>
         {children}
