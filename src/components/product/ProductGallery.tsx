@@ -44,7 +44,7 @@ function GalleryImage({
     <motion.div
       ref={ref}
       style={{ opacity, filter: blur }}
-      className="relative w-full h-[75vh] max-md:h-[60vh] min-h-[500px] max-md:min-h-[400px] max-h-[900px] overflow-hidden rounded-[24px] max-md:rounded-[16px] max-md:min-w-[85vw] max-md:snap-center shrink-0 bg-[color:var(--muted)]/20 shadow-xl mb-12 max-md:mb-0 max-md:mr-4 last:mb-0 max-md:last:mr-0 flex items-center justify-center"
+      className="relative w-full h-[60vh] md:h-[75vh] min-h-[400px] md:min-h-[500px] max-h-[900px] overflow-hidden rounded-[16px] md:rounded-[24px] min-w-[85vw] md:min-w-0 snap-center md:snap-align-none shrink-0 bg-[color:var(--muted)]/20 shadow-xl mb-0 md:mb-12 mr-4 md:mr-0 last:mr-0 md:last:mr-0 md:last:mb-0 flex items-center justify-center"
     >
       {!loaded && !error && (
         <div className="absolute inset-0 flex items-center justify-center bg-[color:var(--background)]">
@@ -84,7 +84,7 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
   // If the product has few images, we might want to duplicate them or rely on the storytelling sequence
   // But for now, we just map over whatever images are provided.
   return (
-    <div className="flex flex-col w-full max-md:flex-row max-md:overflow-x-auto max-md:snap-x max-md:snap-mandatory custom-scrollbar max-md:pb-4">
+    <div className="flex flex-row md:flex-col w-full overflow-x-auto md:overflow-x-visible snap-x md:snap-none snap-mandatory md:snap-normal custom-scrollbar pb-4 md:pb-0">
       {images.map((img, idx) => (
         <GalleryImage
           key={`${img}-${idx}`}

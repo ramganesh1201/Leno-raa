@@ -47,9 +47,10 @@ function Index() {
   return (
     <div className="relative">
       {/* HERO */}
+      {/* DESKTOP HERO */}
       <section
         ref={heroRef}
-        className="relative flex min-h-[100svh] max-md:min-h-[75svh] items-center overflow-hidden pt-24 max-md:pt-16"
+        className="relative hidden md:flex min-h-[100svh] items-center overflow-hidden pt-24"
       >
         <motion.img
           src={heroIntro}
@@ -62,16 +63,16 @@ function Index() {
         <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--ivory)]/40 via-transparent to-[color:var(--ivory)]" />
         <motion.div
           style={{ opacity: heroOpacity }}
-          className="relative z-10 mx-auto grid w-full max-w-[1400px] gap-10 max-md:gap-6 px-6 pb-24 md:px-12"
+          className="relative z-10 mx-auto grid w-full max-w-[1400px] gap-10 px-12 pb-24"
         >
           <Reveal
             preset="label"
             delay={0.1}
-            className="text-eyebrow text-[color:var(--foreground)]/70 max-md:text-center"
+            className="text-eyebrow text-[color:var(--foreground)]/70 text-left"
           >
             Est. Nature · Doctor Formulated
           </Reveal>
-          <h1 className="text-display flex flex-col font-serif text-3xl max-md:text-4xl max-md:items-center md:text-4xl leading-[1.05] tracking-normal sm:text-4xl md:max-w-[55%]">
+          <h1 className="text-display flex flex-col font-serif text-4xl items-start leading-[1.05] tracking-normal max-w-[55%]">
             <Reveal preset="heading" delay={0.2} className="text-left">
               Nature
             </Reveal>
@@ -90,7 +91,7 @@ function Index() {
             as="p"
             preset="paragraph"
             delay={0.8}
-            className="mt-8 max-w-lg text-lg leading-relaxed tracking-wide text-[color:var(--foreground)]/70 max-md:text-center"
+            className="mt-8 max-w-lg text-lg leading-relaxed tracking-wide text-[color:var(--foreground)]/70 text-left"
           >
             Five botanical chapters. Eleven handcrafted soaps. A slow, cold-processed ritual for the
             senses.
@@ -99,23 +100,77 @@ function Index() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
-            className="flex flex-wrap gap-4 max-md:flex-col max-md:w-full"
+            className="flex flex-row flex-wrap gap-4 w-auto"
           >
             <Magnetic>
               <Link
                 to="/collections/$slug"
                 params={{ slug: "radiance" }}
-                className="btn-lux max-md:w-full max-md:justify-center"
+                className="btn-lux w-auto justify-center"
               >
                 Enter the world
               </Link>
             </Magnetic>
             <Magnetic>
-              <Link to="/customize" className="btn-ghost-lux max-md:w-full max-md:justify-center">
+              <Link to="/customize" className="btn-ghost-lux w-auto justify-center">
                 Design your soap
               </Link>
             </Magnetic>
           </motion.div>
+        </motion.div>
+      </section>
+
+      {/* MOBILE HERO */}
+      <section className="relative flex md:hidden min-h-[100dvh] flex-col items-center justify-between pt-[calc(72px+var(--safe-top,0px)+32px)] pb-[calc(var(--safe-bottom,0px)+32px)] px-6 overflow-hidden bg-gradient-to-b from-[color:var(--ivory)] to-[color:var(--ivory)]">
+        <div className="flex flex-col items-center text-center w-full relative z-10 space-y-4">
+          <Reveal preset="label" delay={0.1} className="text-eyebrow text-[color:var(--foreground)]/70">
+            Est. Nature · Doctor Formulated
+          </Reveal>
+          <h1 className="text-display flex flex-col font-serif text-[44px] leading-[1.05] tracking-normal items-center">
+            <Reveal preset="heading" delay={0.2}>
+              Nature
+            </Reveal>
+            <Reveal preset="heading" delay={0.3} className="text-[color:var(--foreground)]/90">
+              crafted into
+            </Reveal>
+            <Reveal preset="heading" delay={0.4}>
+              luxury.
+            </Reveal>
+          </h1>
+          <Reveal as="p" preset="paragraph" delay={0.5} className="max-w-[280px] text-[16px] leading-relaxed tracking-wide text-[color:var(--foreground)]/70">
+            Five botanical chapters. Eleven handcrafted soaps. A slow, cold-processed ritual.
+          </Reveal>
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="relative flex-1 w-full flex items-center justify-center my-8 max-h-[45vh]"
+        >
+          <img
+            src={heroIntro}
+            alt="Handcrafted soap"
+            className="w-full h-full object-contain drop-shadow-2xl"
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full flex flex-col gap-4 relative z-10"
+        >
+          <Link
+            to="/collections/$slug"
+            params={{ slug: "radiance" }}
+            className="btn-lux"
+          >
+            Enter the world
+          </Link>
+          <Link to="/customize" className="btn-ghost-lux">
+            Design your soap
+          </Link>
         </motion.div>
       </section>
 
@@ -141,10 +196,10 @@ function Index() {
                         as="h2"
                         text="The Atelier's Favourites"
                         delay={0.1}
-                        className="text-display mt-4 text-3xl max-md:text-4xl md:text-4xl"
+                        className="text-display mt-4 text-4xl"
                       />
                     </div>
-                    <div className="grid gap-10 md:grid-cols-3 max-md:gap-4 max-md:grid-cols-1">
+                    <div className="grid gap-4 md:gap-10 grid-cols-1 md:grid-cols-3">
                       {featured.map((p, i) => (
                         <ProductCard key={p.slug} product={p} index={i} />
                       ))}
@@ -155,7 +210,7 @@ function Index() {
                 {/* TRUST PILLARS */}
                 <section className="relative py-32">
                   <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-                    <div className="mb-16 max-w-2xl max-md:text-center">
+                    <div className="mb-16 max-w-2xl text-center md:text-left">
                       <Reveal
                         preset="label"
                         className="text-eyebrow text-[color:var(--muted-foreground)]"
@@ -166,21 +221,21 @@ function Index() {
                         as="h2"
                         text="Why we pour by hand."
                         delay={0.1}
-                        className="text-display mt-4 text-3xl max-md:text-4xl md:text-4xl"
+                        className="text-display mt-4 text-4xl"
                       />
                     </div>
-                    <div className="grid gap-px overflow-hidden rounded-md bg-[color:var(--border)] md:grid-cols-3 max-md:flex max-md:overflow-x-auto max-md:snap-x max-md:snap-mandatory custom-scrollbar">
+                    <div className="flex overflow-x-auto snap-x snap-mandatory md:grid md:overflow-hidden md:snap-none gap-px rounded-md bg-[color:var(--border)] md:grid-cols-3 custom-scrollbar">
                       {trustPillars.map((p, i) => (
                         <Reveal
                           key={p.title}
                           delay={i * 0.05}
-                          className="max-md:min-w-[85vw] max-md:snap-center flex-1"
+                          className="min-w-[85vw] md:min-w-0 snap-center md:snap-align-none flex-1"
                         >
-                          <div className="group relative bg-[color:var(--card)] p-10 max-md:p-8 h-full">
+                          <div className="group relative bg-[color:var(--card)] p-8 md:p-10 h-full">
                             <Reveal
                               preset="label"
                               delay={i * 0.1}
-                              className="text-eyebrow mb-6 max-md:mb-4 text-[color:var(--gold)]"
+                              className="text-eyebrow mb-4 md:mb-6 text-[color:var(--gold)]"
                             >
                               0{i + 1}
                             </Reveal>
@@ -213,7 +268,7 @@ function Index() {
                     <SplitText
                       as="h2"
                       text="Begin where the light is warmest."
-                      className="text-display text-3xl max-md:text-4xl md:text-4xl leading-tight"
+                      className="text-display text-4xl leading-tight"
                     />
                     <Reveal
                       as="p"
@@ -223,12 +278,12 @@ function Index() {
                     >
                       Step into the first chapter — the Radiance collection.
                     </Reveal>
-                    <div className="mt-10 flex justify-center gap-3 max-md:flex-col max-md:w-full">
+                    <div className="mt-10 flex justify-center gap-3 flex-col md:flex-row w-full md:w-auto">
                       <Magnetic>
                         <Link
                           to="/collections/$slug"
                           params={{ slug: "radiance" }}
-                          className="btn-lux max-md:w-full max-md:justify-center"
+                          className="btn-lux w-full md:w-auto justify-center"
                         >
                           Begin the ritual
                         </Link>
@@ -236,7 +291,7 @@ function Index() {
                       <Magnetic>
                         <Link
                           to="/customize"
-                          className="btn-ghost-lux max-md:w-full max-md:justify-center"
+                          className="btn-ghost-lux w-full md:w-auto justify-center"
                         >
                           Design your own
                         </Link>

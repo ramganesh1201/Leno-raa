@@ -95,7 +95,7 @@ function CustomizePage() {
           Every choice reshapes the atmosphere. Select your perfect combination.
         </Reveal>
 
-        <div className="mt-16 grid gap-16 max-md:gap-10 md:grid-cols-[1.1fr_1fr]">
+        <div className="mt-16 grid gap-10 md:gap-16 md:grid-cols-[1.1fr_1fr]">
           {/* Preview */}
           <div className="sticky top-32 self-start">
             <div className="relative">
@@ -121,7 +121,7 @@ function CustomizePage() {
                 </div>
                 <div className="text-display text-2xl">₹{price}</div>
               </div>
-              <div className="mt-8 flex flex-wrap gap-3 max-md:flex-col max-md:w-full">
+              <div className="mt-8 flex flex-col md:flex-row flex-wrap gap-3 w-full md:w-auto">
                 <Magnetic>
                   <button
                     disabled={isSaving}
@@ -154,7 +154,7 @@ function CustomizePage() {
                         console.error("Failed to save customization:", err);
                       }
                     }}
-                    className="btn-ghost-lux max-md:w-full max-md:justify-center"
+                    className="btn-ghost-lux w-full md:w-auto justify-center"
                   >
                     {saved ? "Saved ♥" : isSaving ? "Saving..." : "Save design"}
                   </button>
@@ -198,7 +198,7 @@ function CustomizePage() {
                         console.error("Failed to add to cart:", err);
                       }
                     }}
-                    className="btn-lux max-md:w-full max-md:justify-center"
+                    className="btn-lux w-full md:w-auto justify-center"
                   >
                     {added ? "Added ✓" : isAdding ? "Adding..." : "Add to bag"}
                   </button>

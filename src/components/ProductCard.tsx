@@ -43,7 +43,58 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       className="group relative"
       data-theme={product.collection}
     >
-      <Link to="/products/$slug" params={{ slug: product.slug }} className="block" data-lux-hover>
+      {/* MOBILE LAYOUT */}
+      <Link to="/products/$slug" params={{ slug: product.slug }} className="block md:hidden">
+        <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden shadow-md" style={{ background: product.image ? "color-mix(in oklab, var(--ivory) 92%, var(--theme-soft))" : "var(--ivory)" }}>
+          {product.image ? (
+            <img
+              src={resolveImageUrl(product.image)}
+              alt={product.name}
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-500 active:scale-[0.98]"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <span className="text-display text-lg uppercase tracking-[0.3em] text-[color:var(--foreground)]/20">Lenoraa</span>
+            </div>
+          )}
+          
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              if (user) {
+                toggleSupabaseWishlist.mutate(product.id);
+              } else {
+                localToggleWishlist(product.slug);
+              }
+            }}
+            disabled={toggleSupabaseWishlist.isPending}
+            aria-label="Save"
+            className="absolute top-3 right-3 z-10 grid h-[44px] w-[44px] place-items-center rounded-full bg-white/80 backdrop-blur-md shadow-sm active:scale-95 transition-transform"
+          >
+            <span
+              className={`text-xl leading-none pt-0.5 ${saved ? "text-[color:var(--gold)]" : "text-[color:var(--charcoal)]/40"}`}
+            >
+              {saved ? "♥" : "♡"}
+            </span>
+          </button>
+        </div>
+        
+        <div className="mt-4 px-1 flex flex-col items-center text-center">
+          <div className="text-display text-[22px] leading-tight text-[color:var(--foreground)]">
+            {product.name || "Product Name"}
+          </div>
+          <div className="mt-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--muted-foreground)]">
+            {product.tagline || "Collection Chapter"}
+          </div>
+          <div className="mt-2 text-[14px] tracking-widest text-[color:var(--foreground)]/90 font-medium">
+            ₹{product.price || "---"}
+          </div>
+        </div>
+      </Link>
+
+      {/* DESKTOP LAYOUT */}
+      <Link to="/products/$slug" params={{ slug: product.slug }} className="hidden md:block" data-lux-hover>
         <div
           className="soap-bar-wrap aspect-[4/3] relative"
           onPointerMove={onMove}
@@ -93,7 +144,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             }}
             disabled={toggleSupabaseWishlist.isPending}
             aria-label="Save"
-            className="absolute top-4 right-4 z-10 grid h-9 w-9 max-md:h-12 max-md:w-12 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white disabled:opacity-50 disabled:hover:bg-white/70"
+            className="absolute top-4 right-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/70 backdrop-blur transition hover:bg-white disabled:opacity-50 disabled:hover:bg-white/70"
             data-lux-hover
           >
             <span

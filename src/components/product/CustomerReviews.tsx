@@ -72,14 +72,14 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
           </span>
         </div>
         <div
-          className={`grid md:grid-cols-[300px_1fr] gap-16 ${!isMobileOpen ? "max-md:hidden" : ""}`}
+          className={`grid md:grid-cols-[300px_1fr] gap-16 ${!isMobileOpen ? "hidden md:grid" : ""}`}
         >
           {/* Summary */}
           <div>
             <SplitText
               as="h2"
               text="Customer Reviews"
-              className="text-display text-3xl mb-6 max-md:hidden"
+              className="text-display text-3xl mb-6 hidden md:block"
             />
             <div className="flex items-end gap-4 mb-8">
               <div className="text-6xl font-serif text-[color:var(--gold)]">{averageRating}</div>

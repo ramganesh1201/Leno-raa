@@ -138,7 +138,105 @@ function ProductPage() {
       <div className="relative pt-32 pb-24">
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
           {/* Two Column Layout */}
-          <div className="grid gap-16 max-md:gap-8 lg:grid-cols-[48%_1fr]">
+          {/* MOBILE LAYOUT */}
+          <div className="flex flex-col md:hidden w-full pb-[calc(100px+var(--safe-bottom,0px))]">
+            <Reveal preset="label" className="mb-4">
+              <Link
+                to="/collections/$slug"
+                params={{ slug: collection.slug }}
+                className="text-eyebrow text-[color:var(--muted-foreground)]"
+              >
+                ← {collection.name}
+              </Link>
+            </Reveal>
+            
+            {/* 1. Gallery */}
+            <div className="w-full -mx-6 px-6 mb-8">
+              <ProductGallery
+                images={galleryImages}
+                productName={product.name}
+                benefits={<FloatingBenefits product={product} />}
+              />
+            </div>
+            
+            {/* 2. Product Name */}
+            <SplitText
+              as="h1"
+              text={product.name}
+              delay={0.1}
+              className="text-display text-4xl leading-[1.1] mb-2"
+            />
+            
+            {/* 3. Rating */}
+            <div className="mb-6">
+              <RatingStars rating={4.8} count={248} onReviewsClick={scrollToReviews} />
+            </div>
+            
+            {/* 4. Price */}
+            <div className="flex flex-col gap-1 border-b border-[color:var(--border)] pb-8 mb-8">
+              <div className="text-display text-[32px] text-[color:var(--foreground)]">
+                ₹{product.price}
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                100g · Cold-pressed
+              </div>
+            </div>
+            
+            {/* 5. Ingredients */}
+            <div className="mb-10">
+              <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--gold)]">
+                Key Ingredients
+              </Reveal>
+              <InteractiveIngredients ingredients={product.ingredients} />
+            </div>
+            
+            {/* 6. Description */}
+            <div className="mb-10">
+              <Reveal
+                as="p"
+                preset="subheading"
+                delay={0.2}
+                className="text-lg italic text-[color:var(--muted-foreground)] mb-4"
+              >
+                {product.tagline}
+              </Reveal>
+              <Reveal
+                as="p"
+                preset="paragraph"
+                delay={0.3}
+                className="text-[15px] leading-relaxed text-[color:var(--foreground)]/80"
+              >
+                {product.description}
+              </Reveal>
+            </div>
+            
+            {/* 7. Customization & Actions */}
+            <div className="mb-10">
+              <ProductActions
+                onAdd={handleAdd}
+                isAdding={addToCart.isPending}
+                onSave={() => {
+                  if (user) {
+                    toggleSupabaseWishlist.mutate(product.id);
+                  } else {
+                    toggleLocalWishlist(product.slug);
+                  }
+                }}
+                isSaving={toggleSupabaseWishlist.isPending}
+                isSaved={saved}
+                onBuyNow={handleBuyNow}
+              />
+            </div>
+            
+            <TrustBadges />
+            
+            <div className="mt-12">
+              <ExpandableInfo items={expandableItems} />
+            </div>
+          </div>
+
+          {/* DESKTOP LAYOUT */}
+          <div className="hidden md:grid gap-16 lg:grid-cols-[48%_1fr]">
             {/* Left Column: Gallery (Scrolling Cinematic) */}
             <div className="w-full">
               <ProductGallery
@@ -168,7 +266,7 @@ function ProductPage() {
                 as="h1"
                 text={product.name}
                 delay={0.1}
-                className="text-display text-4xl max-md:text-4xl md:text-5xl lg:text-6xl leading-[0.95]"
+                className="text-display text-4xl md:text-5xl lg:text-6xl leading-[0.95]"
               />
 
               <Reveal

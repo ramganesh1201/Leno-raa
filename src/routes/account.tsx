@@ -76,7 +76,7 @@ export function AccountShell({
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <div className="grid gap-12 md:grid-cols-[240px_1fr] items-start">
           <aside className="md:sticky md:top-32 w-full pb-6 md:pb-0">
-            <ul className="flex md:flex-col gap-2 max-md:grid max-md:grid-cols-2 max-md:gap-3">
+            <ul className="grid md:flex md:flex-col grid-cols-2 md:grid-cols-none gap-3 md:gap-2">
               {nav.map(({ to, label, icon: Icon }) => {
                 const isActive = pathname === to || pathname.startsWith(to + "/");
                 // exception for exact match on /account
@@ -89,10 +89,10 @@ export function AccountShell({
                   <li key={to} className="relative">
                     <Link
                       to={to}
-                      className={`relative z-10 flex md:items-center gap-3 px-4 py-3 max-md:p-4 max-md:flex-col max-md:items-start max-md:justify-center rounded-xl max-md:rounded-2xl transition-all duration-300 max-md:border ${
+                      className={`relative z-10 flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-3 p-4 md:px-4 md:py-3 rounded-2xl md:rounded-xl transition-all duration-300 border md:border-none ${
                         isActuallyActive
-                          ? "text-[color:var(--gold)] max-md:bg-[color:var(--gold)]/5 max-md:border-[color:var(--gold)]/30"
-                          : "text-[color:var(--foreground)] hover:text-[color:var(--gold)] max-md:bg-[color:var(--background)] max-md:border-[color:var(--border)] max-md:shadow-sm"
+                          ? "text-[color:var(--gold)] bg-[color:var(--gold)]/5 md:bg-transparent border-[color:var(--gold)]/30 md:border-transparent"
+                          : "text-[color:var(--foreground)] hover:text-[color:var(--gold)] bg-[color:var(--background)] md:bg-transparent border-[color:var(--border)] md:border-transparent shadow-sm md:shadow-none"
                       }`}
                     >
                       <Icon
@@ -104,12 +104,12 @@ export function AccountShell({
                             : "text-[color:var(--muted-foreground)]"
                         }
                       />
-                      <span className="text-sm font-medium tracking-wide max-md:mt-1">{label}</span>
+                      <span className="text-sm font-medium tracking-wide mt-1 md:mt-0">{label}</span>
                     </Link>
                     {isActuallyActive && (
                       <motion.div
                         layoutId="account-nav-active"
-                        className="absolute inset-0 bg-[color:var(--gold)]/10 border border-[color:var(--gold)]/20 rounded-xl max-md:hidden"
+                        className="absolute inset-0 bg-[color:var(--gold)]/10 border border-[color:var(--gold)]/20 rounded-xl hidden md:block"
                         transition={{ type: "spring", stiffness: 350, damping: 30 }}
                       />
                     )}

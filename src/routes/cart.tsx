@@ -183,7 +183,7 @@ function CartPage() {
             </Link>
           </motion.div>
         ) : (
-          <div className="mt-16 flex flex-col lg:flex-row gap-16 max-md:gap-10 relative">
+          <div className="mt-16 flex flex-col lg:flex-row gap-10 md:gap-16 relative">
             <div className="flex-1 w-full">
               <ul className="flex flex-col gap-6">
                 <AnimatePresence initial={false}>
@@ -223,9 +223,9 @@ function CartPage() {
                           overflow: "hidden",
                         }}
                         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                        className="flex flex-col sm:flex-row max-md:flex-row gap-6 max-md:gap-4 p-4 sm:p-6 rounded-[20px] max-md:rounded-2xl surface-glass border border-[color:var(--border)] hover:border-[color:var(--gold)]/30 transition-colors duration-500"
+                        className="flex flex-row gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl md:rounded-[20px] surface-glass border border-[color:var(--border)] hover:border-[color:var(--gold)]/30 transition-colors duration-500"
                       >
-                        <div className="h-48 sm:h-40 w-full sm:w-[140px] max-md:h-28 max-md:w-28 flex-shrink-0 rounded-[12px] overflow-hidden bg-black/5 relative">
+                        <div className="h-28 sm:h-40 w-28 sm:w-[140px] flex-shrink-0 rounded-[12px] overflow-hidden bg-black/5 relative">
                           {image ? (
                             <ImageLoader src={resolveImageUrl(image)} alt={name} />
                           ) : (
@@ -236,25 +236,25 @@ function CartPage() {
                           )}
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
-                          <div className="flex justify-between items-start max-md:flex-col max-md:gap-1">
+                          <div className="flex flex-col md:flex-row justify-between items-start gap-1 md:gap-0">
                             <div>
-                              <div className="text-display text-2xl text-[color:var(--foreground)] max-md:text-lg leading-tight">
+                              <div className="text-display text-lg md:text-2xl text-[color:var(--foreground)] leading-tight">
                                 {name}
                               </div>
                               {product ? (
-                                <div className="text-xs uppercase tracking-[0.24em] text-[color:var(--gold)] mt-1 max-md:text-[10px]">
+                                <div className="text-[10px] md:text-xs uppercase tracking-[0.24em] text-[color:var(--gold)] mt-1">
                                   {product.collection}
                                 </div>
                               ) : null}
                             </div>
-                            <div className="text-right max-md:text-left">
-                              <div className="text-lg tracking-widest text-[color:var(--foreground)] font-medium max-md:text-base">
+                            <div className="text-left md:text-right">
+                              <div className="text-base md:text-lg tracking-widest text-[color:var(--foreground)] font-medium">
                                 ₹{price * item.quantity}
                               </div>
                             </div>
                           </div>
 
-                          <div className="my-4 max-md:my-2 text-xs text-[color:var(--muted-foreground)] flex flex-wrap gap-x-4 gap-y-2 max-md:hidden">
+                          <div className="my-2 md:my-4 text-xs text-[color:var(--muted-foreground)] hidden md:flex flex-wrap gap-x-4 gap-y-2">
                             {product ? (
                               <>
                                 <span className="flex items-center gap-1.5">
@@ -327,7 +327,7 @@ function CartPage() {
                                     });
                                   else localUpdateQuantity(item.id, item.quantity - 1);
                                 }}
-                                className="w-8 h-8 max-md:w-10 max-md:h-10 rounded-full flex items-center justify-center transition-colors hover:text-black"
+                                className="w-12 h-12 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-colors hover:text-black"
                                 aria-label="Decrease"
                                 disabled={user ? updateQuantity.isPending : false}
                               >
@@ -347,7 +347,7 @@ function CartPage() {
                                     });
                                   else localUpdateQuantity(item.id, item.quantity + 1);
                                 }}
-                                className="w-8 h-8 max-md:w-10 max-md:h-10 rounded-full flex items-center justify-center transition-colors hover:text-black"
+                                className="w-10 h-10 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-colors hover:text-black"
                                 aria-label="Increase"
                                 disabled={user ? updateQuantity.isPending : false}
                               >
@@ -358,7 +358,7 @@ function CartPage() {
                             <div className="flex items-center gap-3">
                               <button
                                 onClick={() => handleSaveForLater(item.id, product?.id)}
-                                className="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)]"
+                                className="flex items-center gap-1.5 py-3 md:py-0 text-xs uppercase tracking-[0.1em] text-[color:var(--muted-foreground)] transition hover:text-[color:var(--gold)]"
                               >
                                 <Heart size={14} />
                                 <span className="hidden sm:inline">Save for later</span>
@@ -369,7 +369,7 @@ function CartPage() {
                                   if (user) removeFromCart.mutate(item.id);
                                   else localRemoveFromCart(item.id);
                                 }}
-                                className="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] text-[color:var(--muted-foreground)] transition hover:text-red-500 max-md:py-2"
+                                className="flex items-center gap-1.5 py-3 md:py-0 text-xs uppercase tracking-[0.1em] text-[color:var(--muted-foreground)] transition hover:text-red-500"
                               >
                                 <Trash2 size={14} />
                                 <span className="hidden sm:inline">Remove</span>
@@ -415,10 +415,10 @@ function CartPage() {
             </div>
 
             <div className="w-full lg:w-[380px] shrink-0">
-              <div className="sticky top-32 surface-glass p-8 rounded-[20px] border border-[color:var(--border)] shadow-xl max-md:fixed max-md:bottom-0 max-md:left-0 max-md:w-full max-md:z-[100] max-md:rounded-none max-md:rounded-t-2xl max-md:p-4 max-md:pb-6 max-md:bg-[color:var(--background)] max-md:border-t max-md:border-l-0 max-md:border-r-0 max-md:border-b-0 max-md:shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-                <h2 className="text-display mb-8 text-2xl max-md:hidden">Order Summary</h2>
+              <div className="fixed md:sticky bottom-0 md:bottom-auto left-0 md:left-auto top-auto md:top-32 w-full md:w-auto z-[100] md:z-auto surface-glass bg-[color:var(--background)]/90 backdrop-blur-xl md:bg-transparent px-4 pt-4 pb-[calc(16px+var(--safe-bottom,0px))] md:p-8 rounded-none rounded-t-2xl md:rounded-none md:rounded-[20px] border-t border-b-0 border-l-0 border-r-0 md:border md:border-[color:var(--border)] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] md:shadow-xl">
+                <h2 className="text-display mb-8 text-2xl hidden md:block">Order Summary</h2>
 
-                <div className="space-y-4 border-b border-[color:var(--border)] pb-6 text-sm tracking-widest text-[color:var(--muted-foreground)] max-md:hidden">
+                <div className="space-y-4 border-b border-[color:var(--border)] pb-6 text-sm tracking-widest text-[color:var(--muted-foreground)] hidden md:block">
                   <div className="flex justify-between">
                     <span>Items ({cartQuantity})</span>
                     <span className="text-[color:var(--foreground)]">₹{subtotal}</span>
@@ -433,16 +433,16 @@ function CartPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 max-md:mt-0 max-md:mb-3 flex justify-between items-end max-md:items-center">
+                <div className="mt-0 md:mt-6 mb-3 md:mb-0 flex justify-between items-center md:items-end">
                   <span className="text-sm tracking-widest uppercase text-[color:var(--muted-foreground)]">
                     Total
                   </span>
-                  <span className="text-2xl tracking-widest text-[color:var(--foreground)] font-medium max-md:text-xl">
+                  <span className="text-xl md:text-2xl tracking-widest text-[color:var(--foreground)] font-medium">
                     ₹{subtotal + 50}
                   </span>
                 </div>
 
-                <div className="mt-8 space-y-3 max-md:hidden">
+                <div className="mt-8 space-y-3 hidden md:block">
                   <div className="flex items-center gap-2 text-xs text-[color:var(--muted-foreground)]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--gold)] shrink-0" />
                     Luxury packaging included
@@ -459,7 +459,7 @@ function CartPage() {
 
                 <button
                   onClick={handleCheckout}
-                  className="btn-lux mt-10 max-md:mt-0 w-full justify-center max-md:py-4 shadow-lg hover:shadow-[color:var(--gold)]/20"
+                  className="btn-lux mt-0 md:mt-10 w-full justify-center py-4 md:py-3 shadow-lg hover:shadow-[color:var(--gold)]/20"
                 >
                   Proceed to Checkout
                 </button>

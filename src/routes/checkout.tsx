@@ -103,11 +103,11 @@ function CheckoutPage() {
           className="text-display mt-3 text-3xl md:text-4xl"
         />
 
-        <div className="mt-16 max-md:mt-8 flex flex-col lg:flex-row gap-16 max-md:gap-8 relative max-md:flex-col-reverse">
+        <div className="mt-8 md:mt-16 flex flex-col lg:flex-row gap-8 md:gap-16 relative">
           <div className="flex-1 w-full">
             <form
               onSubmit={handleSubmit}
-              className="space-y-6 surface-glass p-8 max-md:p-5 rounded-[20px] border border-[color:var(--border)]"
+              className="space-y-6 surface-glass p-5 md:p-8 rounded-[20px] border border-[color:var(--border)]"
             >
               <div className="space-y-4">
                 <h3 className="text-display text-xl mb-4">Contact Information</h3>
@@ -124,7 +124,7 @@ function CheckoutPage() {
                       name="full_name"
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.full_name}
                       onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))}
                       autoComplete="name"
@@ -142,7 +142,7 @@ function CheckoutPage() {
                       name="phone"
                       required
                       type="tel"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.phone}
                       onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
                       autoComplete="tel"
@@ -165,7 +165,7 @@ function CheckoutPage() {
                     name="address"
                     required
                     type="text"
-                    className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                    className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                     value={formData.address}
                     onChange={(e) => setFormData((p) => ({ ...p, address: e.target.value }))}
                     autoComplete="street-address"
@@ -185,7 +185,7 @@ function CheckoutPage() {
                       name="city"
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.city}
                       onChange={(e) => setFormData((p) => ({ ...p, city: e.target.value }))}
                       autoComplete="address-level2"
@@ -203,7 +203,7 @@ function CheckoutPage() {
                       name="state"
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.state}
                       onChange={(e) => setFormData((p) => ({ ...p, state: e.target.value }))}
                       autoComplete="address-level1"
@@ -221,7 +221,7 @@ function CheckoutPage() {
                       name="pincode"
                       required
                       type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-3 max-md:p-4 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
                       value={formData.pincode}
                       onChange={(e) => setFormData((p) => ({ ...p, pincode: e.target.value }))}
                       autoComplete="postal-code"
@@ -230,11 +230,11 @@ function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="pt-8 max-md:pt-4">
+              <div className="pt-4 md:pt-8">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-lux w-full justify-center text-lg py-4 max-md:py-5 shadow-lg"
+                  className="btn-lux w-full justify-center text-lg py-5 md:py-4 shadow-lg"
                 >
                   {isSubmitting ? "Processing..." : "Continue to Payment"}
                 </button>
@@ -253,10 +253,10 @@ function CheckoutPage() {
 
           <div className="w-full lg:w-[380px] shrink-0">
             <details
-              className="sticky top-32 group surface-glass p-8 max-md:p-5 rounded-[20px] max-md:rounded-2xl border border-[color:var(--border)] shadow-xl"
+              className="sticky top-32 group surface-glass p-5 md:p-8 rounded-2xl md:rounded-[20px] border border-[color:var(--border)] shadow-xl"
               open
             >
-              <summary className="text-display mb-8 max-md:mb-4 text-2xl flex justify-between items-center cursor-pointer list-none">
+              <summary className="text-display mb-4 md:mb-8 text-2xl flex justify-between items-center cursor-pointer list-none">
                 Order Summary
                 <span className="md:hidden transition group-open:rotate-180">+</span>
               </summary>
@@ -298,7 +298,7 @@ function CheckoutPage() {
                 <span className="text-sm tracking-widest uppercase text-[color:var(--muted-foreground)]">
                   Total
                 </span>
-                <span className="text-2xl tracking-widest text-[color:var(--foreground)] font-medium max-md:text-xl">
+                <span className="text-xl md:text-2xl tracking-widest text-[color:var(--foreground)] font-medium">
                   ₹{total}
                 </span>
               </div>

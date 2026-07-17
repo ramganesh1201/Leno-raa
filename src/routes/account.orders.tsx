@@ -201,11 +201,11 @@ function OrdersPage() {
               ))}
             </div>
 
-            <div className="mt-6 flex flex-wrap justify-end gap-4 max-md:flex-col max-md:gap-3">
+            <div className="mt-6 flex flex-col md:flex-row flex-wrap justify-end gap-3 md:gap-4">
               <Link
                 to="/account/orders/$orderId"
                 params={{ orderId: order.id }}
-                className="text-xs uppercase tracking-widest text-[color:var(--foreground)] hover:text-[color:var(--gold)] transition-colors flex items-center gap-1 font-medium max-md:justify-center max-md:p-3 max-md:border max-md:border-[color:var(--border)] max-md:rounded-lg"
+                className="text-xs uppercase tracking-widest text-[color:var(--foreground)] hover:text-[color:var(--gold)] transition-colors flex items-center gap-1 font-medium justify-center md:justify-start p-3 md:p-0 border md:border-none border-[color:var(--border)] rounded-lg md:rounded-none"
               >
                 View Details
               </Link>
@@ -213,7 +213,7 @@ function OrdersPage() {
                 <Link
                   to="/payment/$orderId"
                   params={{ orderId: order.id }}
-                  className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium max-md:justify-center max-md:p-3 max-md:border max-md:border-[color:var(--gold)] max-md:rounded-lg"
+                  className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium justify-center md:justify-start p-3 md:p-0 border md:border-none border-[color:var(--gold)] rounded-lg md:rounded-none"
                 >
                   Complete Payment <ChevronRight size={14} />
                 </Link>
@@ -222,7 +222,7 @@ function OrdersPage() {
                 <Link
                   to="/order-success/$orderId"
                   params={{ orderId: order.id }}
-                  className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium max-md:justify-center max-md:p-3 max-md:border max-md:border-[color:var(--gold)] max-md:rounded-lg"
+                  className="text-xs uppercase tracking-widest text-[color:var(--gold)] hover:text-[color:var(--foreground)] transition-colors flex items-center gap-1 font-medium justify-center md:justify-start p-3 md:p-0 border md:border-none border-[color:var(--gold)] rounded-lg md:rounded-none"
                 >
                   Check Status <ChevronRight size={14} />
                 </Link>

@@ -41,6 +41,10 @@
   --color-theme-deep: var(--theme-deep);
   --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
 :root {
@@ -178,8 +182,12 @@
     }
     .btn-lux,
     .btn-ghost-lux {
-      width: 100%;
-      min-height: 52px;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      min-height: 56px;
+      height: 56px;
+      border-radius: 9999px;
       justify-content: center;
     }
   }

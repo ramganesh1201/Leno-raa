@@ -98,7 +98,7 @@ export function LuxuryEditorialCollections() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 onMouseEnter={() => handleCardHover(index, collection)}
-                className={`group relative rounded-[24px] max-md:rounded-2xl overflow-hidden transition-all duration-700 ease-[0.16,1,0.3,1] shadow-sm hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 ${opacityClass} ${
+                className={`group relative rounded-2xl md:rounded-[24px] overflow-hidden transition-all duration-700 ease-[0.16,1,0.3,1] shadow-sm hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 ${opacityClass} ${
                   isFeatured
                     ? "col-span-2 sm:col-span-2 lg:col-span-6 lg:row-span-2 h-[350px] md:h-[500px] lg:h-[520px]"
                     : "col-span-1 sm:col-span-1 lg:col-span-3 lg:row-span-1 h-[200px] lg:h-[248px]"
