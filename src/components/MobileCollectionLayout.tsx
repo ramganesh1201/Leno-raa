@@ -15,6 +15,16 @@ import {
   Star,
 } from "lucide-react";
 import type { Product } from "@/lib/catalog";
+import { useState, useMemo } from "react";
+import { resolveImageUrl } from "@/lib/imageResolver";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  DrawerClose,
+} from "@/components/ui/drawer";
 
 export function MobileCollectionLayout({
   collection,
@@ -25,6 +35,32 @@ export function MobileCollectionLayout({
   items: Product[];
   otherChapters: unknown[];
 }) {
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [sortOption, setSortOption] = useState("Recommended");
+
+  const filteredItems = useMemo(() => {
+    let result = items;
+
+    if (activeFilter !== "All") {
+      const searchTerms = activeFilter.toLowerCase().replace(" skin", "").split(" ");
+      result = result.filter((p) => {
+        const text = [p.name, p.tagline, p.description, p.skinType, ...(p.benefits || [])]
+          .join(" ")
+          .toLowerCase();
+        return searchTerms.some((term) => text.includes(term));
+      });
+    }
+
+    result = [...result];
+    if (sortOption === "Price: Low to High") {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortOption === "Price: High to Low") {
+      result.sort((a, b) => b.price - a.price);
+    }
+
+    return result;
+  }, [activeFilter, sortOption, items]);
+
   return (
     <div className="pb-32">
       {/* 1. Immersive Collection Hero (50dvh) */}
@@ -107,7 +143,8 @@ export function MobileCollectionLayout({
             (filter, i) => (
               <button
                 key={filter}
-                className={`snap-start whitespace-nowrap px-5 py-2 rounded-full text-sm transition-colors font-medium ${i === 0 ? "bg-[color:var(--foreground)] text-[color:var(--background)] border border-[color:var(--foreground)]" : "bg-[color:var(--muted)]/50 text-[color:var(--foreground)] border border-[color:var(--border)]"}`}
+                onClick={() => setActiveFilter(filter)}
+                className={`snap-start whitespace-nowrap px-5 py-2 rounded-full text-sm transition-colors font-medium ${activeFilter === filter ? "bg-[color:var(--foreground)] text-[color:var(--background)] border border-[color:var(--foreground)]" : "bg-[color:var(--muted)]/50 text-[color:var(--foreground)] border border-[color:var(--border)]"}`}
               >
                 {filter}
               </button>
@@ -121,12 +158,12 @@ export function MobileCollectionLayout({
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-xl font-serif text-[color:var(--foreground)]">The Collection</h3>
           <span className="text-xs text-[color:var(--muted-foreground)] uppercase tracking-widest">
-            {items.length} items
+            {filteredItems.length} items
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-10">
-          {items.map((p: Product) => (
+          {filteredItems.map((p: Product) => (
             <Link
               key={p.slug}
               to="/products/$slug"
@@ -135,7 +172,7 @@ export function MobileCollectionLayout({
             >
               <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-[color:var(--muted)]/30 mb-4 shadow-sm group-active:shadow-md transition-shadow">
                 <img
-                  src={p.images[0]}
+                  src={resolveImageUrl(p.image)}
                   alt={p.name}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -281,26 +318,76 @@ export function MobileCollectionLayout({
 
       {/* 10. Sticky Bottom Actions */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center bg-[color:var(--foreground)] backdrop-blur-xl border border-[color:var(--border)] rounded-full px-2 py-2 shadow-2xl">
-        <button className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--background)]/70 hover:text-[color:var(--background)] transition-colors">
-          <Filter className="w-5 h-5 mb-1" />
-          <span className="text-[9px] uppercase tracking-wider font-medium">Filter</span>
-        </button>
+        <Drawer>
+          <DrawerTrigger asChild>
+            <button className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--background)]/70 hover:text-[color:var(--background)] transition-colors">
+              <Filter className="w-5 h-5 mb-1" />
+              <span className="text-[9px] uppercase tracking-wider font-medium">Filter</span>
+            </button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Filter By Category</DrawerTitle>
+            </DrawerHeader>
+            <div className="p-4 flex flex-col gap-2">
+              {["All", "Best Sellers", "New", "Dry Skin", "Sensitive Skin", "Oily Skin"].map(
+                (f) => (
+                  <DrawerClose asChild key={f}>
+                    <button
+                      onClick={() => setActiveFilter(f)}
+                      className={`py-3 px-4 rounded-xl text-left font-medium transition-colors ${activeFilter === f ? "bg-[color:var(--theme)] text-white" : "bg-[color:var(--muted)]/30 text-[color:var(--foreground)]"}`}
+                    >
+                      {f}
+                    </button>
+                  </DrawerClose>
+                ),
+              )}
+            </div>
+          </DrawerContent>
+        </Drawer>
         <div className="w-[1px] h-6 bg-[color:var(--background)]/20" />
-        <button className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--background)]/70 hover:text-[color:var(--background)] transition-colors">
-          <ArrowDownUp className="w-5 h-5 mb-1" />
-          <span className="text-[9px] uppercase tracking-wider font-medium">Sort</span>
-        </button>
+        <Drawer>
+          <DrawerTrigger asChild>
+            <button className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--background)]/70 hover:text-[color:var(--background)] transition-colors">
+              <ArrowDownUp className="w-5 h-5 mb-1" />
+              <span className="text-[9px] uppercase tracking-wider font-medium">Sort</span>
+            </button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Sort Products</DrawerTitle>
+            </DrawerHeader>
+            <div className="p-4 flex flex-col gap-2">
+              {["Recommended", "Price: Low to High", "Price: High to Low"].map((s) => (
+                <DrawerClose asChild key={s}>
+                  <button
+                    onClick={() => setSortOption(s)}
+                    className={`py-3 px-4 rounded-xl text-left font-medium transition-colors ${sortOption === s ? "bg-[color:var(--theme)] text-white" : "bg-[color:var(--muted)]/30 text-[color:var(--foreground)]"}`}
+                  >
+                    {s}
+                  </button>
+                </DrawerClose>
+              ))}
+            </div>
+          </DrawerContent>
+        </Drawer>
         <div className="w-[1px] h-6 bg-[color:var(--background)]/20" />
-        <button className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--background)]/70 hover:text-[color:var(--background)] transition-colors">
+        <Link
+          to="/wishlist"
+          className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--background)]/70 hover:text-[color:var(--background)] transition-colors"
+        >
           <Heart className="w-5 h-5 mb-1" />
           <span className="text-[9px] uppercase tracking-wider font-medium">Saved</span>
-        </button>
+        </Link>
         <div className="w-[1px] h-6 bg-[color:var(--background)]/20" />
-        <button className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors relative">
+        <Link
+          to="/cart"
+          className="flex flex-col items-center justify-center w-16 h-12 text-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors relative"
+        >
           <ShoppingBag className="w-5 h-5 mb-1" />
           <span className="text-[9px] uppercase tracking-wider font-medium">Cart</span>
           <span className="absolute top-1 right-3.5 w-2 h-2 bg-[color:var(--background)] rounded-full" />
-        </button>
+        </Link>
       </div>
     </div>
   );
