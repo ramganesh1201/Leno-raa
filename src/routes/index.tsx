@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, Suspense } from "react";
 import { useTheme } from "@/lib/store";
 import { productService } from "@/services/product.service";
+import { trustPillars } from "@/lib/catalog";
 
 import { ProductCard } from "@/components/ProductCard";
 import { LuxuryEditorialCollections } from "@/components/home/LuxuryEditorialCollections";
@@ -15,10 +16,9 @@ import heroIntro from "@/assets/hero-intro.png";
 export const Route = createFileRoute("/")({
   loader: () => {
     const productsPromise = productService.getProducts();
-    const catalogPromise = import("@/lib/catalog").then((m) => m.trustPillars);
     return {
       deferredData: defer(
-        Promise.all([productsPromise, catalogPromise]).then(([products, trustPillars]) => ({
+        productsPromise.then((products) => ({
           products,
           trustPillars,
         })),
