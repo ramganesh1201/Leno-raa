@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { LuxuryEditorialCollections } from "@/components/home/LuxuryEditorialCollections";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
+import { CraftsmanshipSection } from "@/components/home/CraftsmanshipSection";
 import { Magnetic } from "@/components/immersive/Magnetic";
 import heroIntro from "@/assets/hero-intro.png";
 
@@ -207,60 +208,8 @@ function Index() {
                   </div>
                 </section>
 
-                {/* TRUST PILLARS */}
-                <section className="relative py-32">
-                  <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-                    <div className="mb-16 max-w-2xl text-center md:text-left">
-                      <Reveal
-                        preset="label"
-                        className="text-eyebrow text-[color:var(--muted-foreground)]"
-                      >
-                        The House of Lenoraa
-                      </Reveal>
-                      <SplitText
-                        as="h2"
-                        text="Why we pour by hand."
-                        delay={0.1}
-                        className="text-display mt-4 text-4xl"
-                      />
-                    </div>
-                    <div className="flex overflow-x-auto snap-x snap-mandatory md:grid md:overflow-hidden md:snap-none gap-px rounded-md bg-[color:var(--border)] md:grid-cols-3 custom-scrollbar">
-                      {trustPillars.map((p, i) => (
-                        <Reveal
-                          key={p.title}
-                          delay={i * 0.05}
-                          className="min-w-[85vw] md:min-w-0 snap-center md:snap-align-none flex-1"
-                        >
-                          <div className="group relative bg-[color:var(--card)] p-8 md:p-10 h-full">
-                            <Reveal
-                              preset="label"
-                              delay={i * 0.1}
-                              className="text-eyebrow mb-4 md:mb-6 text-[color:var(--gold)]"
-                            >
-                              0{i + 1}
-                            </Reveal>
-                            <Reveal
-                              preset="subheading"
-                              delay={i * 0.1 + 0.1}
-                              className="text-display text-2xl"
-                            >
-                              {p.title}
-                            </Reveal>
-                            <Reveal
-                              as="p"
-                              preset="paragraph"
-                              delay={i * 0.1 + 0.2}
-                              className="mt-3 text-sm leading-relaxed text-[color:var(--muted-foreground)]"
-                            >
-                              {p.body}
-                            </Reveal>
-                            <div className="absolute bottom-0 left-0 h-px w-0 bg-[color:var(--gold)] transition-all duration-1000 group-hover:w-full" />
-                          </div>
-                        </Reveal>
-                      ))}
-                    </div>
-                  </div>
-                </section>
+                {/* TRUST PILLARS - REDESIGNED */}
+                <CraftsmanshipSection />
 
                 {/* CTA */}
                 <section className="relative py-32">

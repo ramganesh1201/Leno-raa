@@ -19,14 +19,14 @@ export function ExpandableInfo({ items }: ExpandableInfoProps) {
   };
 
   return (
-    <div className="w-full divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
+    <div className="w-full border-t border-[color:var(--border)]">
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         return (
-          <div key={index} className="py-4">
+          <div key={index} className="border-b border-[color:var(--border)] last:border-b-0">
             <button
               onClick={() => toggle(index)}
-              className="flex w-full items-center justify-between text-left transition-colors hover:text-[color:var(--gold)]"
+              className="flex w-full items-center justify-between py-5 md:py-4 text-left transition-colors hover:text-[color:var(--gold)]"
             >
               <span className="text-sm font-medium uppercase tracking-wider">{item.title}</span>
               <motion.div
@@ -45,7 +45,7 @@ export function ExpandableInfo({ items }: ExpandableInfoProps) {
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <div className="pt-4 pb-2 text-sm leading-relaxed text-[color:var(--muted-foreground)]">
+                  <div className="pb-5 pt-1 md:pt-4 md:pb-2 text-sm leading-relaxed text-[color:var(--muted-foreground)]">
                     {item.content}
                   </div>
                 </motion.div>

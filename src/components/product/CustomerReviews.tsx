@@ -57,7 +57,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
   });
 
   return (
-    <section id="reviews" className="py-24 border-t border-[color:var(--border)]">
+    <section id="reviews" className="py-16 md:py-24 border-t border-[color:var(--border)]">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <div
           className="md:hidden flex justify-between items-center mb-6 cursor-pointer border-b border-[color:var(--border)] pb-4"
@@ -72,7 +72,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
           </span>
         </div>
         <div
-          className={`grid md:grid-cols-[300px_1fr] gap-16 ${!isMobileOpen ? "hidden md:grid" : ""}`}
+          className={`grid md:grid-cols-[300px_1fr] gap-10 md:gap-16 ${!isMobileOpen ? "hidden md:grid" : ""}`}
         >
           {/* Summary */}
           <div>
@@ -116,7 +116,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
 
           {/* Review List */}
           <div>
-            <div className="flex justify-between items-center mb-8 pb-4 border-b border-[color:var(--border)]">
+            <div className="flex justify-between items-center mb-6 md:mb-8 pb-4 border-b border-[color:var(--border)]">
               <div className="text-sm font-medium">{reviews.length} Reviews</div>
               <select
                 value={sort}
@@ -129,7 +129,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
               </select>
             </div>
 
-            <div className="space-y-10">
+            <div className="space-y-8 md:space-y-10">
               <AnimatePresence>
                 {sortedReviews.slice(0, visibleCount).map((review) => (
                   <motion.div
@@ -163,7 +163,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
                         {new Date(review.created_at).toLocaleDateString()}
                       </div>
                     </div>
-                    <p className="text-sm leading-relaxed text-[color:var(--muted-foreground)] mb-4 max-w-2xl mt-4">
+                    <p className="text-sm leading-relaxed text-[color:var(--muted-foreground)] mb-2 md:mb-4 max-w-2xl mt-3 md:mt-4">
                       {review.comment}
                     </p>
                   </motion.div>
@@ -199,7 +199,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
             {visibleCount < reviews.length && (
               <button
                 onClick={handleLoadMore}
-                className="mt-12 w-full py-4 rounded-full border border-[color:var(--border)] text-sm uppercase tracking-widest transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]"
+                className="mt-8 md:mt-12 w-full py-4 rounded-full border border-[color:var(--border)] text-sm uppercase tracking-widest transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]"
               >
                 Load More Reviews
               </button>

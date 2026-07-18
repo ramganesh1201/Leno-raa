@@ -145,7 +145,9 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const routerState = useRouter();
-  const isAdmin = routerState.state.location.pathname.startsWith("/admin");
+  const pathname = routerState.state.location.pathname;
+  const isAdmin = pathname.startsWith("/admin");
+  const isProductDetail = pathname.startsWith("/products/");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -168,7 +170,7 @@ function RootComponent() {
               </PageTransition>
             )}
           </main>
-          {!isAdmin && <SiteFooter />}
+          {!isAdmin && !isProductDetail && <SiteFooter />}
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

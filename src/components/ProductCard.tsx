@@ -7,6 +7,36 @@ import { useShop } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 
+function getSkinType(productName: string): string | null {
+  if (!productName) return null;
+  const name = productName.toLowerCase();
+  if (name.includes("menthol")) return "Combination / Oily";
+  if (name.includes("orange")) return "Combination / Oily";
+  if (name.includes("goat milk")) return "All Skin Types";
+  if (name.includes("lavender")) return "Dry / Sensitive";
+  if (name.includes("aloe vera")) return "Dry / Sensitive";
+  if (name.includes("tomato")) return "Normal / Combination / Sensitive";
+  if (name.includes("manjichandan")) return "All Skin Types";
+  if (name.includes("charcoal")) return "Oily / Acne Prone";
+  if (name.includes("nalpa glow")) return "Dry / Normal";
+  if (name.includes("ayurvedic herbal")) return "Sensitive / Oily";
+  if (name.includes("rose blossom")) return "All Skin Types";
+  if (name.includes("golden oats")) return "Ultra Sensitive / Kids";
+  if (name.includes("butter with milk")) return "Ultra Sensitive / Kids";
+  if (name.includes("coffee latte")) return "Oily / Acne Prone";
+  return null;
+}
+
+function SkinTypeBadge({ type }: { type: string }) {
+  return (
+    <div className="bg-white/80 backdrop-blur-md shadow-sm border border-white/40 px-3 py-1.5 rounded-full flex items-center justify-center pointer-events-none">
+      <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-medium text-[color:var(--foreground)]/80 leading-none pt-px">
+        {type}
+      </span>
+    </div>
+  );
+}
+
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { user } = useAuth();
   const { wishlist: supabaseWishlist, toggleWishlist: toggleSupabaseWishlist } = useWishlist();
@@ -15,6 +45,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   const localSaved = useShop((s) => s.wishlist.includes(product.slug));
 
   const saved = user ? supabaseWishlist.some((w) => w.product_id === product.id) : localSaved;
+
+  const skinType = getSkinType(product.name);
 
   const tiltRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +97,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               <span className="text-display text-lg uppercase tracking-[0.3em] text-[color:var(--foreground)]/20">
                 Lenoraa
               </span>
+            </div>
+          )}
+
+          {/* Skin Type Badge */}
+          {skinType && (
+            <div className="absolute top-3 left-3 z-10">
+              <SkinTypeBadge type={skinType} />
             </div>
           )}
 
@@ -147,6 +186,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               </div>
             )}
           </div>
+
+          {/* Skin Type Badge */}
+          {skinType && (
+            <div className="absolute top-4 left-4 z-10">
+              <SkinTypeBadge type={skinType} />
+            </div>
+          )}
 
           <div
             onClick={(e) => {

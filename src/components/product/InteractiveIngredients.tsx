@@ -47,12 +47,12 @@ export function InteractiveIngredients({ ingredients }: InteractiveIngredientsPr
   };
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-row md:flex-wrap gap-3 overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory md:snap-none scrollbar-hide -mx-6 px-6 md:mx-0 md:px-0">
       {ingredients.map((i) => (
         <motion.div
           key={i}
           whileHover={{ y: -4, scale: 1.02 }}
-          className="group relative cursor-default overflow-hidden rounded-xl border border-[color:var(--border)] bg-[color:var(--background)] px-5 py-3 shadow-sm transition-colors hover:border-[color:var(--gold)]/50 hover:bg-[color:var(--gold)]/5"
+          className="group relative cursor-default overflow-hidden shrink-0 snap-start rounded-xl border border-[color:var(--border)] bg-[color:var(--background)] px-5 py-3 shadow-sm transition-colors hover:border-[color:var(--gold)]/50 hover:bg-[color:var(--gold)]/5"
         >
           <div className="flex items-center gap-2">
             <Sparkles className="h-3 w-3 text-[color:var(--gold)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

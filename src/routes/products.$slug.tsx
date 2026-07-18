@@ -20,6 +20,7 @@ import { WhyThisSoap } from "@/components/product/WhyThisSoap";
 import { CustomerReviews } from "@/components/product/CustomerReviews";
 import { StickyPurchasePanel } from "@/components/product/StickyPurchasePanel";
 import { ProductSkeleton } from "@/components/product/ProductSkeleton";
+import { ProductRecommendations } from "@/components/ProductRecommendations/ProductRecommendations";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: async ({ params }) => {
@@ -164,17 +165,17 @@ function ProductPage() {
               as="h1"
               text={product.name}
               delay={0.1}
-              className="text-display text-4xl leading-[1.1] mb-2"
+              className="text-display text-4xl leading-[1.1] mb-4"
             />
             
             {/* 3. Rating */}
-            <div className="mb-6">
+            <div className="mb-4">
               <RatingStars rating={4.8} count={248} onReviewsClick={scrollToReviews} />
             </div>
             
             {/* 4. Price */}
-            <div className="flex flex-col gap-1 border-b border-[color:var(--border)] pb-8 mb-8">
-              <div className="text-display text-[32px] text-[color:var(--foreground)]">
+            <div className="flex flex-col gap-1 border-b border-[color:var(--border)] pb-6 mb-6">
+              <div className="text-display text-[32px] text-[color:var(--foreground)] leading-none">
                 ₹{product.price}
               </div>
               <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
@@ -183,8 +184,8 @@ function ProductPage() {
             </div>
             
             {/* 5. Ingredients */}
-            <div className="mb-10">
-              <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--gold)]">
+            <div className="mb-8">
+              <Reveal preset="label" className="text-[11px] font-medium tracking-[0.2em] uppercase mb-4 text-[color:var(--gold)]">
                 Key Ingredients
               </Reveal>
               <InteractiveIngredients ingredients={product.ingredients} />
@@ -196,7 +197,7 @@ function ProductPage() {
                 as="p"
                 preset="subheading"
                 delay={0.2}
-                className="text-lg italic text-[color:var(--muted-foreground)] mb-4"
+                className="text-lg italic text-[color:var(--muted-foreground)] mb-3"
               >
                 {product.tagline}
               </Reveal>
@@ -204,7 +205,7 @@ function ProductPage() {
                 as="p"
                 preset="paragraph"
                 delay={0.3}
-                className="text-[15px] leading-relaxed text-[color:var(--foreground)]/80"
+                className="text-sm leading-relaxed text-[color:var(--foreground)]/80"
               >
                 {product.description}
               </Reveal>
@@ -230,7 +231,7 @@ function ProductPage() {
             
             <TrustBadges />
             
-            <div className="mt-12">
+            <div className="mt-8">
               <ExpandableInfo items={expandableItems} />
             </div>
           </div>
@@ -331,6 +332,8 @@ function ProductPage() {
       <WhyThisSoap collection={collection.name} />
 
       <CustomerReviews productName={product.name} productId={product.id} />
+
+      <ProductRecommendations currentProduct={product} />
 
       {/* Sticky Purchase Panel */}
       <StickyPurchasePanel
