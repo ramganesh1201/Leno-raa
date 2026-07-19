@@ -11,15 +11,13 @@ export function FloatingBenefits({ product, benefits: staticBenefits }: Floating
   if (staticBenefits && Array.isArray(staticBenefits)) {
     if (staticBenefits.length === 0) return null;
     const positions = [
-      "top-[8%] left-[4%] sm:top-[12%] sm:left-[6%]",
-      "top-[45%] right-[4%] sm:top-[40%] sm:right-[6%]",
-      "bottom-[10%] left-[4%] sm:bottom-[15%] sm:left-[8%]",
-      "bottom-[20%] right-[4%] sm:bottom-[8%] sm:right-[10%]",
-      "top-[6%] right-[15%] sm:top-[10%] sm:right-[12%]",
+      "top-[20%] left-[12%] sm:top-[25%] sm:left-[18%]",
+      "bottom-[25%] right-[10%] sm:bottom-[30%] sm:right-[15%]",
+      "top-[50%] left-[10%] sm:top-[45%] sm:left-[12%]",
     ];
     return (
       <div className="absolute inset-0 pointer-events-none z-20">
-        {staticBenefits.map((b: string, i: number) => (
+        {staticBenefits.slice(0, 3).map((b: string, i: number) => (
           <motion.div
             key={b}
             initial={{ opacity: 0, y: 15 }}
@@ -79,21 +77,19 @@ export function FloatingBenefits({ product, benefits: staticBenefits }: Floating
       });
     }
 
-    return Array.from(badges).slice(0, 5); // Keep it to 5 floating badges
+    return Array.from(badges).slice(0, 3); // Keep it to 3 floating badges
   };
 
   const badges = generateBadges();
 
   if (badges.length === 0) return null;
 
-  // Predefined safe coordinates to stick around the edges of the image.
-  // Avoids the center where the product subject typically is.
+  // Predefined safe coordinates that slightly overlap the product image edges 
+  // instead of floating in the far corners.
   const positions = [
-    "top-[8%] left-[4%] sm:top-[12%] sm:left-[6%]",
-    "top-[45%] right-[4%] sm:top-[40%] sm:right-[6%]",
-    "bottom-[10%] left-[4%] sm:bottom-[15%] sm:left-[8%]",
-    "bottom-[20%] right-[4%] sm:bottom-[8%] sm:right-[10%]",
-    "top-[6%] right-[15%] sm:top-[10%] sm:right-[12%]",
+    "top-[20%] left-[12%] sm:top-[25%] sm:left-[18%]",
+    "bottom-[25%] right-[10%] sm:bottom-[30%] sm:right-[15%]",
+    "top-[50%] left-[10%] sm:top-[45%] sm:left-[12%]",
   ];
 
   return (

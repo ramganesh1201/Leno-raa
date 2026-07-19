@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Star, CheckCircle2 } from "lucide-react";
 import { SplitText } from "../immersive/SplitText";
 import { motion, AnimatePresence } from "framer-motion";
-import { ReviewComposer } from "./ReviewComposer";
+import { ReviewComposer, ReviewSubmitData } from "./ReviewComposer";
 import { useReviews } from "@/hooks/useReviews";
 import { useAuth } from "@/hooks/useAuth";
+import { createPortal } from "react-dom";
 
 interface CustomerReviewsProps {
   productName: string;
@@ -15,6 +16,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
   const [sort, setSort] = useState("Newest");
   const [visibleCount, setVisibleCount] = useState(3);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const { user } = useAuth();
 
   const { reviews, isLoading, submitReview } = useReviews(productId);
@@ -23,7 +25,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
     setVisibleCount((prev) => Math.min(prev + 5, reviews.length));
   };
 
-  const handleReviewSubmit = async (rating: number, content: string) => {
+  const handleReviewSubmit = async (data: ReviewSubmitData) => {
     if (!user) {
       alert("Please log in to submit a review.");
       return;
@@ -31,8 +33,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
 
     try {
       await submitReview.mutateAsync({
-        rating,
-        comment: content,
+        ...data,
         userId: user.id,
       });
       alert("Thank you for your review! It has been submitted for moderation.");
@@ -75,44 +76,58 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
           className={`grid md:grid-cols-[300px_1fr] gap-10 md:gap-16 ${!isMobileOpen ? "hidden md:grid" : ""}`}
         >
           {/* Summary */}
-          <div>
-            <SplitText
-              as="h2"
-              text="Customer Reviews"
-              className="text-display text-3xl mb-6 hidden md:block"
-            />
-            <div className="flex items-end gap-4 mb-8">
-              <div className="text-6xl font-serif text-[color:var(--gold)]">{averageRating}</div>
-              <div className="pb-2">
-                <div className="flex text-[color:var(--gold)] mb-1">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="h-4 w-4 fill-[color:var(--gold)]" />
-                  ))}
-                </div>
-                <div className="text-sm text-[color:var(--muted-foreground)]">
-                  Based on {reviews.length} reviews
+          {reviews.length > 0 ? (
+            <div>
+              <SplitText
+                as="h2"
+                text="Customer Reviews"
+                className="text-display text-3xl mb-6 hidden md:block"
+              />
+              <div className="flex items-end gap-4 mb-8">
+                <div className="text-6xl font-serif text-[color:var(--gold)]">{averageRating}</div>
+                <div className="pb-2">
+                  <div className="flex text-[color:var(--gold)] mb-1">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Star key={s} className={`h-4 w-4 ${s <= Math.round(Number(averageRating)) ? "fill-[color:var(--gold)] text-[color:var(--gold)]" : "fill-transparent text-[color:var(--border)]"}`} />
+                    ))}
+                  </div>
+                  <div className="text-sm text-[color:var(--muted-foreground)]">
+                    Based on {reviews.length} review{reviews.length === 1 ? "" : "s"}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="space-y-3">
-              {[5, 4, 3, 2, 1].map((star) => {
-                const count = reviews.filter((r) => r.rating === star).length;
-                const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
-                return (
-                  <div key={star} className="flex items-center gap-3 text-sm">
-                    <div className="w-12 text-[color:var(--muted-foreground)]">{star} Stars</div>
-                    <div className="flex-1 h-1.5 bg-[color:var(--muted)]/50 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[color:var(--gold)] rounded-full"
-                        style={{ width: `${percentage}%` }}
-                      />
+              <div className="space-y-3">
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const count = reviews.filter((r) => Math.round(r.rating) === star).length;
+                  const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+                  return (
+                    <div key={star} className="flex items-center gap-3 text-sm">
+                      <div className="w-12 text-[color:var(--muted-foreground)]">{star} Stars</div>
+                      <div className="flex-1 h-1.5 bg-[color:var(--muted)]/50 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[color:var(--gold)] rounded-full"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div>
+              <SplitText
+                as="h2"
+                text="Customer Reviews"
+                className="text-display text-3xl mb-6 hidden md:block"
+              />
+              <div className="text-[color:var(--muted-foreground)] py-8">
+                <p className="text-lg font-serif mb-2 text-[color:var(--foreground)]">No reviews yet.</p>
+                <p className="text-sm">Be the first to review this product and share your experience with the Lenoraa community.</p>
+              </div>
+            </div>
+          )}
 
           {/* Review List */}
           <div>
@@ -152,20 +167,42 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <span className="font-medium">
-                            {review.profiles?.full_name || "Anonymous"}
+                            {!review.is_anonymous 
+                              ? (review.profiles?.full_name || review.profiles?.email?.split('@')[0] || "Customer") 
+                              : "Anonymous"}
                           </span>
-                          <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-green-600/80">
-                            <CheckCircle2 className="h-3 w-3" /> Verified Buyer
-                          </span>
+                          {review.verified_purchase && (
+                            <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-green-600/80">
+                              <CheckCircle2 className="h-3 w-3" /> Verified Buyer
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="text-xs text-[color:var(--muted-foreground)]">
                         {new Date(review.created_at).toLocaleDateString()}
                       </div>
                     </div>
-                    <p className="text-sm leading-relaxed text-[color:var(--muted-foreground)] mb-2 md:mb-4 max-w-2xl mt-3 md:mt-4">
-                      {review.comment}
+                    {review.title && (
+                      <h4 className="font-serif text-lg text-[color:var(--foreground)] mb-1 mt-2">
+                        {review.title}
+                      </h4>
+                    )}
+                    <p className="text-sm leading-relaxed text-[color:var(--muted-foreground)] mb-2 md:mb-4 max-w-2xl mt-1">
+                      {review.review_text}
                     </p>
+                    {review.review_images && review.review_images.length > 0 && (
+                      <div className="flex gap-2 mt-3">
+                        {review.review_images.map((img, i) => (
+                          <button 
+                            key={i} 
+                            onClick={() => setFullscreenImage(img)} 
+                            className="w-16 h-16 rounded-md overflow-hidden border border-[color:var(--border)] focus:outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+                          >
+                            <img src={img} alt="Review attachment" className="w-full h-full object-cover" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 ))}
                 {reviews.length === 0 && !isLoading && (
@@ -209,6 +246,27 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
           </div>
         </div>
       </div>
+
+      {fullscreenImage &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90">
+            <button
+              onClick={() => setFullscreenImage(null)}
+              className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+            >
+              <CheckCircle2 className="h-6 w-6 opacity-0 hidden" /> {/* Hidden hack for lucide sizing */}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div className="relative max-w-[90vw] max-h-[90vh]">
+              <img
+                src={fullscreenImage}
+                alt="Fullscreen Review"
+                className="max-w-full max-h-[90vh] object-contain rounded-lg"
+              />
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

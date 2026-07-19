@@ -12,7 +12,7 @@ import { LuxuryEditorialCollections } from "@/components/home/LuxuryEditorialCol
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
 import { CraftsmanshipSection } from "@/components/home/CraftsmanshipSection";
-import { Magnetic } from "@/components/immersive/Magnetic";
+
 import heroIntro from "@/assets/hero-intro.png";
 
 export const Route = createFileRoute("/")({
@@ -125,7 +125,7 @@ function Index() {
             transition={{ duration: 1, delay: 0.4 }}
             className="flex flex-row flex-wrap gap-4 w-auto"
           >
-            <Magnetic>
+
               <Link
                 to="/collections/$slug"
                 params={{ slug: "radiance" }}
@@ -133,12 +133,12 @@ function Index() {
               >
                 Enter the world
               </Link>
-            </Magnetic>
-            <Magnetic>
+
+
               <Link to="/customize" className="btn-ghost-lux w-auto justify-center">
                 Design your soap
               </Link>
-            </Magnetic>
+
           </motion.div>
         </motion.div>
       </section>
@@ -259,7 +259,7 @@ function Index() {
                       Step into the first chapter — the Radiance collection.
                     </Reveal>
                     <div className="mt-10 flex justify-center gap-3 flex-col md:flex-row w-full md:w-auto">
-                      <Magnetic>
+
                         <Link
                           to="/collections/$slug"
                           params={{ slug: "radiance" }}
@@ -267,15 +267,15 @@ function Index() {
                         >
                           Begin the ritual
                         </Link>
-                      </Magnetic>
-                      <Magnetic>
+
+
                         <Link
                           to="/customize"
                           className="btn-ghost-lux w-full md:w-auto justify-center"
                         >
                           Design your own
                         </Link>
-                      </Magnetic>
+
                     </div>
                   </div>
                 </section>

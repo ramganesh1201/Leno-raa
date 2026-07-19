@@ -197,17 +197,7 @@
     font-weight: 400;
     letter-spacing: -0.01em;
   }
-  /* Hide native cursor when luxury cursor is active — keep text cursor on inputs */
-  html.has-lux-cursor,
-  html.has-lux-cursor a,
-  html.has-lux-cursor button {
-    cursor: none;
-  }
-  html.has-lux-cursor input,
-  html.has-lux-cursor textarea,
-  html.has-lux-cursor select {
-    cursor: text;
-  }
+
 }
 
 @utility text-display {
@@ -821,43 +811,6 @@
   will-change: transform;
 }
 
-/* Luxury cursor — minimal, elegant, never covers button text */
-.lux-cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 5px;
-  height: 5px;
-  border-radius: 9999px;
-  background: var(--charcoal);
-  pointer-events: none;
-  z-index: 9999;
-  will-change: transform;
-}
-.lux-cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 9999px;
-  border: 1px solid color-mix(in oklab, var(--charcoal) 45%, transparent);
-  pointer-events: none;
-  z-index: 9998;
-  transition:
-    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
-    opacity 0.35s ease;
-  will-change: transform;
-  opacity: 0.85;
-}
-.lux-cursor-ring.is-hover {
-  width: 26px;
-  height: 26px;
-  border-color: color-mix(in oklab, var(--gold) 80%, transparent);
-  opacity: 1;
-}
 
 /* Reveal keyframe class fallback */
 @keyframes revealUp {

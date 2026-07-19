@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useShop, type CustomDesign } from "@/lib/store";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
-import { Magnetic } from "@/components/immersive/Magnetic";
+
 import { useAuth } from "@/hooks/useAuth";
 import { useCustomizations } from "@/hooks/useCustomizations";
 import { useCart } from "@/hooks/useCart";
@@ -128,7 +128,7 @@ function CustomizePage() {
                 </div>
               </div>
               <div className="mt-8 hidden md:flex flex-col md:flex-row flex-wrap gap-3 w-full md:w-auto">
-                <Magnetic>
+
                   <button
                     disabled={isSaving}
                     onClick={async () => {
@@ -164,8 +164,8 @@ function CustomizePage() {
                   >
                     {saved ? "Saved ♥" : isSaving ? "Saving..." : "Save design"}
                   </button>
-                </Magnetic>
-                <Magnetic>
+
+
                   <button
                     disabled={isAdding}
                     onClick={async () => {
@@ -208,7 +208,7 @@ function CustomizePage() {
                   >
                     {added ? "Added ✓" : isAdding ? "Adding..." : "Add to bag"}
                   </button>
-                </Magnetic>
+
               </div>
             </div>
           </div>

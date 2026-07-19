@@ -6,11 +6,19 @@ export interface Review {
   product_id: string;
   user_id: string;
   rating: number;
-  comment: string | null;
+  title: string | null;
+  review_text: string | null;
+  review_images: string[];
   status: "pending" | "approved" | "rejected";
+  verified_purchase: boolean;
+  helpful_count: number;
+  admin_notes: string | null;
+  is_anonymous: boolean;
   created_at: string;
+  updated_at: string;
   profiles?: {
     full_name: string | null;
+    email: string | null;
   } | null;
 }
 
@@ -27,7 +35,7 @@ export function useReviews(productId: string) {
           `
           *,
           profiles (
-            full_name
+            full_name, email
           )
         `,
         )
@@ -42,12 +50,42 @@ export function useReviews(productId: string) {
 
   // Submit new review
   const submitReview = useMutation({
-    mutationFn: async (reviewData: { rating: number; comment: string; userId: string }) => {
+    mutationFn: async (reviewData: { 
+      rating: number; 
+      title: string;
+      review_text: string; 
+      userId: string;
+      is_anonymous: boolean;
+      images: File[];
+    }) => {
+      const imageUrls: string[] = [];
+      
+      // Upload images if any
+      for (const file of reviewData.images) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${reviewData.userId}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("review_images")
+          .upload(filePath, file);
+
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage
+            .from("review_images")
+            .getPublicUrl(filePath);
+          imageUrls.push(publicUrl);
+        }
+      }
+
       const { error } = await supabase.from("reviews").insert({
         product_id: productId,
         user_id: reviewData.userId,
         rating: reviewData.rating,
-        comment: reviewData.comment,
+        title: reviewData.title,
+        review_text: reviewData.review_text,
+        review_images: imageUrls,
+        is_anonymous: reviewData.is_anonymous,
         status: "pending", // Default status
       });
       if (error) throw error;

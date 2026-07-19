@@ -1,41 +1,63 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Star, UploadCloud, X } from "lucide-react";
+import { useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Star, UploadCloud, X, Image as ImageIcon } from "lucide-react";
+
+export interface ReviewSubmitData {
+  rating: number;
+  title: string;
+  review_text: string;
+  is_anonymous: boolean;
+  images: File[];
+}
 
 export function ReviewComposer({
   productName,
   onSubmit,
 }: {
   productName: string;
-  onSubmit: (rating: number, content: string) => Promise<void>;
+  onSubmit: (data: ReviewSubmitData) => Promise<void>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [images, setImages] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await onSubmit(rating, content);
+      await onSubmit({
+        rating,
+        title,
+        review_text: content,
+        is_anonymous: isAnonymous,
+        images,
+      });
       setIsOpen(false);
       setRating(0);
+      setTitle("");
       setContent("");
+      setIsAnonymous(false);
+      setImages([]);
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setImages((prev) => [...prev, ...newFiles].slice(0, 3)); // Max 3 images
     }
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -98,6 +120,20 @@ export function ReviewComposer({
 
             <div>
               <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
+                Review Title
+              </label>
+              <input
+                required
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Sum up your experience"
+                className="w-full bg-[color:var(--muted)]/30 border border-[color:var(--border)] rounded-xl p-4 text-base focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
                 Your Review
               </label>
               <textarea
@@ -109,13 +145,64 @@ export function ReviewComposer({
                 className="w-full bg-[color:var(--muted)]/30 border border-[color:var(--border)] rounded-xl p-4 text-base focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50 resize-none"
               />
             </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
+                Add Photos (Optional)
+              </label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+              />
+              <div className="flex gap-4 flex-wrap">
+                {images.map((file, idx) => (
+                  <div key={idx} className="relative w-24 h-24 rounded-lg overflow-hidden border border-[color:var(--border)]">
+                    <img src={URL.createObjectURL(file)} alt="preview" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-1 right-1 p-1 bg-black/50 rounded-full text-white hover:bg-black/80"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                {images.length < 3 && (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-24 h-24 flex flex-col items-center justify-center border-2 border-dashed border-[color:var(--border)] rounded-lg text-[color:var(--muted-foreground)] hover:border-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors"
+                  >
+                    <ImageIcon className="w-6 h-6 mb-1" />
+                    <span className="text-[10px] uppercase tracking-wider">Upload</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="anonymous"
+                checked={isAnonymous}
+                onChange={(e) => setIsAnonymous(e.target.checked)}
+                className="w-5 h-5 rounded border-[color:var(--border)] bg-transparent text-[color:var(--gold)] focus:ring-[color:var(--gold)] focus:ring-offset-0"
+              />
+              <label htmlFor="anonymous" className="text-sm text-[color:var(--foreground)] cursor-pointer">
+                Post anonymously
+              </label>
+            </div>
           </div>
 
           <div className="mt-10 flex justify-end">
             <button
               type="submit"
               disabled={submitting || rating === 0}
-              className="btn-lux w-full md:w-auto"
+              className="btn-lux w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? "Submitting..." : "Submit Review"}
             </button>

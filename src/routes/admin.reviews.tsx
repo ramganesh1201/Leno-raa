@@ -23,13 +23,17 @@ function AdminReviewsPage() {
   const { reviews, isLoading, updateReviewStatus, deleteReview } = useAdminReviews();
 
   const filteredReviews = (reviews || []).filter((review: any) => {
-    const customerName = review.profiles?.full_name || "Guest";
+    const customerName = !review.is_anonymous
+      ? review.profiles?.full_name || review.profiles?.email || "Guest"
+      : "Anonymous (Guest)";
     const productName = review.products?.name || "Unknown Product";
-    const comment = review.comment || "";
+    const comment = review.review_text || "";
+    const title = review.title || "";
 
     const matchesSearch =
       customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       comment.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || review.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -126,7 +130,12 @@ function AdminReviewsPage() {
               >
                 <div className="w-full md:w-64 shrink-0 space-y-2">
                   <div className="font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                    {review.profiles?.full_name || "Guest"}
+                    {!review.is_anonymous
+                      ? review.profiles?.full_name || review.profiles?.email || "Guest"
+                      : "Anonymous (Guest)"}
+                    {review.verified_purchase && (
+                      <BadgeCheck size={16} className="text-blue-500" title="Verified Purchase" />
+                    )}
                   </div>
                   <div className="text-sm text-neutral-500">
                     {review.products?.name || "Unknown Product"}
@@ -149,10 +158,25 @@ function AdminReviewsPage() {
                   </div>
                 </div>
 
-                <div className="flex-1">
+                <div className="flex-1 space-y-2">
+                  {review.title && (
+                    <h4 className="font-semibold text-neutral-900 dark:text-white">
+                      {review.title}
+                    </h4>
+                  )}
                   <p className="text-neutral-700 dark:text-neutral-300 italic">
-                    "{review.comment}"
+                    "{review.review_text}"
                   </p>
+                  
+                  {review.review_images && review.review_images.length > 0 && (
+                    <div className="flex gap-2 mt-4">
+                      {review.review_images.map((img: string, idx: number) => (
+                        <div key={idx} className="w-16 h-16 rounded border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+                          <img src={img} alt="Review attachment" className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="shrink-0 flex flex-wrap gap-2 w-full md:w-auto mt-4 md:mt-0">

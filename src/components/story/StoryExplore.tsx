@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/immersive/Reveal";
-import { Magnetic } from "@/components/immersive/Magnetic";
+
 
 export function StoryExplore() {
   return (
@@ -15,7 +15,7 @@ export function StoryExplore() {
         </Reveal>
 
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 w-full max-w-3xl mx-auto">
-          <Magnetic className="w-full md:w-auto">
+          <div className="w-full md:w-auto">
             <Link
               to="/collections/$slug"
               params={{ slug: "radiance" }}
@@ -23,19 +23,19 @@ export function StoryExplore() {
             >
               Explore Collection
             </Link>
-          </Magnetic>
+          </div>
 
-          <Magnetic className="w-full md:w-auto">
+          <div className="w-full md:w-auto">
             <Link to="/customize" className="btn-ghost-lux w-full justify-center">
               Customize Your Soap
             </Link>
-          </Magnetic>
+          </div>
 
-          <Magnetic className="w-full md:w-auto">
+          <div className="w-full md:w-auto">
             <Link to="/catalog" className="btn-ghost-lux w-full justify-center">
               Shop Now
             </Link>
-          </Magnetic>
+          </div>
         </div>
       </div>
     </section>

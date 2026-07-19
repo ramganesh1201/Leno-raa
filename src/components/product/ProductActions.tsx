@@ -1,4 +1,4 @@
-import { Magnetic } from "../immersive/Magnetic";
+
 import { Heart, ShoppingBag, CreditCard } from "lucide-react";
 import { useState } from "react";
 

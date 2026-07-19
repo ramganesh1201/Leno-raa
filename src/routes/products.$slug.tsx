@@ -24,6 +24,8 @@ import { StickyPurchasePanel } from "@/components/product/StickyPurchasePanel";
 import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 import { ProductRecommendations } from "@/components/ProductRecommendations/ProductRecommendations";
 
+import { useReviews } from "@/hooks/useReviews";
+
 export const Route = createFileRoute("/products/$slug")({
   loader: async ({ params }) => {
     const product = await productService.getProductBySlug(params.slug);
@@ -101,6 +103,12 @@ function ProductPage() {
   const { addToCart } = useCart();
   const { wishlist: supabaseWishlist, toggleWishlist: toggleSupabaseWishlist } = useWishlist();
   const navigate = useNavigate();
+
+  const { reviews } = useReviews(product.id);
+  const reviewCount = reviews.length;
+  const averageRating = reviewCount > 0 
+    ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviewCount 
+    : 0;
 
   const saved = user ? supabaseWishlist.some((w) => w.product_id === product.id) : localSaved;
 
@@ -209,7 +217,7 @@ function ProductPage() {
 
             {/* 3. Rating */}
             <div className="mb-4">
-              <RatingStars rating={4.8} count={248} onReviewsClick={scrollToReviews} />
+              <RatingStars rating={averageRating} count={reviewCount} onReviewsClick={scrollToReviews} />
             </div>
 
             {/* 4. Price */}
@@ -302,7 +310,7 @@ function ProductPage() {
               </Reveal>
 
               <div className="mb-4">
-                <RatingStars rating={4.8} count={248} onReviewsClick={scrollToReviews} />
+                <RatingStars rating={averageRating} count={reviewCount} onReviewsClick={scrollToReviews} />
               </div>
 
               <SplitText

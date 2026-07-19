@@ -17,9 +17,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import { PageTransition } from "@/components/immersive/PageTransition";
 
-const LuxuryCursor = lazy(() =>
-  import("@/components/immersive/LuxuryCursor").then((m) => ({ default: m.LuxuryCursor })),
-);
 
 function NotFoundComponent() {
   return (
@@ -155,11 +152,7 @@ function RootComponent() {
         <AuthProvider>
           {!isAdmin && <CinematicIntro />}
           {!isAdmin && <AmbienceLayer />}
-          {!isAdmin && (
-            <Suspense fallback={null}>
-              <LuxuryCursor />
-            </Suspense>
-          )}
+
           {!isAdmin && <SiteHeader />}
           <main className={!isAdmin ? "min-h-screen" : ""}>
             {isAdmin ? (

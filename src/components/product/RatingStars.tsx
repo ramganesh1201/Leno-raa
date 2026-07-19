@@ -7,6 +7,8 @@ interface RatingStarsProps {
 }
 
 export function RatingStars({ rating, count, onReviewsClick }: RatingStarsProps) {
+  if (count === 0) return null;
+
   return (
     <div className="flex items-center gap-4 mt-2">
       <div className="flex items-center gap-1">
@@ -14,7 +16,7 @@ export function RatingStars({ rating, count, onReviewsClick }: RatingStarsProps)
           <Star
             key={star}
             className={`h-4 w-4 ${
-              star <= rating
+              star <= Math.round(rating)
                 ? "fill-[color:var(--gold)] text-[color:var(--gold)]"
                 : "fill-transparent text-[color:var(--border)]"
             }`}
@@ -27,11 +29,8 @@ export function RatingStars({ rating, count, onReviewsClick }: RatingStarsProps)
           onClick={onReviewsClick}
           className="text-[color:var(--muted-foreground)] underline decoration-[color:var(--border)] underline-offset-4 transition hover:text-[color:var(--gold)] hover:decoration-[color:var(--gold)]"
         >
-          ({count} Reviews)
+          ({count} Review{count === 1 ? "" : "s"})
         </button>
-        <span className="flex items-center gap-1 text-xs text-green-600/80">
-          <CheckCircle2 className="h-3 w-3" /> Verified
-        </span>
       </div>
     </div>
   );
