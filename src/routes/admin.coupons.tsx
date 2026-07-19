@@ -189,14 +189,14 @@ function AdminCouponsPage() {
                         <div className="text-neutral-500">
                           Min:{" "}
                           <span className="font-medium text-neutral-900 dark:text-white">
-                            ₹{coupon.min_order_amount || 0}
+                            ₹{new Intl.NumberFormat("en-IN").format(coupon.min_order_amount || 0)}
                           </span>
                         </div>
                         {coupon.max_discount_amount && (
                           <div className="text-neutral-500">
                             Max Disc:{" "}
                             <span className="font-medium text-neutral-900 dark:text-white">
-                              ₹{coupon.max_discount_amount}
+                              ₹{new Intl.NumberFormat("en-IN").format(coupon.max_discount_amount)}
                             </span>
                           </div>
                         )}

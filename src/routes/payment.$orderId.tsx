@@ -144,7 +144,9 @@ function PaymentPage() {
           {/* Order Summary Ribbon */}
           <div className="absolute top-0 left-0 right-0 bg-black/5 dark:bg-white/5 p-4 border-b border-[color:var(--border)] flex justify-between items-center px-8">
             <span className="text-sm font-medium">Order: {order.order_number}</span>
-            <span className="text-lg font-semibold text-[color:var(--gold)]">₹{order.total}</span>
+            <span className="text-lg font-semibold text-[color:var(--gold)]">
+              ₹{new Intl.NumberFormat("en-IN").format(order.total)}
+            </span>
           </div>
 
           <div className="pt-12 grid grid-cols-1 md:grid-cols-2 gap-12">

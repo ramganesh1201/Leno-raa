@@ -9,7 +9,7 @@ interface NavigationProps {
 
 export function Navigation({ onPrev, onNext, isPaused, setIsPaused }: NavigationProps) {
   return (
-    <div 
+    <div
       className="flex items-center gap-6"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}

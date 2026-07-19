@@ -88,7 +88,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           {product.image ? (
             <img
               src={resolveImageUrl(product.image)}
-              alt={`Lenoraa ${product.name} Handcrafted Soap for ${skinType || 'All Skin Types'}`}
+              alt={`Lenoraa ${product.name} Handcrafted Soap for ${skinType || "All Skin Types"}`}
               loading="lazy"
               decoding="async"
               width={400}
@@ -139,7 +139,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {product.tagline || "Collection Chapter"}
           </div>
           <div className="mt-2 text-[14px] tracking-widest text-[color:var(--foreground)]/90 font-medium">
-            ₹{product.price || "---"}
+            ₹{product.price ? new Intl.NumberFormat("en-IN").format(product.price) : "---"}
           </div>
         </div>
       </Link>
@@ -171,7 +171,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               <>
                 <img
                   src={resolveImageUrl(product.image)}
-                  alt={`Lenoraa ${product.name} Handcrafted Soap for ${skinType || 'All Skin Types'}`}
+                  alt={`Lenoraa ${product.name} Handcrafted Soap for ${skinType || "All Skin Types"}`}
                   loading="lazy"
                   decoding="async"
                   width={400}
@@ -229,7 +229,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             </div>
           </div>
           <div className="text-sm tracking-widest text-[color:var(--foreground)]/70">
-            ₹{product.price || "---"}
+            ₹{product.price ? new Intl.NumberFormat("en-IN").format(product.price) : "---"}
           </div>
         </div>
       </Link>

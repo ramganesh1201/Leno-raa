@@ -9,7 +9,7 @@ export function StoryExplore() {
         <Reveal preset="label" className="text-eyebrow text-[color:var(--gold)] mb-6">
           Continue Your Journey
         </Reveal>
-        
+
         <Reveal as="h2" preset="heading" className="text-display text-3xl md:text-4xl mb-12">
           Explore Lenoraa
         </Reveal>
@@ -24,21 +24,15 @@ export function StoryExplore() {
               Explore Collection
             </Link>
           </Magnetic>
-          
+
           <Magnetic className="w-full md:w-auto">
-            <Link
-              to="/customize"
-              className="btn-ghost-lux w-full justify-center"
-            >
+            <Link to="/customize" className="btn-ghost-lux w-full justify-center">
               Customize Your Soap
             </Link>
           </Magnetic>
-          
+
           <Magnetic className="w-full md:w-auto">
-            <Link
-              to="/catalog"
-              className="btn-ghost-lux w-full justify-center"
-            >
+            <Link to="/catalog" className="btn-ghost-lux w-full justify-center">
               Shop Now
             </Link>
           </Magnetic>

@@ -123,7 +123,9 @@ function CustomizePage() {
                     Handcrafted with {coreActive.toLowerCase()} and {fragrance.toLowerCase()}.
                   </div>
                 </div>
-                <div className="hidden md:block text-display text-2xl">₹{price}</div>
+                <div className="hidden md:block text-display text-2xl">
+                  ₹{new Intl.NumberFormat("en-IN").format(price)}
+                </div>
               </div>
               <div className="mt-8 hidden md:flex flex-col md:flex-row flex-wrap gap-3 w-full md:w-auto">
                 <Magnetic>
@@ -234,7 +236,9 @@ function CustomizePage() {
           <span className="text-[10px] text-[color:var(--muted-foreground)] uppercase tracking-[0.2em] mb-0.5">
             Total
           </span>
-          <span className="text-display text-xl">₹{price}</span>
+          <span className="text-display text-xl">
+            ₹{new Intl.NumberFormat("en-IN").format(price)}
+          </span>
         </div>
         <button
           disabled={isAdding}

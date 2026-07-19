@@ -40,11 +40,13 @@ export const Route = createFileRoute("/collections/$slug")({
       scripts: [
         {
           type: "application/ld+json",
-          children: JSON.stringify(generateSchema.breadcrumb([
-            { name: "Collections", url: "/collections/radiance" },
-            { name: collection.name, url: `/collections/${collection.id}` },
-          ])),
-        }
+          children: JSON.stringify(
+            generateSchema.breadcrumb([
+              { name: "Collections", url: "/collections/radiance" },
+              { name: collection.name, url: `/collections/${collection.id}` },
+            ]),
+          ),
+        },
       ],
     };
   },

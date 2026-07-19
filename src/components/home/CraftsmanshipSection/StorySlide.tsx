@@ -16,10 +16,8 @@ export function StoryText({ slide, index }: StoryProps) {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="flex flex-col text-left"
     >
-      <div className="text-eyebrow text-[color:var(--gold)] mb-4 md:mb-6">
-        0{index + 1}
-      </div>
-      
+      <div className="text-eyebrow text-[color:var(--gold)] mb-4 md:mb-6">0{index + 1}</div>
+
       <SplitText
         key={slide.id + "-title"}
         as="h3"
@@ -48,4 +46,3 @@ export function StoryImage({ slide }: Omit<StoryProps, "index">) {
     />
   );
 }
-

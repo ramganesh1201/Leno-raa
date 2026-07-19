@@ -7,13 +7,12 @@ export function StoryHero() {
   return (
     <section className="relative flex flex-col md:flex-row min-h-[90svh] items-center justify-center pt-32 pb-16 px-6 md:px-12 bg-gradient-to-b from-[color:var(--ivory)] to-[color:var(--background)]">
       <div className="w-full max-w-[1400px] grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-        
         {/* Text Content */}
         <div className="order-2 md:order-1 flex flex-col justify-center max-w-xl">
           <Reveal preset="label" className="text-eyebrow text-[color:var(--gold)] mb-6">
             Our Story
           </Reveal>
-          
+
           <SplitText
             as="h1"
             text="Every bar begins with care."
@@ -27,7 +26,8 @@ export function StoryHero() {
             transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="text-lg md:text-xl leading-relaxed text-[color:var(--muted-foreground)]"
           >
-            Lenoraa was born from a desire to return to the essentials. We craft doctor-formulated, cold-processed soap that honors the intelligence of your skin and the purity of nature.
+            Lenoraa was born from a desire to return to the essentials. We craft doctor-formulated,
+            cold-processed soap that honors the intelligence of your skin and the purity of nature.
           </motion.p>
         </div>
 
@@ -45,15 +45,17 @@ export function StoryHero() {
       </div>
 
       {/* Subtle Scroll Indicator */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)]">Scroll</span>
+        <span className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)]">
+          Scroll
+        </span>
         <div className="w-[1px] h-12 bg-[color:var(--border)] overflow-hidden relative">
-          <motion.div 
+          <motion.div
             animate={{ y: ["-100%", "100%"] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
             className="absolute inset-0 bg-[color:var(--gold)] w-full h-1/2"

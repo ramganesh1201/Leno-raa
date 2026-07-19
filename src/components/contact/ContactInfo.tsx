@@ -7,7 +7,8 @@ export function ContactInfo() {
       <div>
         <h3 className="text-display text-2xl mb-6">Get in Touch</h3>
         <p className="text-[color:var(--muted-foreground)] text-sm leading-relaxed mb-8">
-          Whether you have a question about our collections, need assistance with an order, or simply wish to say hello, we are here for you.
+          Whether you have a question about our collections, need assistance with an order, or
+          simply wish to say hello, we are here for you.
         </p>
       </div>
 
@@ -17,13 +18,24 @@ export function ContactInfo() {
             <Mail className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">Email</p>
-            <a href={`mailto:${businessConfig.email}`} className="text-sm transition hover:text-[color:var(--gold)]">
+            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">
+              Email
+            </p>
+            <a
+              href={`mailto:${businessConfig.email}`}
+              className="text-sm transition hover:text-[color:var(--gold)]"
+            >
               {businessConfig.email}
             </a>
             {businessConfig.supportEmail && (
               <p className="mt-1 text-sm text-[color:var(--muted-foreground)]">
-                Support: <a href={`mailto:${businessConfig.supportEmail}`} className="transition hover:text-[color:var(--gold)]">{businessConfig.supportEmail}</a>
+                Support:{" "}
+                <a
+                  href={`mailto:${businessConfig.supportEmail}`}
+                  className="transition hover:text-[color:var(--gold)]"
+                >
+                  {businessConfig.supportEmail}
+                </a>
               </p>
             )}
           </div>
@@ -34,8 +46,13 @@ export function ContactInfo() {
             <Phone className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">Phone</p>
-            <a href={`tel:${businessConfig.phone}`} className="text-sm transition hover:text-[color:var(--gold)]">
+            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">
+              Phone
+            </p>
+            <a
+              href={`tel:${businessConfig.phone}`}
+              className="text-sm transition hover:text-[color:var(--gold)]"
+            >
               {businessConfig.phone}
             </a>
           </div>
@@ -46,10 +63,10 @@ export function ContactInfo() {
             <MapPin className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">Location</p>
-            <p className="text-sm leading-relaxed max-w-[200px]">
-              {businessConfig.address}
+            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">
+              Location
             </p>
+            <p className="text-sm leading-relaxed max-w-[200px]">{businessConfig.address}</p>
           </div>
         </div>
 
@@ -58,10 +75,10 @@ export function ContactInfo() {
             <Clock className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">Business Hours</p>
-            <p className="text-sm leading-relaxed max-w-[200px]">
-              {businessConfig.businessHours}
+            <p className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-1">
+              Business Hours
             </p>
+            <p className="text-sm leading-relaxed max-w-[200px]">{businessConfig.businessHours}</p>
           </div>
         </div>
       </div>

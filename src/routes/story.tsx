@@ -26,7 +26,7 @@ export const Route = createFileRoute("/story")({
 
 function Story() {
   const setTheme = useTheme((s) => s.setTheme);
-  
+
   useEffect(() => {
     setTheme("default");
   }, [setTheme]);

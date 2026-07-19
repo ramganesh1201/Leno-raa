@@ -49,7 +49,10 @@ export function ContactForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="full_name" className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+            <label
+              htmlFor="full_name"
+              className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]"
+            >
               Full Name *
             </label>
             <input
@@ -62,11 +65,16 @@ export function ContactForm() {
                   : "border-[color:var(--border)] focus:border-[color:var(--gold)]"
               }`}
             />
-            {errors.full_name && <p className="text-xs text-red-500 mt-1">{errors.full_name.message}</p>}
+            {errors.full_name && (
+              <p className="text-xs text-red-500 mt-1">{errors.full_name.message}</p>
+            )}
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="email" className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+            <label
+              htmlFor="email"
+              className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]"
+            >
               Email Address *
             </label>
             <input
@@ -85,7 +93,10 @@ export function ContactForm() {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="phone_number" className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+            <label
+              htmlFor="phone_number"
+              className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]"
+            >
               Phone Number (Optional)
             </label>
             <input
@@ -97,7 +108,10 @@ export function ContactForm() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="subject" className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+            <label
+              htmlFor="subject"
+              className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]"
+            >
               Subject *
             </label>
             <input
@@ -110,12 +124,17 @@ export function ContactForm() {
                   : "border-[color:var(--border)] focus:border-[color:var(--gold)]"
               }`}
             />
-            {errors.subject && <p className="text-xs text-red-500 mt-1">{errors.subject.message}</p>}
+            {errors.subject && (
+              <p className="text-xs text-red-500 mt-1">{errors.subject.message}</p>
+            )}
           </div>
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="message" className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+          <label
+            htmlFor="message"
+            className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]"
+          >
             Message *
           </label>
           <textarea

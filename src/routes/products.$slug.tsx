@@ -28,7 +28,16 @@ export const Route = createFileRoute("/products/$slug")({
   loader: async ({ params }) => {
     const product = await productService.getProductBySlug(params.slug);
     if (!product) throw notFound();
-    const collection = getCollection(product.collection)!;
+    const collection =
+      getCollection(product.collection) ||
+      ({
+        id: "unknown",
+        slug: "unknown",
+        name: "Collection",
+        description: "",
+        benefits: [],
+        ambience: "mist",
+      } as any);
     return { product, collection };
   },
   head: ({ loaderData }) => {
@@ -47,21 +56,25 @@ export const Route = createFileRoute("/products/$slug")({
       scripts: [
         {
           type: "application/ld+json",
-          children: JSON.stringify(generateSchema.product({
-            name: product.name,
-            description: product.description,
-            image: product.image,
-            price: product.price,
-            url: `/products/${product.id}`,
-          })),
+          children: JSON.stringify(
+            generateSchema.product({
+              name: product.name,
+              description: product.description,
+              image: product.image,
+              price: product.price,
+              url: `/products/${product.id}`,
+            }),
+          ),
         },
         {
           type: "application/ld+json",
-          children: JSON.stringify(generateSchema.breadcrumb([
-            { name: collection.name, url: `/collections/${collection.id}` },
-            { name: product.name, url: `/products/${product.id}` },
-          ])),
-        }
+          children: JSON.stringify(
+            generateSchema.breadcrumb([
+              { name: collection.name, url: `/collections/${collection.id}` },
+              { name: product.name, url: `/products/${product.id}` },
+            ]),
+          ),
+        },
       ],
     };
   },
@@ -176,7 +189,7 @@ function ProductPage() {
                 ← {collection.name}
               </Link>
             </Reveal>
-            
+
             {/* 1. Gallery */}
             <div className="w-full -mx-6 px-6 mb-8">
               <ProductGallery
@@ -185,7 +198,7 @@ function ProductPage() {
                 benefits={<FloatingBenefits product={product} />}
               />
             </div>
-            
+
             {/* 2. Product Name */}
             <SplitText
               as="h1"
@@ -193,30 +206,33 @@ function ProductPage() {
               delay={0.1}
               className="text-display text-4xl leading-[1.1] mb-4"
             />
-            
+
             {/* 3. Rating */}
             <div className="mb-4">
               <RatingStars rating={4.8} count={248} onReviewsClick={scrollToReviews} />
             </div>
-            
+
             {/* 4. Price */}
             <div className="flex flex-col gap-1 border-b border-[color:var(--border)] pb-6 mb-6">
               <div className="text-display text-[32px] text-[color:var(--foreground)] leading-none">
-                ₹{product.price}
+                ₹{new Intl.NumberFormat("en-IN").format(product.price)}
               </div>
               <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
-                100g · Cold-pressed
+                90g · Cold-pressed
               </div>
             </div>
-            
+
             {/* 5. Ingredients */}
             <div className="mb-8">
-              <Reveal preset="label" className="text-[11px] font-medium tracking-[0.2em] uppercase mb-4 text-[color:var(--gold)]">
+              <Reveal
+                preset="label"
+                className="text-[11px] font-medium tracking-[0.2em] uppercase mb-4 text-[color:var(--gold)]"
+              >
                 Key Ingredients
               </Reveal>
               <InteractiveIngredients ingredients={product.ingredients} />
             </div>
-            
+
             {/* 6. Description */}
             <div className="mb-10">
               <Reveal
@@ -236,7 +252,7 @@ function ProductPage() {
                 {product.description}
               </Reveal>
             </div>
-            
+
             {/* 7. Customization & Actions */}
             <div className="mb-10">
               <ProductActions
@@ -254,9 +270,9 @@ function ProductPage() {
                 onBuyNow={handleBuyNow}
               />
             </div>
-            
+
             <TrustBadges />
-            
+
             <div className="mt-8">
               <ExpandableInfo items={expandableItems} />
             </div>
@@ -316,10 +332,10 @@ function ProductPage() {
 
               <div className="mt-10 flex items-baseline gap-6 border-b border-[color:var(--border)] pb-10">
                 <div className="text-display text-4xl text-[color:var(--foreground)]">
-                  ₹{product.price}
+                  ₹{new Intl.NumberFormat("en-IN").format(product.price)}
                 </div>
                 <div className="text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
-                  100g · Cold-pressed
+                  90g · Cold-pressed
                 </div>
               </div>
 

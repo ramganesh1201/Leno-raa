@@ -127,7 +127,9 @@ function WishlistCard({ product, onRemove }: { product: any; onRemove: () => voi
                 {product.name}
               </Link>
             </div>
-            <div className="text-sm font-medium">₹{product.price}</div>
+            <div className="text-sm font-medium">
+              ₹{new Intl.NumberFormat("en-IN").format(product.price)}
+            </div>
           </div>
           <p className="text-sm text-[color:var(--muted-foreground)] line-clamp-2 mt-2 leading-relaxed">
             {product.description}

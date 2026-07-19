@@ -110,7 +110,9 @@ function RecentlyViewed() {
                 >
                   {p.name}
                 </Link>
-                <div className="text-sm font-medium mt-2">₹{p.price}</div>
+                <div className="text-sm font-medium mt-2">
+                  ₹{new Intl.NumberFormat("en-IN").format(p.price)}
+                </div>
               </div>
             </motion.div>
           ))}

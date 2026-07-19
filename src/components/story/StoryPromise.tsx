@@ -8,13 +8,13 @@ export function StoryPromise() {
         <Reveal preset="label" className="ornament-rule text-eyebrow mb-12">
           Our Promise
         </Reveal>
-        
+
         <SplitText
           as="h2"
           text='"We never rush what touches your skin."'
           className="text-display text-4xl md:text-5xl leading-tight text-[color:var(--foreground)] font-serif"
         />
-        
+
         <Reveal
           as="p"
           preset="paragraph"

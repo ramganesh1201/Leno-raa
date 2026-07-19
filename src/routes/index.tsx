@@ -19,7 +19,8 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: generateMetadata({
       title: "Handcrafted Luxury Skincare",
-      description: "Discover Lenoraa's doctor-formulated, cold-processed artisanal soaps made with the finest natural botanicals.",
+      description:
+        "Discover Lenoraa's doctor-formulated, cold-processed artisanal soaps made with the finest natural botanicals.",
       path: "/",
     }),
     scripts: [
@@ -145,7 +146,11 @@ function Index() {
       {/* MOBILE HERO */}
       <section className="relative flex md:hidden min-h-[100dvh] flex-col items-center justify-between pt-[calc(72px+var(--safe-top,0px)+32px)] pb-[calc(var(--safe-bottom,0px)+32px)] px-6 overflow-hidden bg-gradient-to-b from-[color:var(--ivory)] to-[color:var(--ivory)]">
         <div className="flex flex-col items-center text-center w-full relative z-10 space-y-4">
-          <Reveal preset="label" delay={0.1} className="text-eyebrow text-[color:var(--foreground)]/70">
+          <Reveal
+            preset="label"
+            delay={0.1}
+            className="text-eyebrow text-[color:var(--foreground)]/70"
+          >
             Est. Nature · Doctor Formulated
           </Reveal>
           <h1 className="text-display flex flex-col font-serif text-[44px] leading-[1.05] tracking-normal items-center">
@@ -159,12 +164,17 @@ function Index() {
               luxury.
             </Reveal>
           </h1>
-          <Reveal as="p" preset="paragraph" delay={0.5} className="max-w-[280px] text-[16px] leading-relaxed tracking-wide text-[color:var(--foreground)]/70">
+          <Reveal
+            as="p"
+            preset="paragraph"
+            delay={0.5}
+            className="max-w-[280px] text-[16px] leading-relaxed tracking-wide text-[color:var(--foreground)]/70"
+          >
             Five botanical chapters. Eleven handcrafted soaps. A slow, cold-processed ritual.
           </Reveal>
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -187,11 +197,7 @@ function Index() {
           transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="w-full flex flex-col gap-4 relative z-10"
         >
-          <Link
-            to="/collections/$slug"
-            params={{ slug: "radiance" }}
-            className="btn-lux"
-          >
+          <Link to="/collections/$slug" params={{ slug: "radiance" }} className="btn-lux">
             Enter the world
           </Link>
           <Link to="/customize" className="btn-ghost-lux">

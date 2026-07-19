@@ -18,10 +18,9 @@ export const generateSchema = {
         email: businessConfig.supportEmail || businessConfig.email,
         availableLanguage: ["English", "Hindi"],
       },
-      sameAs: [
-        businessConfig.socialLinks.instagram,
-        businessConfig.socialLinks.facebook,
-      ].filter(Boolean),
+      sameAs: [businessConfig.socialLinks.instagram, businessConfig.socialLinks.facebook].filter(
+        Boolean,
+      ),
     };
   },
 
@@ -48,7 +47,9 @@ export const generateSchema = {
       "@context": "https://schema.org",
       "@type": "Product",
       name: product.name,
-      image: product.image.startsWith("http") ? product.image : `${businessConfig.websiteUrl}${product.image}`,
+      image: product.image.startsWith("http")
+        ? product.image
+        : `${businessConfig.websiteUrl}${product.image}`,
       description: product.description,
       brand: {
         "@type": "Brand",

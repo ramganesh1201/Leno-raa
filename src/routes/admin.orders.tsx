@@ -176,7 +176,9 @@ function AdminOrdersPage() {
                       </div>
                     </td>
                     <td className="p-4">
-                      <div className="font-medium tracking-wide">₹{order.total}</div>
+                      <div className="font-medium tracking-wide">
+                        ₹{new Intl.NumberFormat("en-IN").format(order.total)}
+                      </div>
                     </td>
                     <td className="p-4">
                       <span
@@ -236,7 +238,9 @@ function AdminOrdersPage() {
                         {new Date(order.created_at).toLocaleDateString()}
                       </div>
                     </div>
-                    <div className="font-medium tracking-wide">₹{order.total}</div>
+                    <div className="font-medium tracking-wide">
+                      ₹{new Intl.NumberFormat("en-IN").format(order.total)}
+                    </div>
                   </div>
 
                   <div>
@@ -364,11 +368,12 @@ function AdminOrdersPage() {
                                 {item.product?.name || "Custom Soap"}
                               </div>
                               <div className="text-xs text-neutral-500">
-                                Qty: {item.quantity} x ₹{item.price}
+                                Qty: {item.quantity} x ₹
+                                {new Intl.NumberFormat("en-IN").format(item.price)}
                               </div>
                             </div>
                             <div className="font-medium tracking-wide">
-                              ₹{item.quantity * item.price}
+                              ₹{new Intl.NumberFormat("en-IN").format(item.quantity * item.price)}
                             </div>
                           </div>
                         ))}
@@ -376,15 +381,19 @@ function AdminOrdersPage() {
                       <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 text-sm space-y-2">
                         <div className="flex justify-between text-neutral-500">
                           <span>Subtotal</span>
-                          <span>₹{selectedOrder.subtotal}</span>
+                          <span>
+                            ₹{new Intl.NumberFormat("en-IN").format(selectedOrder.subtotal)}
+                          </span>
                         </div>
                         <div className="flex justify-between text-neutral-500">
                           <span>Shipping</span>
-                          <span>₹{selectedOrder.shipping_cost}</span>
+                          <span>
+                            ₹{new Intl.NumberFormat("en-IN").format(selectedOrder.shipping_cost)}
+                          </span>
                         </div>
                         <div className="flex justify-between font-medium text-lg pt-2 border-t border-neutral-200 dark:border-neutral-800 mt-2 text-neutral-900 dark:text-white">
                           <span>Total</span>
-                          <span>₹{selectedOrder.total}</span>
+                          <span>₹{new Intl.NumberFormat("en-IN").format(selectedOrder.total)}</span>
                         </div>
                       </div>
                     </div>

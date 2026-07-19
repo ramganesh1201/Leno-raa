@@ -108,7 +108,11 @@ function SavedDesignsPage() {
                     <div className="text-display text-2xl group-hover:text-[color:var(--gold)] transition-colors">
                       {name}
                     </div>
-                    {!isLocal && <div className="text-sm font-medium">₹{d.estimated_price}</div>}
+                    {!isLocal && (
+                      <div className="text-sm font-medium">
+                        ₹{new Intl.NumberFormat("en-IN").format(d.estimated_price)}
+                      </div>
+                    )}
                   </div>
 
                   <div className="mt-4 space-y-3">

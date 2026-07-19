@@ -199,7 +199,7 @@ export function MobileCollectionLayout({
                 </h4>
                 <div className="mt-auto pt-2 flex items-center justify-between">
                   <span className="text-sm font-serif text-[color:var(--foreground)]">
-                    ${(p.price / 100).toFixed(2)}
+                    ₹{new Intl.NumberFormat("en-IN").format(p.price)}
                   </span>
                   <div
                     onClick={(e) => {

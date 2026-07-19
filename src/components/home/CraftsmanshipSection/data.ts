@@ -22,13 +22,15 @@ export const craftsmanshipSlides: CraftsmanshipSlide[] = [
   {
     id: "natural-ingredients",
     title: "Natural Ingredients",
-    description: "We source only the finest botanical extracts, pure essential oils, and rich plant butters.",
+    description:
+      "We source only the finest botanical extracts, pure essential oils, and rich plant butters.",
     image: envRadiance,
   },
   {
     id: "cold-process",
     title: "Cold Process",
-    description: "A slow method that retains naturally occurring glycerin to deeply moisturize your skin.",
+    description:
+      "A slow method that retains naturally occurring glycerin to deeply moisturize your skin.",
     image: envCalm,
   },
   {
@@ -46,7 +48,8 @@ export const craftsmanshipSlides: CraftsmanshipSlide[] = [
   {
     id: "doctor-formulated",
     title: "Doctor Formulated",
-    description: "Expertly balanced recipes designed to nourish, heal, and protect your skin barrier.",
+    description:
+      "Expertly balanced recipes designed to nourish, heal, and protect your skin barrier.",
     image: envRelax,
   },
 ];

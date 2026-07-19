@@ -127,7 +127,7 @@ function OrderDetailsPage() {
                     </div>
                   </div>
                   <div className="text-sm font-medium text-[color:var(--foreground)] tracking-widest">
-                    ₹{item.price * item.quantity}
+                    ₹{new Intl.NumberFormat("en-IN").format(item.price * item.quantity)}
                   </div>
                 </div>
               ))}
@@ -208,16 +208,20 @@ function OrderDetailsPage() {
             <div className="space-y-4 border-b border-[color:var(--border)] pb-6 text-sm tracking-widest text-[color:var(--muted-foreground)]">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="text-[color:var(--foreground)]">₹{order.subtotal}</span>
+                <span className="text-[color:var(--foreground)]">
+                  ₹{new Intl.NumberFormat("en-IN").format(order.subtotal)}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span className="text-[color:var(--foreground)]">₹{order.shipping_cost}</span>
+                <span className="text-[color:var(--foreground)]">
+                  ₹{new Intl.NumberFormat("en-IN").format(order.shipping_cost)}
+                </span>
               </div>
               {order.discount > 0 && (
                 <div className="flex justify-between text-[color:var(--gold)]">
                   <span>Discount</span>
-                  <span>-₹{order.discount}</span>
+                  <span>-₹{new Intl.NumberFormat("en-IN").format(order.discount)}</span>
                 </div>
               )}
             </div>
@@ -226,7 +230,7 @@ function OrderDetailsPage() {
                 Total
               </span>
               <span className="text-2xl tracking-widest text-[color:var(--foreground)] font-medium">
-                ₹{order.total}
+                ₹{new Intl.NumberFormat("en-IN").format(order.total)}
               </span>
             </div>
           </div>

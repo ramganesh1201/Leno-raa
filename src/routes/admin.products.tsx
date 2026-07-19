@@ -219,7 +219,9 @@ function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="p-4">
-                      <div className="text-sm font-medium">₹{product.price}</div>
+                      <div className="text-sm font-medium">
+                        ₹{new Intl.NumberFormat("en-IN").format(product.price)}
+                      </div>
                     </td>
                     <td className="p-4">
                       <div
@@ -296,7 +298,9 @@ function AdminProductsPage() {
                       {product.category || "Uncategorized"}
                     </div>
                     <div className="flex flex-wrap items-center gap-2 mt-2">
-                      <div className="text-sm font-medium">₹{product.price}</div>
+                      <div className="text-sm font-medium">
+                        ₹{new Intl.NumberFormat("en-IN").format(product.price)}
+                      </div>
                       <div
                         className={`text-xs ${product.stock < 10 ? "text-rose-600 font-bold" : "text-neutral-500"}`}
                       >

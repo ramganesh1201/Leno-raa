@@ -19,8 +19,8 @@ export function Progress({ currentIndex, total, duration, isPaused }: ProgressPr
           key={currentIndex}
           initial={{ width: "0%" }}
           animate={{ width: isPaused ? "auto" : "100%" }}
-          transition={{ 
-            duration: duration / 1000, 
+          transition={{
+            duration: duration / 1000,
             ease: "linear",
           }}
           className="h-full bg-[color:var(--gold)] absolute top-0 left-0"

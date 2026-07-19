@@ -249,7 +249,7 @@ function CartPage() {
                             </div>
                             <div className="text-left md:text-right">
                               <div className="text-base md:text-lg tracking-widest text-[color:var(--foreground)] font-medium">
-                                ₹{price * item.quantity}
+                                ₹{new Intl.NumberFormat("en-IN").format(price * item.quantity)}
                               </div>
                             </div>
                           </div>
@@ -259,7 +259,7 @@ function CartPage() {
                               <>
                                 <span className="flex items-center gap-1.5">
                                   <span className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />{" "}
-                                  100g Bar
+                                  90g Bar
                                 </span>
                                 {product.ui_metadata?.skin_type && (
                                   <span className="flex items-center gap-1.5">
@@ -421,7 +421,9 @@ function CartPage() {
                 <div className="space-y-4 border-b border-[color:var(--border)] pb-6 text-sm tracking-widest text-[color:var(--muted-foreground)] hidden md:block">
                   <div className="flex justify-between">
                     <span>Items ({cartQuantity})</span>
-                    <span className="text-[color:var(--foreground)]">₹{subtotal}</span>
+                    <span className="text-[color:var(--foreground)]">
+                      ₹{new Intl.NumberFormat("en-IN").format(subtotal)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
@@ -438,7 +440,7 @@ function CartPage() {
                     Total
                   </span>
                   <span className="text-xl md:text-2xl tracking-widest text-[color:var(--foreground)] font-medium">
-                    ₹{subtotal + 50}
+                    ₹{new Intl.NumberFormat("en-IN").format(subtotal + 50)}
                   </span>
                 </div>
 

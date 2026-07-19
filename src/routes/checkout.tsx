@@ -277,7 +277,9 @@ function CheckoutPage() {
                           Qty: {item.quantity}
                         </div>
                       </div>
-                      <div className="text-[color:var(--foreground)]">₹{price * item.quantity}</div>
+                      <div className="text-[color:var(--foreground)]">
+                        ₹{new Intl.NumberFormat("en-IN").format(price * item.quantity)}
+                      </div>
                     </div>
                   );
                 })}
@@ -286,11 +288,15 @@ function CheckoutPage() {
               <div className="space-y-4 border-t border-[color:var(--border)] pt-6 text-sm tracking-widest text-[color:var(--muted-foreground)]">
                 <div className="flex justify-between">
                   <span>Subtotal ({cartQuantity} items)</span>
-                  <span className="text-[color:var(--foreground)]">₹{subtotal}</span>
+                  <span className="text-[color:var(--foreground)]">
+                    ₹{new Intl.NumberFormat("en-IN").format(subtotal)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span className="text-[color:var(--foreground)]">₹{shippingCost}</span>
+                  <span className="text-[color:var(--foreground)]">
+                    ₹{new Intl.NumberFormat("en-IN").format(shippingCost)}
+                  </span>
                 </div>
               </div>
 
@@ -299,7 +305,7 @@ function CheckoutPage() {
                   Total
                 </span>
                 <span className="text-xl md:text-2xl tracking-widest text-[color:var(--foreground)] font-medium">
-                  ₹{total}
+                  ₹{new Intl.NumberFormat("en-IN").format(total)}
                 </span>
               </div>
             </details>

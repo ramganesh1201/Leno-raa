@@ -136,7 +136,6 @@ export function LuxuryEditorialCollections() {
                     className={`relative h-full w-full flex flex-col justify-end z-10 transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:-translate-y-2 ${isFeatured ? "p-6 min-[375px]:p-8 md:p-10 pb-8 min-[375px]:pb-10" : "p-4 min-[375px]:p-5 min-[412px]:p-6 pb-5 min-[375px]:pb-6"}`}
                   >
                     <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between w-full gap-3 lg:gap-4 h-full lg:h-auto justify-end">
-                      
                       {/* Text Block */}
                       <div className="flex flex-col min-w-0 w-full lg:w-auto lg:flex-1">
                         <span className="block text-[color:var(--gold)]/80 mb-1.5 md:mb-3 uppercase tracking-[0.25em] text-[8px] min-[375px]:text-[9px] lg:text-[10px] font-medium transition-all duration-[400ms] group-hover:opacity-100 group-hover:brightness-110">
@@ -172,7 +171,6 @@ export function LuxuryEditorialCollections() {
                           <div className="absolute inset-0 bg-[color:var(--gold)] scale-0 rounded-full transition-transform duration-[400ms] ease-out group-hover:scale-100 opacity-10" />
                         </div>
                       </div>
-
                     </div>
                   </div>
                 </Link>

@@ -196,9 +196,18 @@ export function SiteHeader() {
           >
             <Search size={28} strokeWidth={1.5} className="transition-colors duration-250" />
           </button>
-          <Link to="/cart" className="flex nav-icon-btn group relative p-2" aria-label="Bag" data-lux-hover>
+          <Link
+            to="/cart"
+            className="flex nav-icon-btn group relative p-2"
+            aria-label="Bag"
+            data-lux-hover
+          >
             <ShoppingBag size={28} strokeWidth={1.5} className="transition-colors duration-250" />
-            {cartCount > 0 && <span className="absolute top-1 right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[color:var(--gold)] text-[10px] font-bold text-white shadow-sm">{cartCount}</span>}
+            {cartCount > 0 && (
+              <span className="absolute top-1 right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[color:var(--gold)] text-[10px] font-bold text-white shadow-sm">
+                {cartCount}
+              </span>
+            )}
           </Link>
         </div>
       </div>
@@ -805,8 +814,8 @@ export function SiteHeader() {
             >
               {/* Subtle ambient floating particles */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-                <motion.div 
-                  animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }} 
+                <motion.div
+                  animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }}
                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute top-1/4 left-1/4 w-32 h-32 bg-[color:var(--gold)]/10 rounded-full blur-3xl"
                 />
@@ -843,11 +852,11 @@ export function SiteHeader() {
                   <X size={28} strokeWidth={1.5} />
                 </motion.button>
               </div>
-              
+
               {/* Main Navigation List */}
               <div className="flex-1 overflow-y-auto custom-scrollbar relative z-10">
                 <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]" />
-                
+
                 <motion.div
                   initial="hidden"
                   animate="show"
@@ -861,38 +870,60 @@ export function SiteHeader() {
                   className="flex flex-col p-4 gap-1 relative z-10"
                 >
                   {/* Home */}
-                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                  >
                     <Link
                       to="/"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                     >
                       {pathname === "/" && (
-                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full"
+                        />
                       )}
                       <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                        <Home size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        <Home
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                        />
                       </div>
                       <div className="flex flex-col flex-1">
                         <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
                           Home
                         </span>
                       </div>
-                      <ArrowRight size={16} className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1" />
+                      <ArrowRight
+                        size={16}
+                        className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1"
+                      />
                     </Link>
                   </motion.div>
 
                   {/* Collections Accordion */}
-                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }} className="flex flex-col">
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                    className="flex flex-col"
+                  >
                     <button
                       onClick={() => setIsMobileCollectionsOpen(!isMobileCollectionsOpen)}
                       className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative w-full text-left"
                     >
                       {pathname.includes("/collections") && (
-                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full"
+                        />
                       )}
                       <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                        <Droplets size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        <Droplets
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                        />
                       </div>
                       <div className="flex flex-col flex-1">
                         <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
@@ -906,7 +937,11 @@ export function SiteHeader() {
                         animate={{ rotate: isMobileCollectionsOpen ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <ChevronDown size={18} strokeWidth={1.5} className="text-[color:var(--muted-foreground)] opacity-50" />
+                        <ChevronDown
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--muted-foreground)] opacity-50"
+                        />
                       </motion.div>
                     </button>
 
@@ -934,7 +969,8 @@ export function SiteHeader() {
                                   className="flex flex-col justify-center py-2 px-3 rounded-lg transition-colors active:bg-[color:var(--foreground)]/5 group/link"
                                 >
                                   <span className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--muted-foreground)] group-active/link:text-[color:var(--gold)] transition-colors">
-                                    Chapter {["I", "II", "III", "IV", "V", "VI", "VII"][idx] || idx + 1}
+                                    Chapter{" "}
+                                    {["I", "II", "III", "IV", "V", "VI", "VII"][idx] || idx + 1}
                                   </span>
                                   <span className="text-lg text-[color:var(--foreground)] font-medium">
                                     {c.name}
@@ -949,63 +985,96 @@ export function SiteHeader() {
                   </motion.div>
 
                   {/* Customize */}
-                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                  >
                     <Link
                       to="/customize"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                     >
                       {pathname === "/customize" && (
-                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full"
+                        />
                       )}
                       <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                        <Sparkles size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        <Sparkles
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                        />
                       </div>
                       <div className="flex flex-col flex-1">
                         <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
                           Customize
                         </span>
                       </div>
-                      <ArrowRight size={16} className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1" />
+                      <ArrowRight
+                        size={16}
+                        className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1"
+                      />
                     </Link>
                   </motion.div>
 
                   {/* Story */}
-                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                  >
                     <Link
                       to="/story"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                     >
                       {pathname === "/story" && (
-                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full"
+                        />
                       )}
                       <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                        <BookOpen size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        <BookOpen
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                        />
                       </div>
                       <div className="flex flex-col flex-1">
                         <span className="text-display text-2xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
                           Story
                         </span>
                       </div>
-                      <ArrowRight size={16} className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1" />
+                      <ArrowRight
+                        size={16}
+                        className="text-[color:var(--muted-foreground)] opacity-50 group-active:opacity-100 group-active:text-[color:var(--gold)] transition-all transform group-active:translate-x-1"
+                      />
                     </Link>
                   </motion.div>
 
                   <div className="h-px w-full bg-[color:var(--border)]/50 my-2" />
 
                   {/* Wishlist */}
-                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                  >
                     <Link
                       to="/wishlist"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                     >
                       {pathname === "/wishlist" && (
-                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full"
+                        />
                       )}
                       <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                        <Heart size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        <Heart
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                        />
                       </div>
                       <div className="flex flex-col flex-1">
                         <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
@@ -1016,17 +1085,26 @@ export function SiteHeader() {
                   </motion.div>
 
                   {/* Cart */}
-                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                  >
                     <Link
                       to="/cart"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                     >
                       {pathname === "/cart" && (
-                        <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full"
+                        />
                       )}
                       <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors relative">
-                        <ShoppingBag size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                        <ShoppingBag
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                        />
                         {cartCount > 0 && (
                           <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--gold)] text-[10px] text-white">
                             {cartCount}
@@ -1042,7 +1120,9 @@ export function SiteHeader() {
                   </motion.div>
 
                   {/* Account */}
-                  <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                  >
                     {!user ? (
                       <Link
                         to="/auth/login"
@@ -1050,7 +1130,11 @@ export function SiteHeader() {
                         className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                       >
                         <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                          <User size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                          <User
+                            size={18}
+                            strokeWidth={1.5}
+                            className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                          />
                         </div>
                         <div className="flex flex-col flex-1">
                           <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
@@ -1065,10 +1149,17 @@ export function SiteHeader() {
                         className="flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] active:bg-[color:var(--foreground)]/5 group relative overflow-hidden"
                       >
                         {pathname.includes("/account") && (
-                          <motion.div layoutId="activeNav" className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full" />
+                          <motion.div
+                            layoutId="activeNav"
+                            className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[color:var(--gold)] rounded-r-full"
+                          />
                         )}
                         <div className="w-10 h-10 rounded-full bg-[color:var(--cream)] border border-[color:var(--border)] flex items-center justify-center shrink-0 group-active:border-[color:var(--gold)]/30 transition-colors">
-                          <User size={18} strokeWidth={1.5} className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]" />
+                          <User
+                            size={18}
+                            strokeWidth={1.5}
+                            className="text-[color:var(--foreground)] group-active:text-[color:var(--gold)]"
+                          />
                         </div>
                         <div className="flex flex-col flex-1">
                           <span className="text-display text-xl text-[color:var(--foreground)] group-active:text-[color:var(--gold)] transition-colors">
@@ -1085,7 +1176,7 @@ export function SiteHeader() {
 
                 {/* Featured Collection */}
                 {collections.length > 0 && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
@@ -1144,7 +1235,6 @@ export function SiteFooter() {
   return (
     <footer className="relative mt-32 border-t border-[color:var(--border)] bg-[color:var(--cream)]/60 py-12 md:py-20">
       <div className="mx-auto grid max-w-[1400px] gap-8 md:gap-16 px-6 md:grid-cols-4 md:px-12">
-        
         {/* Brand / Company */}
         <div className="mb-4 md:mb-0">
           <Reveal preset="subheading" className="text-display text-3xl mb-4">
@@ -1152,16 +1242,28 @@ export function SiteFooter() {
           </Reveal>
           <ul className="space-y-3 text-sm text-[color:var(--muted-foreground)]">
             <li>
-              <Link to="/about" className="transition hover:text-[color:var(--gold)]">About Us</Link>
+              <Link to="/about" className="transition hover:text-[color:var(--gold)]">
+                About Us
+              </Link>
             </li>
             <li>
-              <Link to="/story" className="transition hover:text-[color:var(--gold)]">Our Story</Link>
+              <Link to="/story" className="transition hover:text-[color:var(--gold)]">
+                Our Story
+              </Link>
             </li>
             <li>
-              <Link to="/collections/$slug" params={{ slug: "radiance" }} className="transition hover:text-[color:var(--gold)]">Collections</Link>
+              <Link
+                to="/collections/$slug"
+                params={{ slug: "radiance" }}
+                className="transition hover:text-[color:var(--gold)]"
+              >
+                Collections
+              </Link>
             </li>
             <li>
-              <Link to="/customize" className="transition hover:text-[color:var(--gold)]">Customize</Link>
+              <Link to="/customize" className="transition hover:text-[color:var(--gold)]">
+                Customize
+              </Link>
             </li>
           </ul>
         </div>
@@ -1173,19 +1275,29 @@ export function SiteFooter() {
           </Reveal>
           <ul className="space-y-3 text-sm text-[color:var(--muted-foreground)]">
             <li>
-              <Link to="/privacy" className="transition hover:text-[color:var(--gold)]">Privacy Policy</Link>
+              <Link to="/privacy" className="transition hover:text-[color:var(--gold)]">
+                Privacy Policy
+              </Link>
             </li>
             <li>
-              <Link to="/terms" className="transition hover:text-[color:var(--gold)]">Terms & Conditions</Link>
+              <Link to="/terms" className="transition hover:text-[color:var(--gold)]">
+                Terms & Conditions
+              </Link>
             </li>
             <li>
-              <Link to="/shipping" className="transition hover:text-[color:var(--gold)]">Shipping Policy</Link>
+              <Link to="/shipping" className="transition hover:text-[color:var(--gold)]">
+                Shipping Policy
+              </Link>
             </li>
             <li>
-              <Link to="/refunds" className="transition hover:text-[color:var(--gold)]">Refund Policy</Link>
+              <Link to="/refunds" className="transition hover:text-[color:var(--gold)]">
+                Refund Policy
+              </Link>
             </li>
             <li>
-              <Link to="/contact" className="transition hover:text-[color:var(--gold)]">Contact Us</Link>
+              <Link to="/contact" className="transition hover:text-[color:var(--gold)]">
+                Contact Us
+              </Link>
             </li>
           </ul>
         </div>
@@ -1198,13 +1310,19 @@ export function SiteFooter() {
           <ul className="space-y-3 text-sm text-[color:var(--muted-foreground)]">
             <li className="flex items-center gap-2">
               <Mail className="h-4 w-4 shrink-0" />
-              <a href={`mailto:${businessConfig.email}`} className="transition hover:text-[color:var(--gold)]">
+              <a
+                href={`mailto:${businessConfig.email}`}
+                className="transition hover:text-[color:var(--gold)]"
+              >
                 {businessConfig.email}
               </a>
             </li>
             <li className="flex items-center gap-2">
               <Phone className="h-4 w-4 shrink-0" />
-              <a href={`tel:${businessConfig.phone}`} className="transition hover:text-[color:var(--gold)]">
+              <a
+                href={`tel:${businessConfig.phone}`}
+                className="transition hover:text-[color:var(--gold)]"
+              >
                 {businessConfig.phone}
               </a>
             </li>
@@ -1222,17 +1340,27 @@ export function SiteFooter() {
           </Reveal>
           <div className="flex gap-4 mb-8 text-[color:var(--muted-foreground)]">
             {businessConfig.socialLinks.instagram && (
-              <a href={businessConfig.socialLinks.instagram} target="_blank" rel="noreferrer" className="transition hover:text-[color:var(--gold)]">
+              <a
+                href={businessConfig.socialLinks.instagram}
+                target="_blank"
+                rel="noreferrer"
+                className="transition hover:text-[color:var(--gold)]"
+              >
                 <Instagram className="h-5 w-5" />
               </a>
             )}
             {businessConfig.socialLinks.facebook && (
-              <a href={businessConfig.socialLinks.facebook} target="_blank" rel="noreferrer" className="transition hover:text-[color:var(--gold)]">
+              <a
+                href={businessConfig.socialLinks.facebook}
+                target="_blank"
+                rel="noreferrer"
+                className="transition hover:text-[color:var(--gold)]"
+              >
                 <Facebook className="h-5 w-5" />
               </a>
             )}
           </div>
-          
+
           <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             Newsletter
           </Reveal>

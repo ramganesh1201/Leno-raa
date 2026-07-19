@@ -131,7 +131,7 @@ function OrdersPage() {
                     Total
                   </div>
                   <div className="text-sm font-medium text-[color:var(--foreground)]">
-                    ₹{order.total}
+                    ₹{new Intl.NumberFormat("en-IN").format(order.total)}
                   </div>
                 </div>
                 <div>
@@ -195,7 +195,7 @@ function OrdersPage() {
                     </div>
                   </div>
                   <div className="text-sm font-medium text-[color:var(--foreground)] tracking-widest">
-                    ₹{item.price * item.quantity}
+                    ₹{new Intl.NumberFormat("en-IN").format(item.price * item.quantity)}
                   </div>
                 </div>
               ))}

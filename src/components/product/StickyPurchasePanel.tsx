@@ -49,14 +49,18 @@ export function StickyPurchasePanel({
               )}
               <div>
                 <div className="font-serif text-lg">{productName}</div>
-                <div className="text-xs text-[color:var(--muted-foreground)]">₹{price}</div>
+                <div className="text-xs text-[color:var(--muted-foreground)]">
+                  ₹{new Intl.NumberFormat("en-IN").format(price)}
+                </div>
               </div>
             </div>
 
             <div className="flex w-full gap-3 md:w-auto items-center">
               <div className="md:hidden flex flex-col mr-2 w-1/3">
-                <span className="text-[10px] text-[color:var(--muted-foreground)] uppercase tracking-widest">Total</span>
-                <span className="text-xl">₹{price}</span>
+                <span className="text-[10px] text-[color:var(--muted-foreground)] uppercase tracking-widest">
+                  Total
+                </span>
+                <span className="text-xl">₹{new Intl.NumberFormat("en-IN").format(price)}</span>
               </div>
               <button
                 onClick={onAdd}

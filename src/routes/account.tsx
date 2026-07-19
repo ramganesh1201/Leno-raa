@@ -104,7 +104,9 @@ export function AccountShell({
                             : "text-[color:var(--muted-foreground)]"
                         }
                       />
-                      <span className="text-sm font-medium tracking-wide mt-1 md:mt-0">{label}</span>
+                      <span className="text-sm font-medium tracking-wide mt-1 md:mt-0">
+                        {label}
+                      </span>
                     </Link>
                     {isActuallyActive && (
                       <motion.div

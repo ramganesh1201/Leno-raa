@@ -6,27 +6,26 @@ import { Check } from "lucide-react";
 const differentiators = [
   {
     title: "Handmade",
-    desc: "Crafted entirely by human hands from start to finish."
+    desc: "Crafted entirely by human hands from start to finish.",
   },
   {
     title: "Natural Ingredients",
-    desc: "Formulated with 100% plant-based oils and botanical extracts."
+    desc: "Formulated with 100% plant-based oils and botanical extracts.",
   },
   {
     title: "Small Batch Production",
-    desc: "Made in limited quantities to ensure uncompromising quality."
+    desc: "Made in limited quantities to ensure uncompromising quality.",
   },
   {
     title: "Dermatologist Reviewed",
-    desc: "Clinically vetted formulas that protect the skin barrier."
-  }
+    desc: "Clinically vetted formulas that protect the skin barrier.",
+  },
 ];
 
 export function StoryDifferentiators() {
   return (
     <section className="relative py-24 md:py-32 bg-[color:var(--background)]">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        
         <div className="text-center mb-16 md:mb-24">
           <Reveal preset="label" className="text-eyebrow text-[color:var(--gold)] mb-4">
             The Difference
@@ -58,7 +57,6 @@ export function StoryDifferentiators() {
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );

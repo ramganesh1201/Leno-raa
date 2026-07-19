@@ -98,7 +98,7 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
 
   return (
     <div className="relative w-full overflow-hidden">
-      <div 
+      <div
         ref={containerRef}
         onScroll={handleScroll}
         className="flex flex-row md:flex-col w-full overflow-x-auto md:overflow-x-visible snap-x md:snap-none snap-mandatory md:snap-normal scrollbar-hide"
@@ -113,7 +113,7 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
           />
         ))}
       </div>
-      
+
       {/* Mobile Image Counter & Thumbnails */}
       {images.length > 1 && (
         <div className="flex md:hidden flex-col items-center mt-4 mb-2 gap-4 px-6">
@@ -128,7 +128,7 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
                   if (!containerRef.current) return;
                   containerRef.current.scrollTo({
                     left: containerRef.current.clientWidth * idx,
-                    behavior: "smooth"
+                    behavior: "smooth",
                   });
                 }}
                 className={`w-2 h-2 rounded-full transition-all ${idx === activeIndex ? "bg-[color:var(--gold)] w-6" : "bg-[color:var(--border)]"}`}

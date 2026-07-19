@@ -19,7 +19,6 @@ function ContactPage() {
     <div className="relative min-h-screen bg-[color:var(--background)] pt-32 pb-24">
       <div className="mx-auto max-w-[1200px] px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-16 lg:gap-24">
-          
           {/* Left Column: Contact Info */}
           <div>
             <ContactInfo />
@@ -30,7 +29,6 @@ function ContactPage() {
             <h2 className="text-display text-3xl mb-8">Send a Message</h2>
             <ContactForm />
           </div>
-
         </div>
       </div>
     </div>
