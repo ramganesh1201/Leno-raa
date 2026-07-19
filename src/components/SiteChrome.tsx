@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useShop } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,7 +32,12 @@ import {
   Droplets,
   BookOpen,
   Leaf,
+  Instagram,
+  Facebook,
+  Mail,
+  Phone,
 } from "lucide-react";
+import { businessConfig } from "@/config/business";
 
 export function SiteHeader() {
   const { user, signOut: authSignOut, isLoading: isAuthLoading } = useAuth();
@@ -71,18 +76,21 @@ export function SiteHeader() {
   const { data: products = [] } = useQuery({
     queryKey: ["products"],
     queryFn: () => productService.getProducts(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const searchResults = searchQuery
-    ? products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getProductCollections(p).some((c) =>
-            c.toLowerCase().includes(searchQuery.toLowerCase()),
-          ) ||
-          p.ingredients.some((i) => i.toLowerCase().includes(searchQuery.toLowerCase())),
-      )
-    : [];
+  const searchResults = useMemo(() => {
+    return searchQuery
+      ? products.filter(
+          (p) =>
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            getProductCollections(p).some((c) =>
+              c.toLowerCase().includes(searchQuery.toLowerCase()),
+            ) ||
+            p.ingredients.some((i) => i.toLowerCase().includes(searchQuery.toLowerCase())),
+        )
+      : [];
+  }, [searchQuery, products]);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -316,6 +324,8 @@ export function SiteHeader() {
                                   <img
                                     src={product.image}
                                     alt={product.name}
+                                    loading="lazy"
+                                    decoding="async"
                                     className="w-full h-full object-cover"
                                   />
                                 )}
@@ -749,6 +759,8 @@ export function SiteHeader() {
                               <img
                                 src={product.image}
                                 alt={product.name}
+                                loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover"
                               />
                             )}
@@ -1132,140 +1144,97 @@ export function SiteFooter() {
   return (
     <footer className="relative mt-32 border-t border-[color:var(--border)] bg-[color:var(--cream)]/60 py-12 md:py-20">
       <div className="mx-auto grid max-w-[1400px] gap-8 md:gap-16 px-6 md:grid-cols-4 md:px-12">
-        {/* Brand / About - Always visible or open */}
+        
+        {/* Brand / Company */}
         <div className="mb-4 md:mb-0">
-          <Reveal preset="subheading" className="text-display text-3xl">
+          <Reveal preset="subheading" className="text-display text-3xl mb-4">
             Lenoraa
           </Reveal>
-          <Reveal
-            as="p"
-            preset="paragraph"
-            delay={0.1}
-            className="mt-4 max-w-xs text-sm leading-relaxed text-[color:var(--muted-foreground)]"
-          >
-            Nature crafted into luxury. Handmade soaps, doctor-formulated, cold-processed in small
-            batches.
-          </Reveal>
+          <ul className="space-y-3 text-sm text-[color:var(--muted-foreground)]">
+            <li>
+              <Link to="/about" className="transition hover:text-[color:var(--gold)]">About Us</Link>
+            </li>
+            <li>
+              <Link to="/story" className="transition hover:text-[color:var(--gold)]">Our Story</Link>
+            </li>
+            <li>
+              <Link to="/collections/$slug" params={{ slug: "radiance" }} className="transition hover:text-[color:var(--gold)]">Collections</Link>
+            </li>
+            <li>
+              <Link to="/customize" className="transition hover:text-[color:var(--gold)]">Customize</Link>
+            </li>
+          </ul>
         </div>
 
-        {/* Collections */}
-        <div className="hidden md:block">
+        {/* Customer Support */}
+        <div>
           <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
-            Collections
+            Customer Support
           </Reveal>
-          <ul className="space-y-2 text-sm">
-            {collections.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  to="/collections/$slug"
-                  params={{ slug: c.slug }}
-                  className="capitalize transition hover:text-[color:var(--gold)]"
-                >
-                  {c.name}
-                </Link>
-              </li>
-            ))}
+          <ul className="space-y-3 text-sm text-[color:var(--muted-foreground)]">
+            <li>
+              <Link to="/privacy" className="transition hover:text-[color:var(--gold)]">Privacy Policy</Link>
+            </li>
+            <li>
+              <Link to="/terms" className="transition hover:text-[color:var(--gold)]">Terms & Conditions</Link>
+            </li>
+            <li>
+              <Link to="/shipping" className="transition hover:text-[color:var(--gold)]">Shipping Policy</Link>
+            </li>
+            <li>
+              <Link to="/refunds" className="transition hover:text-[color:var(--gold)]">Refund Policy</Link>
+            </li>
+            <li>
+              <Link to="/contact" className="transition hover:text-[color:var(--gold)]">Contact Us</Link>
+            </li>
           </ul>
         </div>
-        <details className="md:hidden group border-b border-[color:var(--border)] pb-2">
-          <summary className="text-eyebrow text-[color:var(--muted-foreground)] py-2 flex justify-between items-center cursor-pointer list-none">
-            Collections
-            <span className="transition group-open:rotate-180">+</span>
-          </summary>
-          <ul className="space-y-3 text-sm pt-2 pb-4">
-            {collections.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  to="/collections/$slug"
-                  params={{ slug: c.slug }}
-                  className="capitalize transition hover:text-[color:var(--gold)]"
-                >
-                  {c.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </details>
 
-        {/* World */}
-        <div className="hidden md:block">
+        {/* Contact */}
+        <div>
           <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
-            World
+            Contact
           </Reveal>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link to="/story" className="transition hover:text-[color:var(--gold)]">
-                Our Story
-              </Link>
+          <ul className="space-y-3 text-sm text-[color:var(--muted-foreground)]">
+            <li className="flex items-center gap-2">
+              <Mail className="h-4 w-4 shrink-0" />
+              <a href={`mailto:${businessConfig.email}`} className="transition hover:text-[color:var(--gold)]">
+                {businessConfig.email}
+              </a>
             </li>
-            <li>
-              <Link to="/customize" className="transition hover:text-[color:var(--gold)]">
-                Custom Soap Studio
-              </Link>
+            <li className="flex items-center gap-2">
+              <Phone className="h-4 w-4 shrink-0" />
+              <a href={`tel:${businessConfig.phone}`} className="transition hover:text-[color:var(--gold)]">
+                {businessConfig.phone}
+              </a>
             </li>
-            <li>
-              <Link to="/cart" className="transition hover:text-[color:var(--gold)]">
-                Bag
-              </Link>
-            </li>
-            <li>
-              <Link to="/wishlist" className="transition hover:text-[color:var(--gold)]">
-                Saved
-              </Link>
-            </li>
-            <li>
-              <Link to="/account" className="transition hover:text-[color:var(--gold)]">
-                Account
-              </Link>
+            <li className="flex items-start gap-2">
+              <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+              <span className="leading-relaxed">{businessConfig.address}</span>
             </li>
           </ul>
         </div>
-        <details className="md:hidden group border-b border-[color:var(--border)] pb-2">
-          <summary className="text-eyebrow text-[color:var(--muted-foreground)] py-2 flex justify-between items-center cursor-pointer list-none">
-            World
-            <span className="transition group-open:rotate-180">+</span>
-          </summary>
-          <ul className="space-y-3 text-sm pt-2 pb-4">
-            <li>
-              <Link to="/story" className="transition hover:text-[color:var(--gold)]">
-                Our Story
-              </Link>
-            </li>
-            <li>
-              <Link to="/customize" className="transition hover:text-[color:var(--gold)]">
-                Custom Soap Studio
-              </Link>
-            </li>
-            <li>
-              <Link to="/cart" className="transition hover:text-[color:var(--gold)]">
-                Bag
-              </Link>
-            </li>
-            <li>
-              <Link to="/wishlist" className="transition hover:text-[color:var(--gold)]">
-                Saved
-              </Link>
-            </li>
-            <li>
-              <Link to="/account" className="transition hover:text-[color:var(--gold)]">
-                Account
-              </Link>
-            </li>
-          </ul>
-        </details>
 
-        {/* Newsletter */}
-        <div className="hidden md:block">
+        {/* Social & Newsletter */}
+        <div>
+          <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
+            Connect
+          </Reveal>
+          <div className="flex gap-4 mb-8 text-[color:var(--muted-foreground)]">
+            {businessConfig.socialLinks.instagram && (
+              <a href={businessConfig.socialLinks.instagram} target="_blank" rel="noreferrer" className="transition hover:text-[color:var(--gold)]">
+                <Instagram className="h-5 w-5" />
+              </a>
+            )}
+            {businessConfig.socialLinks.facebook && (
+              <a href={businessConfig.socialLinks.facebook} target="_blank" rel="noreferrer" className="transition hover:text-[color:var(--gold)]">
+                <Facebook className="h-5 w-5" />
+              </a>
+            )}
+          </div>
+          
           <Reveal preset="label" className="text-eyebrow mb-4 text-[color:var(--muted-foreground)]">
             Newsletter
-          </Reveal>
-          <Reveal
-            as="p"
-            preset="paragraph"
-            delay={0.1}
-            className="mb-4 text-sm text-[color:var(--muted-foreground)]"
-          >
-            Letters from the atelier. New rituals, seasonal releases.
           </Reveal>
           <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
             <input
@@ -1277,29 +1246,9 @@ export function SiteFooter() {
             <button className="btn-lux !py-3 !px-5">Join</button>
           </form>
         </div>
-        <details className="md:hidden group border-b border-[color:var(--border)] pb-2">
-          <summary className="text-eyebrow text-[color:var(--muted-foreground)] py-2 flex justify-between items-center cursor-pointer list-none">
-            Newsletter
-            <span className="transition group-open:rotate-180">+</span>
-          </summary>
-          <div className="pt-2 pb-4">
-            <p className="mb-4 text-sm text-[color:var(--muted-foreground)]">
-              Letters from the atelier. New rituals, seasonal releases.
-            </p>
-            <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
-              <input
-                type="email"
-                required
-                placeholder="your@email"
-                className="flex-1 border border-[color:var(--border)] bg-transparent px-4 py-3 text-sm outline-none focus:border-[color:var(--gold)]"
-              />
-              <button className="btn-lux !py-3 !px-5">Join</button>
-            </form>
-          </div>
-        </details>
       </div>
-      <div className="mx-auto mt-8 md:mt-12 max-w-[1400px] px-6 text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] md:px-12">
-        © {new Date().getFullYear()} Lenoraa · Crafted by hand
+      <div className="mx-auto mt-12 max-w-[1400px] px-6 text-xs uppercase tracking-[0.28em] text-[color:var(--muted-foreground)] md:px-12">
+        © {new Date().getFullYear()} {businessConfig.name} · Crafted by hand
       </div>
     </footer>
   );

@@ -1,6 +1,8 @@
 import { createFileRoute, Link, defer, Await } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, Suspense } from "react";
+import { generateMetadata } from "@/lib/seo/metadata";
+import { generateSchema } from "@/lib/seo/schema";
 import { useTheme } from "@/lib/store";
 import { productService } from "@/services/product.service";
 import { trustPillars } from "@/lib/catalog";
@@ -14,6 +16,23 @@ import { Magnetic } from "@/components/immersive/Magnetic";
 import heroIntro from "@/assets/hero-intro.png";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: generateMetadata({
+      title: "Handcrafted Luxury Skincare",
+      description: "Discover Lenoraa's doctor-formulated, cold-processed artisanal soaps made with the finest natural botanicals.",
+      path: "/",
+    }),
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(generateSchema.organization()),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(generateSchema.website()),
+      },
+    ],
+  }),
   loader: () => {
     const productsPromise = productService.getProducts();
     return {
@@ -58,6 +77,8 @@ function Index() {
           alt="Handcrafted soap resting above still water at golden hour"
           width={1920}
           height={1280}
+          fetchPriority="high"
+          decoding="async"
           style={{ y: heroY, scale: heroScale }}
           className="absolute inset-0 h-full w-full object-cover opacity-90"
         />
@@ -152,6 +173,10 @@ function Index() {
           <img
             src={heroIntro}
             alt="Handcrafted soap"
+            fetchPriority="high"
+            decoding="async"
+            width={600}
+            height={800}
             className="w-full h-full object-contain drop-shadow-2xl"
           />
         </motion.div>

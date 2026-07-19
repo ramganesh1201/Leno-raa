@@ -62,6 +62,11 @@ function GalleryImage({
         style={{ scale, y }}
         src={resolvedSrc}
         alt={alt}
+        loading={isHero ? "eager" : "lazy"}
+        decoding="async"
+        fetchPriority={isHero ? "high" : "auto"}
+        width={800}
+        height={1000}
         onLoad={() => setLoaded(true)}
         onError={() => {
           setError(true);

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const BASE_URL = "";
+const BASE_URL = import.meta.env.VITE_PUBLIC_SITE_URL || "https://leno-raa-zeta.vercel.app";
 
 interface SitemapEntry {
   path: string;
@@ -16,6 +16,12 @@ export const Route = createFileRoute("/sitemap.xml")({
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/story", changefreq: "monthly", priority: "0.7" },
+          { path: "/about", changefreq: "monthly", priority: "0.7" },
+          { path: "/contact", changefreq: "monthly", priority: "0.7" },
+          { path: "/privacy", changefreq: "monthly", priority: "0.3" },
+          { path: "/terms", changefreq: "monthly", priority: "0.3" },
+          { path: "/shipping", changefreq: "monthly", priority: "0.3" },
+          { path: "/refunds", changefreq: "monthly", priority: "0.3" },
           { path: "/collections/radiance", changefreq: "weekly", priority: "0.9" },
           { path: "/collections/calm", changefreq: "weekly", priority: "0.9" },
           { path: "/collections/nourish", changefreq: "weekly", priority: "0.9" },

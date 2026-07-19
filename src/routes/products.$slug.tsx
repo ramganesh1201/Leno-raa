@@ -1,4 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { generateMetadata } from "@/lib/seo/metadata";
+import { generateSchema } from "@/lib/seo/schema";
 import { useEffect, useState } from "react";
 import { getCollection } from "@/lib/catalog";
 import { productService } from "@/services/product.service";
@@ -29,16 +31,40 @@ export const Route = createFileRoute("/products/$slug")({
     const collection = getCollection(product.collection)!;
     return { product, collection };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.product.name} — ${loaderData.collection.name} — Lenoraa` },
-          { name: "description", content: loaderData.product.description },
-          { property: "og:title", content: `${loaderData.product.name} — Lenoraa` },
-          { property: "og:description", content: loaderData.product.tagline },
-        ]
-      : [{ title: "Product not found — Lenoraa" }],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) {
+      return { meta: [{ title: "Product not found — Lenoraa" }] };
+    }
+    const { product, collection } = loaderData;
+    return {
+      meta: generateMetadata({
+        title: `${product.name} — ${collection.name}`,
+        description: product.description,
+        path: `/products/${product.id}`,
+        image: product.image,
+        type: "product",
+      }),
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(generateSchema.product({
+            name: product.name,
+            description: product.description,
+            image: product.image,
+            price: product.price,
+            url: `/products/${product.id}`,
+          })),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(generateSchema.breadcrumb([
+            { name: collection.name, url: `/collections/${collection.id}` },
+            { name: product.name, url: `/products/${product.id}` },
+          ])),
+        }
+      ],
+    };
+  },
   component: ProductPage,
   pendingComponent: ProductSkeleton,
   notFoundComponent: () => (

@@ -1,4 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { generateMetadata } from "@/lib/seo/metadata";
+import { generateSchema } from "@/lib/seo/schema";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import {
@@ -25,19 +27,27 @@ export const Route = createFileRoute("/collections/$slug")({
     );
     return { collection, items };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.collection.name} — Lenoraa` },
-          {
-            name: "description",
-            content: `${loaderData.collection.purpose}. ${loaderData.collection.environment}`,
-          },
-          { property: "og:title", content: `${loaderData.collection.name} — Lenoraa` },
-          { property: "og:description", content: loaderData.collection.purpose },
-        ]
-      : [{ title: "Not found — Lenoraa" }],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) return { meta: [{ title: "Not found — Lenoraa" }] };
+    const { collection } = loaderData;
+    return {
+      meta: generateMetadata({
+        title: collection.name,
+        description: `${collection.purpose}. ${collection.environment}`,
+        path: `/collections/${collection.id}`,
+        type: "website",
+      }),
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(generateSchema.breadcrumb([
+            { name: "Collections", url: "/collections/radiance" },
+            { name: collection.name, url: `/collections/${collection.id}` },
+          ])),
+        }
+      ],
+    };
+  },
   component: CollectionPage,
   notFoundComponent: () => (
     <div className="pt-40 text-center">

@@ -88,8 +88,11 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           {product.image ? (
             <img
               src={resolveImageUrl(product.image)}
-              alt={product.name}
+              alt={`Lenoraa ${product.name} Handcrafted Soap for ${skinType || 'All Skin Types'}`}
               loading="lazy"
+              decoding="async"
+              width={400}
+              height={500}
               className="h-full w-full object-cover transition-transform duration-500 active:scale-[0.98]"
             />
           ) : (
@@ -168,8 +171,11 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               <>
                 <img
                   src={resolveImageUrl(product.image)}
-                  alt={product.name}
+                  alt={`Lenoraa ${product.name} Handcrafted Soap for ${skinType || 'All Skin Types'}`}
                   loading="lazy"
+                  decoding="async"
+                  width={400}
+                  height={500}
                   className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-[1.03]"
                 />
                 <span className="soap-bar-glow" />
