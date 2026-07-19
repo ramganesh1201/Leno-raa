@@ -1,9 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import "@fontsource/cormorant-garamond/400.css";
-@import "@fontsource/cormorant-garamond/500.css";
-@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/dm-serif-display/400.css";
 @import "@fontsource/inter/300.css";
 @import "@fontsource/inter/400.css";
 @import "@fontsource/inter/500.css";
@@ -39,7 +37,7 @@
   --color-theme: var(--theme);
   --color-theme-soft: var(--theme-soft);
   --color-theme-deep: var(--theme-deep);
-  --font-serif: "Cormorant Garamond", serif;
+  --font-serif: "DM Serif Display", serif;
   --font-sans: "Inter", sans-serif;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);

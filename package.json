@@ -12,7 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@fontsource/cormorant-garamond": "^5.2.11",
+    "@fontsource/dm-serif-display": "^5.3.0",
     "@fontsource/inter": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",

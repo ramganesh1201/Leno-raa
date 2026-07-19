@@ -9,17 +9,23 @@ export function Reveal({
   delay = 0,
   className,
   as: Tag = "div",
+  disabled,
 }: {
   children: ReactNode;
   preset?: RevealPreset;
   delay?: number;
   className?: string;
   as?: "div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "li";
+  disabled?: boolean;
 }) {
   const reduced = useReducedMotion();
   const MotionTag = motion[Tag] as any;
 
-  if (reduced) {
+  // Default to disabled for text to improve performance and readability
+  const isTextPreset = ["heading", "subheading", "paragraph", "label"].includes(preset);
+  const shouldDisable = disabled !== undefined ? disabled : isTextPreset;
+
+  if (reduced || shouldDisable) {
     return <Tag className={className}>{children}</Tag>;
   }
 

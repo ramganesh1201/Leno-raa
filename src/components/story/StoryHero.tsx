@@ -20,15 +20,10 @@ export function StoryHero() {
             className="text-display text-5xl md:text-6xl leading-[1.1] text-[color:var(--foreground)] mb-6"
           />
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="text-lg md:text-xl leading-relaxed text-[color:var(--muted-foreground)]"
-          >
+          <p className="text-lg md:text-xl leading-relaxed text-[color:var(--muted-foreground)] mb-6">
             Lenoraa was born from a desire to return to the essentials. We craft doctor-formulated,
             cold-processed soap that honors the intelligence of your skin and the purity of nature.
-          </motion.p>
+          </p>
         </div>
 
         {/* Hero Image */}

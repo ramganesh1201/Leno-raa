@@ -8,6 +8,7 @@ interface Props {
   delay?: number;
   stagger?: number;
   once?: boolean;
+  disabled?: boolean;
   gold?: ReactNode;
 }
 
@@ -22,9 +23,10 @@ export function SplitText({
   delay = 0,
   stagger = 0.025,
   once = true,
+  disabled = true,
 }: Props) {
   const reduced = useReducedMotion();
-  if (reduced) {
+  if (reduced || disabled) {
     const StaticTag = Tag;
     return <StaticTag className={className}>{text}</StaticTag>;
   }
