@@ -71,6 +71,17 @@ function LoginPage() {
       if (msg.includes("email not confirmed")) {
         // Redirect to verify page
         navigate({ to: "/auth/verify", search: { email } });
+      } else if (msg.includes("invalid login credentials") || msg.includes("invalid credentials")) {
+        try {
+          const { data: provider, error } = await supabase.rpc("check_auth_provider", { lookup_email: email });
+          if (!error && provider === "google") {
+            setErrorMsg("This account was created using Google. Please continue with Google to sign in, or set a password if supported.");
+            return;
+          }
+        } catch (e) {
+          // Ignore
+        }
+        setErrorMsg("Invalid credentials. Please try again.");
       } else {
         setErrorMsg(err.message || "Invalid credentials. Please try again.");
       }

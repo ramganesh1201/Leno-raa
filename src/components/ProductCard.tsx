@@ -6,6 +6,7 @@ import { resolveImageUrl } from "@/lib/imageResolver";
 import { useShop } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
+import { Star } from "lucide-react";
 
 function getSkinType(productName: string): string | null {
   if (!productName) return null;
@@ -37,7 +38,17 @@ function SkinTypeBadge({ type }: { type: string }) {
   );
 }
 
-export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
+export function ProductCard({
+  product,
+  index = 0,
+  rating,
+  reviewCount,
+}: {
+  product: Product;
+  index?: number;
+  rating?: number;
+  reviewCount?: number;
+}) {
   const { user } = useAuth();
   const { wishlist: supabaseWishlist, toggleWishlist: toggleSupabaseWishlist } = useWishlist();
 
@@ -135,6 +146,18 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <div className="text-display text-[22px] leading-tight text-[color:var(--foreground)]">
             {product.name || "Product Name"}
           </div>
+          {reviewCount && reviewCount > 0 ? (
+            <div className="mt-1.5 flex items-center justify-center gap-1">
+              <Star className="w-3 h-3 fill-[color:var(--foreground)] text-[color:var(--foreground)]" />
+              <span className="text-[10px] font-medium tracking-wide text-[color:var(--foreground)]">
+                {rating} ({reviewCount})
+              </span>
+            </div>
+          ) : (
+            <div className="mt-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--muted-foreground)]">
+              New
+            </div>
+          )}
           <div className="mt-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--muted-foreground)]">
             {product.tagline || "Collection Chapter"}
           </div>
@@ -224,7 +247,19 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <div className="mt-6 flex items-baseline justify-between">
           <div>
             <div className="text-display text-2xl">{product.name || "Product Name"}</div>
-            <div className="mt-1 text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+            {reviewCount && reviewCount > 0 ? (
+              <div className="mt-1.5 flex items-center gap-1.5">
+                <Star className="w-3.5 h-3.5 fill-[color:var(--foreground)] text-[color:var(--foreground)]" />
+                <span className="text-xs font-medium tracking-wide text-[color:var(--foreground)]">
+                  {rating} <span className="text-[color:var(--muted-foreground)] ml-0.5">({reviewCount})</span>
+                </span>
+              </div>
+            ) : (
+              <div className="mt-1.5 text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                New
+              </div>
+            )}
+            <div className="mt-1.5 text-xs uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
               {product.tagline || "Collection Chapter"}
             </div>
           </div>

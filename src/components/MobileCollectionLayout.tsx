@@ -30,10 +30,12 @@ export function MobileCollectionLayout({
   collection,
   items,
   otherChapters,
+  ratingsMap,
 }: {
-  collection: unknown;
+  collection: any;
   items: Product[];
-  otherChapters: unknown[];
+  otherChapters: any[];
+  ratingsMap?: Record<string, { avg: number; count: number }>;
 }) {
   const [activeFilter, setActiveFilter] = useState("All");
   const [sortOption, setSortOption] = useState("Recommended");
@@ -188,12 +190,18 @@ export function MobileCollectionLayout({
                 </div>
               </div>
               <div className="flex flex-col flex-1">
-                <div className="flex items-center gap-1 mb-1.5">
-                  <Star className="w-3 h-3 fill-[color:var(--foreground)] text-[color:var(--foreground)]" />
-                  <span className="text-[10px] font-medium tracking-wide text-[color:var(--foreground)]">
-                    4.9
-                  </span>
-                </div>
+                {ratingsMap?.[p.id]?.count ? (
+                  <div className="flex items-center gap-1 mb-1.5">
+                    <Star className="w-3 h-3 fill-[color:var(--foreground)] text-[color:var(--foreground)]" />
+                    <span className="text-[10px] font-medium tracking-wide text-[color:var(--foreground)]">
+                      {ratingsMap[p.id].avg} <span className="opacity-60">({ratingsMap[p.id].count})</span>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="mb-1.5 text-[9px] uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">
+                    New
+                  </div>
+                )}
                 <h4 className="text-sm font-medium text-[color:var(--foreground)] line-clamp-2 leading-snug">
                   {p.name}
                 </h4>
@@ -245,41 +253,6 @@ export function MobileCollectionLayout({
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* 8. Customer Reviews */}
-      <section className="px-5 py-12 text-center">
-        <div className="inline-flex items-center justify-center gap-2 mb-2">
-          {[1, 2, 3, 4, 5].map((s) => (
-            <Star
-              key={s}
-              className="w-4 h-4 fill-[color:var(--foreground)] text-[color:var(--foreground)]"
-            />
-          ))}
-        </div>
-        <h3 className="text-3xl font-serif text-[color:var(--foreground)] mb-1">4.9/5</h3>
-        <p className="text-sm text-[color:var(--muted-foreground)] mb-8">Based on 124 reviews</p>
-
-        <div className="bg-[color:var(--muted)]/30 border border-[color:var(--border)] p-6 rounded-2xl text-left relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-[0.03]">
-            <Star className="w-32 h-32 text-[color:var(--foreground)] fill-current" />
-          </div>
-          <div className="flex items-center gap-1 mb-3">
-            {[1, 2, 3, 4, 5].map((s) => (
-              <Star
-                key={s}
-                className="w-3.5 h-3.5 fill-[color:var(--foreground)] text-[color:var(--foreground)]"
-              />
-            ))}
-          </div>
-          <p className="text-[color:var(--foreground)] font-serif italic text-lg leading-relaxed mb-4">
-            "Absolutely transformative. The texture and scent are incredibly luxurious. My skin has
-            never felt better."
-          </p>
-          <p className="text-xs uppercase tracking-widest font-medium text-[color:var(--muted-foreground)]">
-            — Sarah M.
-          </p>
         </div>
       </section>
 

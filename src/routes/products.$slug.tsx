@@ -1,3 +1,4 @@
+import { LuxuryEditorialCollections } from "@/components/home/LuxuryEditorialCollections";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { generateMetadata } from "@/lib/seo/metadata";
 import { generateSchema } from "@/lib/seo/schema";
@@ -385,6 +386,10 @@ function ProductPage() {
 
       <ProductRecommendations currentProduct={product} />
 
+      <div className="bg-black/5 dark:bg-white/5 py-12">
+        <LuxuryEditorialCollections />
+      </div>
+
       {/* Sticky Purchase Panel */}
       <StickyPurchasePanel
         productName={product.name}
@@ -396,3 +401,4 @@ function ProductPage() {
     </ProductEnvironment>
   );
 }
+

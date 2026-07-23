@@ -6,6 +6,12 @@ export interface AddressType {
   name: string;
   phone: string;
   address: string;
+  house_number?: string;
+  building_name?: string;
+  street_area?: string;
+  landmark?: string;
+  alt_phone?: string;
+  address_type?: string;
   city: string;
   state: string;
   country: string;

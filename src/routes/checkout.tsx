@@ -26,10 +26,16 @@ function CheckoutPage() {
   const [formData, setFormData] = useState({
     full_name: "",
     phone: "",
+    alt_phone: "",
+    house_number: "",
+    building_name: "",
+    street_area: "",
+    landmark: "",
     address: "",
     city: "",
     state: "",
     pincode: "",
+    address_type: "Home",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -150,82 +156,49 @@ function CheckoutPage() {
                   </div>
                 </div>
 
-                <h3 className="text-display text-xl mb-4 pt-4 border-t border-[color:var(--border)] mt-8">
+                                <h3 className="text-display text-xl mb-4 pt-4 border-t border-[color:var(--border)] mt-8">
                   Delivery Address
                 </h3>
-                <div>
-                  <label
-                    htmlFor="address"
-                    className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
-                  >
-                    Street Address
-                  </label>
-                  <input
-                    id="address"
-                    name="address"
-                    required
-                    type="text"
-                    className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
-                    value={formData.address}
-                    onChange={(e) => setFormData((p) => ({ ...p, address: e.target.value }))}
-                    autoComplete="street-address"
-                  />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label htmlFor="house_number" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">House / Flat / Door No. *</label>
+                    <input id="house_number" name="house_number" required type="text" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.house_number} onChange={(e) => setFormData((p) => ({ ...p, house_number: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label htmlFor="building_name" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">Building / Apartment Name</label>
+                    <input id="building_name" name="building_name" type="text" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.building_name} onChange={(e) => setFormData((p) => ({ ...p, building_name: e.target.value }))} />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="street_area" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">Street / Area *</label>
+                  <input id="street_area" name="street_area" required type="text" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.street_area} onChange={(e) => setFormData((p) => ({ ...p, street_area: e.target.value, address: e.target.value }))} autoComplete="street-address" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label htmlFor="landmark" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">Landmark</label>
+                    <input id="landmark" name="landmark" type="text" placeholder="e.g. Near Apollo Hospital" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.landmark} onChange={(e) => setFormData((p) => ({ ...p, landmark: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label htmlFor="alt_phone" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">Alternate Phone</label>
+                    <input id="alt_phone" name="alt_phone" type="tel" pattern="[6-9][0-9]{9}" title="Valid 10-digit Indian mobile number" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.alt_phone} onChange={(e) => setFormData((p) => ({ ...p, alt_phone: e.target.value }))} />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label
-                      htmlFor="city"
-                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
-                    >
-                      City
-                    </label>
-                    <input
-                      id="city"
-                      name="city"
-                      required
-                      type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
-                      value={formData.city}
-                      onChange={(e) => setFormData((p) => ({ ...p, city: e.target.value }))}
-                      autoComplete="address-level2"
-                    />
+                    <label htmlFor="city" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">City *</label>
+                    <input id="city" name="city" required type="text" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.city} onChange={(e) => setFormData((p) => ({ ...p, city: e.target.value }))} autoComplete="address-level2" />
                   </div>
                   <div>
-                    <label
-                      htmlFor="state"
-                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
-                    >
-                      State
-                    </label>
-                    <input
-                      id="state"
-                      name="state"
-                      required
-                      type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
-                      value={formData.state}
-                      onChange={(e) => setFormData((p) => ({ ...p, state: e.target.value }))}
-                      autoComplete="address-level1"
-                    />
+                    <label htmlFor="state" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">State *</label>
+                    <input id="state" name="state" required type="text" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.state} onChange={(e) => setFormData((p) => ({ ...p, state: e.target.value }))} autoComplete="address-level1" />
                   </div>
                   <div>
-                    <label
-                      htmlFor="pincode"
-                      className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2"
-                    >
-                      PIN Code
-                    </label>
-                    <input
-                      id="pincode"
-                      name="pincode"
-                      required
-                      type="text"
-                      className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-lg p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors"
-                      value={formData.pincode}
-                      onChange={(e) => setFormData((p) => ({ ...p, pincode: e.target.value }))}
-                      autoComplete="postal-code"
-                    />
+                    <label htmlFor="pincode" className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">PIN Code *</label>
+                    <input id="pincode" name="pincode" required type="text" pattern="[0-9]{6}" title="6-digit Indian PIN code" className="w-full bg-black/5 dark:bg-white/5 border border-[color:var(--border)] rounded-xl p-4 md:p-3 text-[color:var(--foreground)] focus:border-[color:var(--gold)] focus:outline-none transition-colors" value={formData.pincode} onChange={(e) => setFormData((p) => ({ ...p, pincode: e.target.value }))} autoComplete="postal-code" />
                   </div>
                 </div>
               </div>
@@ -234,7 +207,7 @@ function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-lux w-full justify-center text-lg py-5 md:py-4 shadow-lg"
+                  className="btn-lux w-full justify-center text-lg py-5 md:py-4 shadow-lg rounded-xl"
                 >
                   {isSubmitting ? "Processing..." : "Continue to Payment"}
                 </button>
@@ -315,3 +288,4 @@ function CheckoutPage() {
     </div>
   );
 }
+

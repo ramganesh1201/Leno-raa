@@ -47,6 +47,15 @@ export function LuxuryEditorialCollections() {
               our curated chapters.
             </Reveal>
           </div>
+          <Reveal delay={0.3} className="shrink-0 flex items-center pt-2">
+            <Link
+              to="/collections/$slug"
+              params={{ slug: "all" }}
+              className="btn-lux w-full md:w-auto justify-center"
+            >
+              Shop All Soaps
+            </Link>
+          </Reveal>
         </div>
 
         {/* Bento Grid Editorial Layout */}

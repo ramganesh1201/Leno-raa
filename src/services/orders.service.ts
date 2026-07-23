@@ -54,6 +54,12 @@ export const ordersService = {
       city: string;
       state: string;
       pincode: string;
+      house_number?: string;
+      building_name?: string;
+      street_area?: string;
+      landmark?: string;
+      alt_phone?: string;
+      address_type?: string;
     },
     subtotal: number,
     shipping_cost: number,

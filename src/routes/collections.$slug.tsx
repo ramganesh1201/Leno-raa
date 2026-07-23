@@ -12,6 +12,8 @@ import {
 } from "@/lib/catalog";
 import { productService } from "@/services/product.service";
 import { useTheme } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
+import envRadiance from "@/assets/env-radiance.jpg";
 import { ProductCard } from "@/components/ProductCard";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
@@ -19,13 +21,54 @@ import { MobileCollectionLayout } from "@/components/MobileCollectionLayout";
 
 export const Route = createFileRoute("/collections/$slug")({
   loader: async ({ params }) => {
-    const collection = getCollection(params.slug);
-    if (!collection) throw notFound();
     const allProducts = await productService.getProducts();
-    const items = allProducts.filter((p) =>
-      getProductCollections(p).includes(params.slug as ThemeKey),
-    );
-    return { collection, items };
+    let collection: any;
+    let items: any[];
+
+    if (params.slug === "all") {
+      collection = {
+        slug: "all",
+        id: "all-soaps",
+        name: "All Soaps",
+        eyebrow: "Complete Collection",
+        purpose: "Discover our full range of handcrafted luxury",
+        scene: "The Atelier",
+        environment: "A timeless gallery of botanical brilliance.",
+        benefits: ["Handcrafted", "Natural Ingredients", "Doctor Formulated"],
+        image: envRadiance,
+        ambience: "mist",
+      };
+      items = allProducts;
+    } else {
+      collection = getCollection(params.slug);
+      if (!collection) throw notFound();
+      items = allProducts.filter((p) =>
+        getProductCollections(p).includes(params.slug as ThemeKey)
+      );
+    }
+
+    const { data: reviewsData } = await supabase
+      .from("reviews")
+      .select("product_id, rating")
+      .eq("status", "approved");
+
+    const ratingsMap: Record<string, { avg: number; count: number }> = {};
+    if (reviewsData) {
+      const agg: Record<string, { sum: number; count: number }> = {};
+      reviewsData.forEach((r) => {
+        if (!agg[r.product_id]) agg[r.product_id] = { sum: 0, count: 0 };
+        agg[r.product_id].sum += r.rating;
+        agg[r.product_id].count += 1;
+      });
+      Object.keys(agg).forEach((id) => {
+        ratingsMap[id] = {
+          avg: Number((agg[id].sum / agg[id].count).toFixed(1)),
+          count: agg[id].count,
+        };
+      });
+    }
+
+    return { collection, items, ratingsMap };
   },
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Not found — Lenoraa" }] };
@@ -62,7 +105,7 @@ export const Route = createFileRoute("/collections/$slug")({
 });
 
 function CollectionPage() {
-  const { collection, items } = Route.useLoaderData();
+  const { collection, items, ratingsMap } = Route.useLoaderData();
   const setTheme = useTheme((s) => s.setTheme);
   const otherChapters = collections.filter((c) => c.slug !== collection.slug);
 
@@ -78,6 +121,7 @@ function CollectionPage() {
           collection={collection}
           items={items}
           otherChapters={otherChapters}
+          ratingsMap={ratingsMap}
         />
       </div>
       <div className="block md:hidden">
@@ -85,6 +129,7 @@ function CollectionPage() {
           collection={collection}
           items={items}
           otherChapters={otherChapters}
+          ratingsMap={ratingsMap}
         />
       </div>
     </div>
@@ -107,10 +152,12 @@ function DesktopCollectionLayout({
   collection,
   items,
   otherChapters,
+  ratingsMap,
 }: {
   collection: CollectionData;
   items: Product[];
   otherChapters: CollectionData[];
+  ratingsMap: Record<string, { avg: number; count: number }>;
 }) {
   return (
     <>
@@ -227,7 +274,13 @@ function DesktopCollectionLayout({
           </Reveal>
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
             {items.map((p: Product, i: number) => (
-              <ProductCard key={p.slug} product={p} index={i} />
+              <ProductCard
+                key={p.slug}
+                product={p}
+                index={i}
+                rating={ratingsMap[p.id]?.avg}
+                reviewCount={ratingsMap[p.id]?.count}
+              />
             ))}
           </div>
         </div>

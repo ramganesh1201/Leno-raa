@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useShop, type CustomDesign } from "@/lib/store";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useCustomizations } from "@/hooks/useCustomizations";
@@ -26,6 +27,28 @@ const SKIN_TYPES = ["Oily Skin", "Dry Skin", "Normal / Combination / Sensitive"]
 const CORE_ACTIVES = ["Charcoal", "Orange", "Manjistha with Sandalwood", "Rose", "Menthol"];
 const FRAGRANCES = ["Lavender", "Sandalwood", "Rose", "Orange Citrus", "Fragrance Free"];
 
+const SKIN_TYPE_PRICES: Record<string, number> = {
+  "Oily Skin": 5,
+  "Dry Skin": 5,
+  "Normal / Combination / Sensitive": 0,
+};
+
+const CORE_ACTIVE_PRICES: Record<string, number> = {
+  Charcoal: 10,
+  Orange: 5,
+  "Manjistha with Sandalwood": 15,
+  Rose: 15,
+  Menthol: 5,
+};
+
+const FRAGRANCE_PRICES: Record<string, number> = {
+  Lavender: 10,
+  Sandalwood: 15,
+  Rose: 10,
+  "Orange Citrus": 5,
+  "Fragrance Free": 0,
+};
+
 function CustomizePage() {
   const saveLocalDesign = useShop((s) => s.saveDesign);
   const addLocalCustom = useShop((s) => s.addCustomToCart);
@@ -46,7 +69,11 @@ function CustomizePage() {
   const [saved, setSaved] = useState(false);
   const [added, setAdded] = useState(false);
 
-  const price = 480;
+  const price =
+    120 +
+    (SKIN_TYPE_PRICES[skinType] || 0) +
+    (CORE_ACTIVE_PRICES[coreActive] || 0) +
+    (FRAGRANCE_PRICES[fragrance] || 0);
   const name = "Bespoke Ritual";
 
   const buildDesign = (): CustomDesign => ({
@@ -102,14 +129,23 @@ function CustomizePage() {
               {/* Luxury Minimal Preview */}
               <div className="relative h-[260px] md:h-auto md:aspect-[4/5] w-full max-w-[400px] mx-auto overflow-hidden shadow-xl md:shadow-2xl transition-all duration-700 bg-[color:var(--foreground)] rounded-[2rem] md:rounded-2xl flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent mix-blend-overlay" />
-                <div className="text-center p-8 z-10">
-                  <div className="text-[color:var(--background)] font-light text-2xl tracking-[0.3em] uppercase opacity-90">
-                    {coreActive}
-                  </div>
-                  <div className="text-[color:var(--gold)] text-xs uppercase tracking-widest mt-6 pt-6 border-t border-[color:var(--background)]/20">
-                    Bespoke Formulation
-                  </div>
-                </div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={coreActive}
+                    initial={{ opacity: 0, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, filter: "blur(4px)" }}
+                    transition={{ duration: 0.4 }}
+                    className="text-center p-8 z-10"
+                  >
+                    <div className="text-[color:var(--background)] font-light text-2xl tracking-[0.3em] uppercase opacity-90">
+                      {coreActive}
+                    </div>
+                    <div className="text-[color:var(--gold)] text-xs uppercase tracking-widest mt-6 pt-6 border-t border-[color:var(--background)]/20">
+                      Bespoke Formulation
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
               <div className="mt-8 flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 md:gap-0">
