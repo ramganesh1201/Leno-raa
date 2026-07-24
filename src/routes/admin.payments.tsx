@@ -1,3 +1,5 @@
+import { PaymentProofImage } from "@/components/admin/PaymentProofImage";
+import { FullscreenViewer } from "@/components/ui/FullscreenViewer";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAdminPayments } from "@/hooks/useOrders";
@@ -22,6 +24,7 @@ function AdminPaymentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("awaiting verification");
   const [selectedProof, setSelectedProof] = useState<any | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const filteredPayments = payments.filter((payment: any) => {
     const matchesSearch =
@@ -123,10 +126,10 @@ function AdminPaymentsPage() {
               onClick={() => setSelectedProof(payment)}
             >
               <div className="h-48 bg-neutral-100 dark:bg-neutral-800 relative group overflow-hidden">
-                <img
+                <PaymentProofImage
                   src={payment.screenshot_url}
                   alt="Payment Proof"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <ImageIcon className="text-white" size={32} />
@@ -206,10 +209,11 @@ function AdminPaymentsPage() {
             >
               {/* Image Viewer */}
               <div className="flex-1 bg-black relative flex items-center justify-center p-4">
-                <img
+                <PaymentProofImage
                   src={selectedProof.screenshot_url}
                   alt="Payment Proof"
-                  className="max-w-full max-h-full object-contain"
+                  className="max-w-full max-h-full object-contain cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
+                  onClick={() => setIsFullscreen(true)}
                 />
                 <div className="absolute top-4 right-4 flex gap-2">
                   <a
@@ -337,6 +341,13 @@ function AdminPaymentsPage() {
           </div>
         )}
       </AnimatePresence>
+
+      <FullscreenViewer
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        src={selectedProof?.screenshot_url || ""}
+        downloadName={selectedProof ? `UTR_${selectedProof.utr_number}.png` : undefined}
+      />
     </div>
   );
 }
