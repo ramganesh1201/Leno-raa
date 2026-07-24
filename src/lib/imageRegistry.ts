@@ -15,6 +15,7 @@ import coffee from "@/assets/soaps/coffee.webp";
 import goatMilk from "@/assets/soaps/goatmilk.webp";
 import lavender from "@/assets/soaps/lavender.webp";
 import manji from "@/assets/soaps/manji.webp";
+import manjista from "@/assets/soaps/manjista.webp";
 import menthol from "@/assets/soaps/menthol.webp";
 import nalpamaradhi from "@/assets/soaps/nalpamaradhi.webp";
 import oats from "@/assets/soaps/oats.webp";
@@ -40,6 +41,7 @@ export const IMAGE_REGISTRY: Record<string, string> = {
   "goatmilk.webp": goatMilk,
   "lavender.webp": lavender,
   "manji.webp": manji,
+  "manjista.webp": manjista,
   "menthol.webp": menthol,
   "nalpamaradhi.webp": nalpamaradhi,
   "oats.webp": oats,

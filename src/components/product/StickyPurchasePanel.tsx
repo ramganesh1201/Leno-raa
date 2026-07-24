@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { resolveImageUrl } from "@/lib/imageResolver";
 
 interface StickyPurchasePanelProps {
   productName: string;
@@ -45,7 +46,7 @@ export function StickyPurchasePanel({
           <div className="mx-auto flex max-w-[1400px] items-center justify-between px-2 md:px-12">
             <div className="hidden md:flex items-center gap-4">
               {image && (
-                <img src={image} alt={productName} className="h-12 w-12 rounded-md object-cover" />
+                <img src={resolveImageUrl(image)} alt={productName} className="h-12 w-12 rounded-md object-cover" />
               )}
               <div>
                 <div className="font-serif text-lg">{productName}</div>

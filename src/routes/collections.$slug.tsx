@@ -18,6 +18,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
 import { MobileCollectionLayout } from "@/components/MobileCollectionLayout";
+import { resolveImageUrl } from "@/lib/imageResolver";
 
 export const Route = createFileRoute("/collections/$slug")({
   loader: async ({ params }) => {
@@ -301,7 +302,7 @@ const DesktopCollectionLayout = memo(function DesktopCollectionLayout({
                 className="group relative aspect-[4/5] overflow-hidden rounded-md"
               >
                 <img
-                  src={c.image}
+                  src={resolveImageUrl(c.image)}
                   alt={c.name}
                   loading="lazy"
                   width={800}
