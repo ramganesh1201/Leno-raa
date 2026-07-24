@@ -5,8 +5,13 @@ import { useNotifications } from "@/hooks/useNotifications";
 
 export function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { notifications, unreadCount, markAsRead } = useNotifications();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close when clicking outside
   useEffect(() => {
@@ -125,12 +130,14 @@ export function NotificationDropdown() {
                             {notification.message}
                           </p>
                           <span className="text-[10px] text-neutral-400 mt-2 block font-medium">
-                            {new Date(notification.created_at).toLocaleString(undefined, {
-                              month: "short",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {mounted
+                              ? new Date(notification.created_at).toLocaleString(undefined, {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : ""}
                           </span>
                         </div>
                       </div>

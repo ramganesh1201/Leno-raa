@@ -20,6 +20,11 @@ export function FullscreenViewer({
 }: FullscreenViewerProps) {
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Handle ESC key
   useEffect(() => {
@@ -61,7 +66,7 @@ export function FullscreenViewer({
     setScale(1);
   };
 
-  if (typeof document === "undefined") return null;
+  if (!mounted || typeof document === "undefined") return null;
 
   return createPortal(
     <AnimatePresence>

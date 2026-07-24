@@ -1,7 +1,7 @@
 import { PaymentProofImage } from "@/components/admin/PaymentProofImage";
 import { FullscreenViewer } from "@/components/ui/FullscreenViewer";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAdminPayments } from "@/hooks/useOrders";
 import {
   CheckCircle2,
@@ -25,6 +25,11 @@ function AdminPaymentsPage() {
   const [statusFilter, setStatusFilter] = useState("awaiting verification");
   const [selectedProof, setSelectedProof] = useState<any | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const filteredPayments = payments.filter((payment: any) => {
     const matchesSearch =
@@ -162,7 +167,7 @@ function AdminPaymentsPage() {
                   </span>
                 </div>
                 <div className="text-xs text-neutral-500 mb-4">
-                  {new Date(payment.uploaded_at).toLocaleString()}
+                  {mounted ? new Date(payment.uploaded_at).toLocaleString() : ""}
                 </div>
 
                 {payment.verification_status === "pending" && (
@@ -288,7 +293,7 @@ function AdminPaymentsPage() {
                       <div>
                         <div className="text-xs text-neutral-500 mb-1">Submitted</div>
                         <div className="text-sm">
-                          {new Date(selectedProof.uploaded_at).toLocaleString()}
+                          {mounted ? new Date(selectedProof.uploaded_at).toLocaleString() : ""}
                         </div>
                       </div>
                     </div>
