@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/immersive/Reveal";
 import { SplitText } from "@/components/immersive/SplitText";
-import heroIntro from "@/assets/hero-intro.png";
+import heroIntro from "@/assets/hero-intro.webp";
 
 export function StoryHero() {
   return (

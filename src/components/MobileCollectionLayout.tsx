@@ -69,7 +69,7 @@ export const MobileCollectionLayout = memo(function MobileCollectionLayout({
       <section className="relative flex h-[50dvh] items-end overflow-hidden pt-24 pb-8 px-5">
         <motion.img
           key={collection.slug}
-          src={collection.image}
+          src={resolveImageUrl(collection.image)}
           alt={collection.name}
           initial={{ scale: 1.15, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -272,7 +272,7 @@ export const MobileCollectionLayout = memo(function MobileCollectionLayout({
                 className="group relative w-[70vw] shrink-0 aspect-[4/5] overflow-hidden rounded-2xl snap-center"
               >
                 <img
-                  src={c.image}
+                  src={resolveImageUrl(c.image)}
                   alt={c.name}
                   loading="lazy"
                   decoding="async"

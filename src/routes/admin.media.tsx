@@ -24,7 +24,7 @@ function AdminMediaPage() {
   const [mediaFiles] = useState([
     {
       id: 1,
-      name: "hero-banner-main.jpg",
+      name: "hero-banner-main.webp",
       type: "image",
       size: "1.2 MB",
       date: "2024-05-10",
@@ -32,7 +32,7 @@ function AdminMediaPage() {
     },
     {
       id: 2,
-      name: "rose-clay-soap-1.jpg",
+      name: "rose-clay-soap-1.webp",
       type: "image",
       size: "450 KB",
       date: "2024-05-11",
@@ -40,7 +40,7 @@ function AdminMediaPage() {
     },
     {
       id: 3,
-      name: "lavender-dream-1.jpg",
+      name: "lavender-dream-1.webp",
       type: "image",
       size: "520 KB",
       date: "2024-05-11",

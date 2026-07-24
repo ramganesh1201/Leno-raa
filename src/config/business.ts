@@ -10,7 +10,7 @@ export const businessConfig = {
   },
   organizationDescription:
     "Lenoraa is a premium, handcrafted skincare brand. We specialize in doctor-formulated, cold-processed soaps made in small batches using the finest natural ingredients.",
-  defaultSeoImage: "/hero-intro.png",
+  defaultSeoImage: "/hero-intro.webp",
   futureUpiId: "lenoraa@upi", // Future provision
   futureGstNumber: "GSTIN_PLACEHOLDER", // Future provision
 };

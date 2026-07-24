@@ -6,13 +6,13 @@ renderings on cards and product pages.
 ## Adding an image
 
 1. Save the file here using the product slug as the filename, e.g.
-   `lavender.jpg`, `orange.webp`, `sandalwood.png`. Supported formats:
+   `lavender.webp`, `orange.webp`, `sandalwood.webp`. Supported formats:
    PNG, JPG/JPEG, WEBP.
 2. Import it in `src/lib/catalog.ts` and attach it to the `image` field on
    the matching product:
 
    ```ts
-   import lavender from "@/assets/soaps/lavender.jpg";
+   import lavender from "@/assets/soaps/lavender.webp";
 
    // ...inside the products array:
    {

@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/immersive/Reveal";
 import { SplitText } from "@/components/immersive/SplitText";
-import envNourish from "@/assets/env-nourish.jpg";
-import envCalm from "@/assets/env-calm.jpg";
+import envNourish from "@/assets/env-nourish.webp";
+import envCalm from "@/assets/env-calm.webp";
 
 export function StoryContent() {
   return (

@@ -2,6 +2,7 @@ import { useState, memo } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { collections, type Collection } from "@/lib/catalog";
+import { resolveImageUrl } from "@/lib/imageResolver";
 import { Reveal } from "@/components/immersive/Reveal";
 import { SplitText } from "@/components/immersive/SplitText";
 import { useTheme } from "@/lib/store";
@@ -144,7 +145,7 @@ const CollectionCard = memo(function CollectionCard({
         {/* Background Image */}
         <div className="absolute inset-0 w-full h-full bg-[color:var(--card)] overflow-hidden">
           <img
-            src={collection.image}
+            src={resolveImageUrl(collection.image)}
             alt={collection.name}
             draggable={false}
             loading="lazy"

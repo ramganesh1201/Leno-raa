@@ -8,6 +8,7 @@ import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useNotifications } from "@/hooks/useNotifications";
 import { collections, getProductCollections } from "@/lib/catalog";
+import { resolveImageUrl } from "@/lib/imageResolver";
 import { productService } from "@/services/product.service";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -340,7 +341,7 @@ export function SiteHeader() {
                               <div className="w-10 h-10 rounded-md overflow-hidden bg-[color:var(--cream)]">
                                 {product.image && (
                                   <img
-                                    src={product.image}
+                                    src={resolveImageUrl(product.image)}
                                     alt={product.name}
                                     loading="lazy"
                                     decoding="async"
@@ -490,7 +491,7 @@ export function SiteHeader() {
                 >
                   <div className="relative aspect-[4/5] overflow-hidden">
                     <img
-                      src={c.image}
+                      src={resolveImageUrl(c.image)}
                       alt={c.name}
                       className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
@@ -712,7 +713,7 @@ export function SiteHeader() {
                         <div className="w-16 h-16 rounded-lg overflow-hidden bg-[color:var(--cream)] shrink-0">
                           {product.image && (
                             <img
-                              src={product.image}
+                              src={resolveImageUrl(product.image)}
                               alt={product.name}
                               className="w-full h-full object-cover"
                             />
@@ -775,7 +776,7 @@ export function SiteHeader() {
                           <div className="w-12 h-12 rounded-lg overflow-hidden bg-[color:var(--cream)] shrink-0">
                             {product.image && (
                               <img
-                                src={product.image}
+                                src={resolveImageUrl(product.image)}
                                 alt={product.name}
                                 loading="lazy"
                                 decoding="async"

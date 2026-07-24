@@ -13,7 +13,7 @@ import {
 import { productService } from "@/services/product.service";
 import { useTheme } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
-import envRadiance from "@/assets/env-radiance.webp";
+import allSoaps from "@/assets/all-soaps.webp";
 import { ProductCard } from "@/components/ProductCard";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/collections/$slug")({
         scene: "The Atelier",
         environment: "A timeless gallery of botanical brilliance.",
         benefits: ["Handcrafted", "Natural Ingredients", "Doctor Formulated"],
-        image: envRadiance,
+        image: allSoaps,
         ambience: "mist",
       };
       items = allProducts;

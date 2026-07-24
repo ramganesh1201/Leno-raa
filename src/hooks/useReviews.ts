@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "./useAuth";
 
 export interface Review {
   id: string;
@@ -24,27 +25,36 @@ export interface Review {
 
 export function useReviews(productId: string) {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
-  // Fetch approved reviews
+  // Fetch approved reviews + current user's pending reviews
   const reviewsQuery = useQuery({
-    queryKey: ["reviews", productId],
+    queryKey: ["reviews", productId, user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reviews")
-        .select(
-          `
-          *,
-          profiles (
-            full_name, email
-          )
-        `,
-        )
-        .eq("product_id", productId)
-        .eq("status", "approved")
-        .order("created_at", { ascending: false });
+      const [approvedRes, pendingRes] = await Promise.all([
+        supabase
+          .from("reviews")
+          .select(`*, profiles(full_name, email)`)
+          .eq("product_id", productId)
+          .eq("status", "approved"),
+        user?.id
+          ? supabase
+              .from("reviews")
+              .select(`*, profiles(full_name, email)`)
+              .eq("product_id", productId)
+              .eq("status", "pending")
+              .eq("user_id", user.id)
+          : Promise.resolve({ data: [] }),
+      ]);
 
-      if (error) throw error;
-      return data as Review[];
+      if (approvedRes.error) throw approvedRes.error;
+      if (pendingRes.error) throw pendingRes.error;
+
+      const merged = [...(approvedRes.data || []), ...(pendingRes.data || [])] as Review[];
+      // Sort descending by created_at
+      merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      
+      return merged;
     },
   });
 
@@ -96,10 +106,82 @@ export function useReviews(productId: string) {
     },
   });
 
+  // Edit existing review
+  const editReview = useMutation({
+    mutationFn: async (reviewData: {
+      id: string;
+      rating: number;
+      title: string;
+      review_text: string;
+      userId: string;
+      is_anonymous: boolean;
+      existing_images: string[];
+      new_images: File[];
+    }) => {
+      const uploadedUrls: string[] = [];
+      
+      // Upload new images if any
+      for (const file of reviewData.new_images) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${reviewData.userId}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("review_images")
+          .upload(filePath, file);
+
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage
+            .from("review_images")
+            .getPublicUrl(filePath);
+          uploadedUrls.push(publicUrl);
+        }
+      }
+
+      const finalImages = [...reviewData.existing_images, ...uploadedUrls];
+
+      const { error } = await supabase.from("reviews").update({
+        rating: reviewData.rating,
+        title: reviewData.title,
+        review_text: reviewData.review_text,
+        review_images: finalImages,
+        is_anonymous: reviewData.is_anonymous,
+        status: "pending", // Reset status to pending after edit
+      }).eq("id", reviewData.id).eq("user_id", reviewData.userId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
+      queryClient.invalidateQueries({ queryKey: ["admin_reviews"] });
+    },
+  });
+
+  // Delete own review
+  const deleteReview = useMutation({
+    mutationFn: async (reviewId: string) => {
+      if (!user?.id) throw new Error("Not logged in");
+      
+      const { error } = await supabase
+        .from("reviews")
+        .delete()
+        .eq("id", reviewId)
+        .eq("user_id", user.id);
+        
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
+      queryClient.invalidateQueries({ queryKey: ["admin_reviews"] });
+    },
+  });
+
   return {
     reviews: reviewsQuery.data || [],
     isLoading: reviewsQuery.isLoading,
     submitReview,
+    editReview,
+    deleteReview,
   };
 }
 

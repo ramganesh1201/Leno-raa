@@ -59,13 +59,13 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
   return (
     <div className="relative w-full flex flex-col gap-4">
       {/* Main Carousel */}
-      <div className="relative rounded-[24px] overflow-hidden bg-[color:var(--muted)]/20 shadow-xl border border-[color:var(--border)] group">
+      <div className="relative rounded-2xl md:rounded-[24px] overflow-hidden bg-[color:var(--muted)]/5 md:bg-[color:var(--muted)]/20 shadow-lg md:shadow-xl border border-[color:var(--border)] group">
         <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
           <div className="flex touch-pan-y">
             {images.map((img, idx) => (
               <div
                 key={idx}
-                className="relative flex-[0_0_100%] min-w-0 aspect-[4/5] w-full flex items-center justify-center p-4 md:p-8"
+                className="relative flex-[0_0_100%] min-w-0 aspect-square md:aspect-[4/5] w-full flex items-center justify-center p-2 md:p-8"
                 onClick={() => setIsFullscreen(true)}
               >
                 <div className="relative w-full h-full">
@@ -91,12 +91,12 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x px-1">
+        <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x px-1 w-full max-w-full justify-start md:justify-start">
           {images.map((img, idx) => (
             <button
               key={idx}
               onClick={() => scrollTo(idx)}
-              className={`relative flex-[0_0_80px] h-[100px] rounded-xl overflow-hidden border-2 transition-all snap-start bg-[color:var(--muted)]/20 ${
+              className={`relative flex-[0_0_72px] md:flex-[0_0_80px] h-[90px] md:h-[100px] rounded-xl overflow-hidden border-2 transition-all snap-start bg-[color:var(--muted)]/20 ${
                 idx === selectedIndex ? "border-[color:var(--gold)] opacity-100" : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >

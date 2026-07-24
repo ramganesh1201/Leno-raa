@@ -91,7 +91,7 @@ export const ProductCard = memo(function ProductCard({
         <div
           className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden shadow-md"
           style={{
-            background: product.image
+            background: resolveImageUrl(product.image)
               ? "color-mix(in oklab, var(--ivory) 92%, var(--theme-soft))"
               : "var(--ivory)",
           }}
@@ -183,7 +183,7 @@ export const ProductCard = memo(function ProductCard({
             ref={tiltRef}
             className="card-tilt relative h-full w-full overflow-hidden rounded-[18px]"
             style={{
-              background: product.image
+              background: resolveImageUrl(product.image)
                 ? "color-mix(in oklab, var(--ivory) 92%, var(--theme-soft))"
                 : undefined,
               boxShadow:

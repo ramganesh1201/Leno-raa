@@ -200,7 +200,7 @@ function ProductPage() {
             </Reveal>
 
             {/* 1. Gallery */}
-            <div className="w-full -mx-6 px-6 mb-8">
+            <div className="w-auto -mx-2 mb-6 md:mx-0">
               <ProductGallery
                 images={galleryImages}
                 productName={product.name}
