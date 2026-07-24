@@ -20,12 +20,15 @@ export function StickyPurchasePanel({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      // Show panel when scrolled past ~800px (approximate hero height)
-      if (window.scrollY > 800) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const pastHero = window.scrollY > 800;
+          setIsVisible((prev) => (prev !== pastHero ? pastHero : prev));
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 

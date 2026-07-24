@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, memo } from "react";
 import { useTheme } from "@/lib/store";
 import type { AmbiencePreset } from "@/lib/catalog";
 
@@ -105,7 +105,7 @@ function rand(min: number, max: number) {
  * current world ambience preset, plus a slow rotating light halo. Reads CSS
  * theme tokens so it inherits every product/collection world.
  */
-export function AmbienceLayer() {
+export const AmbienceLayer = memo(function AmbienceLayer() {
   const ambience = useTheme((s) => s.ambience);
   const [mounted, setMounted] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -169,6 +169,8 @@ export function AmbienceLayer() {
         style={{
           background:
             "conic-gradient(from 0deg, transparent, color-mix(in oklab, var(--theme) 35%, transparent), transparent 60%)",
+          willChange: "transform",
+          transform: "translateZ(0)",
         }}
       />
       {/* Light ray sweep */}
@@ -205,4 +207,4 @@ export function AmbienceLayer() {
         })}
     </div>
   );
-}
+});

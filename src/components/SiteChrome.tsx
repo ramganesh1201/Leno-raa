@@ -100,7 +100,8 @@ export function SiteHeader() {
     const onScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 40);
+          const isPast = window.scrollY > 40;
+          setScrolled(prev => prev !== isPast ? isPast : prev);
           ticking = false;
         });
         ticking = true;
