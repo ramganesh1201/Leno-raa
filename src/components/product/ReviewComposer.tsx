@@ -78,11 +78,11 @@ export function ReviewComposer({
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
       const totalImages = existingImages.length + images.length + newFiles.length;
-      if (totalImages > 3) {
-        alert("Maximum 3 images allowed.");
+      if (totalImages > 5) {
+        alert("Maximum 5 images allowed.");
         return;
       }
-      setImages((prev) => [...prev, ...newFiles].slice(0, 3 - existingImages.length));
+      setImages((prev) => [...prev, ...newFiles].slice(0, 5 - existingImages.length));
     }
   };
 
@@ -162,30 +162,40 @@ export function ReviewComposer({
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
-              Review Title
-            </label>
+            <div className="flex justify-between items-end mb-2">
+              <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+                Review Title
+              </label>
+              <span className="text-xs text-[color:var(--muted-foreground)]">{title.length} / 100</span>
+            </div>
             <input
               required
+              maxLength={100}
+              disabled={submitting}
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Sum up your experience"
-              className="w-full bg-[color:var(--muted)]/30 border border-[color:var(--border)] rounded-xl p-4 text-base focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50"
+              className="w-full bg-[color:var(--muted)]/30 border border-[color:var(--border)] rounded-xl p-4 text-base focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50 disabled:opacity-50"
             />
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] mb-2">
-              Your Review
-            </label>
+            <div className="flex justify-between items-end mb-2">
+              <label className="block text-xs uppercase tracking-widest text-[color:var(--muted-foreground)]">
+                Your Review
+              </label>
+              <span className="text-xs text-[color:var(--muted-foreground)]">{content.length} / 1000</span>
+            </div>
             <textarea
               required
+              maxLength={1000}
+              disabled={submitting}
               rows={4}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Tell us what you liked (or didn't like) about this soap..."
-              className="w-full bg-[color:var(--muted)]/30 border border-[color:var(--border)] rounded-xl p-4 text-base focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50 resize-none"
+              className="w-full bg-[color:var(--muted)]/30 border border-[color:var(--border)] rounded-xl p-4 text-base focus:outline-none focus:border-[color:var(--gold)] transition-colors placeholder:text-[color:var(--muted-foreground)]/50 resize-none disabled:opacity-50"
             />
           </div>
 
@@ -197,7 +207,7 @@ export function ReviewComposer({
               type="file"
               multiple
               accept="image/*"
-              className="hidden"
+              className="hidden" disabled={submitting}
               ref={fileInputRef}
               onChange={handleImageUpload}
             />
@@ -231,7 +241,7 @@ export function ReviewComposer({
               ))}
 
               {/* Upload Button */}
-              {(existingImages.length + images.length) < 3 && (
+              {(existingImages.length + images.length) < 5 && (
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
@@ -270,7 +280,7 @@ export function ReviewComposer({
           )}
           <button
             type="submit"
-            disabled={submitting || rating === 0}
+            disabled={submitting || rating === 0 || !title.trim() || !content.trim()}
             className="btn-lux w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? "Saving..." : isEditing ? "Save Changes" : "Submit Review"}

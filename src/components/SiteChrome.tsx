@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useShop } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
@@ -130,7 +131,12 @@ export function SiteHeader() {
 
   // Prevent body scroll and scale background when mobile menu is open
   useEffect(() => {
+    let scrollY = window.scrollY;
+
     if (mobileMenuOpen || isMobileSearchOpen) {
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
       if (mobileMenuOpen) {
         const mainEl = document.querySelector("main");
@@ -145,7 +151,17 @@ export function SiteHeader() {
         });
       }
     } else {
+      const topStr = document.body.style.top;
+      if (topStr && topStr.includes("-")) {
+        scrollY = parseInt(topStr || "0") * -1;
+      }
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
       document.body.style.overflow = "";
+      if (topStr && topStr.includes("-")) {
+        window.scrollTo(0, scrollY);
+      }
       const mainEl = document.querySelector("main");
       const footerEl = document.querySelector("footer");
       [mainEl, footerEl].forEach((el) => {
@@ -155,16 +171,23 @@ export function SiteHeader() {
         }
       });
     }
+    
     return () => {
-      document.body.style.overflow = "";
-      const mainEl = document.querySelector("main");
-      const footerEl = document.querySelector("footer");
-      [mainEl, footerEl].forEach((el) => {
-        if (el) {
-          el.style.transform = "";
-          el.style.filter = "";
-        }
-      });
+      if (document.body.style.position === "fixed") {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        window.scrollTo(0, scrollY);
+        const mainEl = document.querySelector("main");
+        const footerEl = document.querySelector("footer");
+        [mainEl, footerEl].forEach((el) => {
+          if (el) {
+            el.style.transform = "";
+            el.style.filter = "";
+          }
+        });
+      }
     };
   }, [mobileMenuOpen, isMobileSearchOpen]);
 
@@ -663,9 +686,10 @@ export function SiteHeader() {
       </AnimatePresence>
 
       {/* Mobile Fullscreen Search */}
-      <AnimatePresence>
-        {isMobileSearchOpen && (
-          <motion.div
+      {typeof document !== "undefined" ? createPortal(
+        <AnimatePresence>
+          {isMobileSearchOpen && (
+            <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -801,12 +825,15 @@ export function SiteHeader() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      ) : null}
 
       {/* Mobile Hamburger Menu Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
+      {typeof document !== "undefined" ? createPortal(
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1236,7 +1263,9 @@ export function SiteHeader() {
             </motion.div>
           </>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      ) : null}
     </header>
   );
 }

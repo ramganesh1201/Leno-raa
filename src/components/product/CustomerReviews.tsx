@@ -1,19 +1,131 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "@tanstack/react-router";
 import { Star, CheckCircle2, Clock, Trash2, Edit2 } from "lucide-react";
 import { SplitText } from "../immersive/SplitText";
 import { motion, AnimatePresence } from "framer-motion";
 import { ReviewComposer, ReviewSubmitData } from "./ReviewComposer";
 import { useReviews } from "@/hooks/useReviews";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrders } from "@/hooks/useOrders";
 import { createPortal } from "react-dom";
 import { resolveImageUrl } from "@/lib/imageResolver";
+import { memo } from "react";
+export default memo(CustomerReviews);
 
 interface CustomerReviewsProps {
   productName: string;
   productId: string;
 }
 
+
+const ReviewCard = memo(({ review, user, editingReviewId, isDeleting, mounted, setEditingReviewId, handleReviewEdit, handleDelete, setFullscreenImage }: any) => {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.4 }}
+      className={`group ${isDeleting === review.id ? 'opacity-50 pointer-events-none' : ''}`}
+    >
+      {editingReviewId === review.id ? (
+          <ReviewComposer 
+            onSubmit={(data) => handleReviewEdit(review.id, data)}
+            initialData={review}
+            onCancel={() => setEditingReviewId(null)}
+          />
+      ) : (
+        <>
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <div className="flex text-[color:var(--gold)] mb-2">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    className={`h-3 w-3 ${s <= review.rating ? "fill-[color:var(--gold)]" : "fill-transparent text-[color:var(--border)]"}`}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center flex-wrap gap-2 text-sm">
+                <span className="font-medium">
+                  {!review.is_anonymous
+                    ? (review.reviewer_profile?.display_name || (review.verified_purchase ? "Verified Customer" : "Customer"))
+                    : "Anonymous"}
+                </span>
+                {review.verified_purchase ? (
+                  <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-green-600/80">
+                    <CheckCircle2 className="h-3 w-3" /> Verified Purchase
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-[color:var(--muted-foreground)]">
+                    Community Review
+                  </span>
+                )}
+                {review.status === 'pending' && user?.id === review.user_id && (
+                  <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-[color:var(--gold)] ml-2 bg-[color:var(--gold)]/10 px-2 py-0.5 rounded-full">
+                    <Clock className="h-3 w-3" /> Pending Approval
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex flex-col items-end gap-2">
+              <span className="text-xs text-[color:var(--muted-foreground)]">
+                {mounted ? new Date(review.created_at).toLocaleDateString() : ""}
+              </span>
+              
+              {user?.id === review.user_id && review.status !== 'pending' && (
+                <div className="flex items-center gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    onClick={() => setEditingReviewId(review.id)}
+                    className="p-2 -m-2 text-[color:var(--muted-foreground)] hover:text-[color:var(--gold)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    title="Edit Review"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(review.id)}
+                    className="p-2 -m-2 text-[color:var(--muted-foreground)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    title="Delete Review"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {review.title && (
+            <h4 className="font-serif text-lg text-[color:var(--foreground)] mb-1 mt-2 pr-12">
+              {review.title}
+            </h4>
+          )}
+          <p className="text-sm leading-relaxed text-[color:var(--muted-foreground)] mb-2 md:mb-4 max-w-2xl mt-1">
+            {review.review_text}
+          </p>
+
+          {review.review_images && review.review_images.length > 0 && (
+            <div className="flex gap-2 mt-3">
+              {review.review_images.map((img, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setFullscreenImage(resolveImageUrl(img))} 
+                  className="w-16 h-16 rounded-md overflow-hidden border border-[color:var(--border)] focus:outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
+                >
+                  <img src={resolveImageUrl(img)} alt="Review attachment" loading="lazy" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </motion.div>
+  );
+});
+
 export function CustomerReviews({ productName, productId }: CustomerReviewsProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [sort, setSort] = useState("Newest");
   const [visibleCount, setVisibleCount] = useState(3);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -27,9 +139,12 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
   }, []);
   
   const { user } = useAuth();
+  const { orders } = useOrders();
   const { reviews, isLoading, submitReview, editReview, deleteReview } = useReviews(productId);
 
   const approvedReviews = reviews.filter(r => r.status === "approved");
+  const hasPurchased = orders.some(o => o.order_items.some((i: any) => i.product_id === productId));
+  const existingUserReview = user ? reviews.find(r => r.user_id === user.id) : null;
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => Math.min(prev + 5, reviews.length));
@@ -44,6 +159,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
       await submitReview.mutateAsync({
         ...data,
         userId: user.id,
+        verified_purchase: hasPurchased,
       });
       alert("Thank you for your review! It has been submitted for moderation.");
     } catch (e) {
@@ -63,6 +179,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
         is_anonymous: data.is_anonymous,
         existing_images: data.existing_images || [],
         new_images: data.images,
+        verified_purchase: hasPurchased,
       });
       setEditingReviewId(null);
       alert("Review updated and submitted for moderation.");
@@ -95,6 +212,9 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
     // Keep pending reviews at the top for the user
     if (a.status === 'pending' && b.status !== 'pending') return -1;
     if (b.status === 'pending' && a.status !== 'pending') return 1;
+    
+    // Most trustworthy first: Verified Purchase
+    if (a.verified_purchase !== b.verified_purchase) return a.verified_purchase ? -1 : 1;
     
     if (sort === "Newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     if (sort === "Highest Rated") return b.rating - a.rating;
@@ -138,6 +258,10 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
                   </div>
                   <div className="text-sm text-[color:var(--muted-foreground)]">
                     Based on {approvedReviews.length} review{approvedReviews.length === 1 ? "" : "s"}
+                    <div className="mt-1 flex items-center gap-3 text-xs">
+                      <span className="text-green-600/80">{approvedReviews.filter(r => r.verified_purchase).length} Verified</span>
+                      <span className="text-[color:var(--muted-foreground)]">{approvedReviews.filter(r => !r.verified_purchase).length} Community</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -198,103 +322,18 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
             <div className="space-y-8 md:space-y-10">
               <AnimatePresence mode="popLayout">
                 {sortedReviews.slice(0, visibleCount).map((review) => (
-                  <motion.div
+                  <ReviewCard 
                     key={review.id}
-                    layout
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4 }}
-                    className={`group ${isDeleting === review.id ? 'opacity-50 pointer-events-none' : ''}`}
-                  >
-                    {editingReviewId === review.id ? (
-                       <ReviewComposer 
-                          onSubmit={(data) => handleReviewEdit(review.id, data)}
-                          initialData={review}
-                          onCancel={() => setEditingReviewId(null)}
-                       />
-                    ) : (
-                      <>
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <div className="flex text-[color:var(--gold)] mb-2">
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <Star
-                                  key={s}
-                                  className={`h-3 w-3 ${s <= review.rating ? "fill-[color:var(--gold)]" : "fill-transparent text-[color:var(--border)]"}`}
-                                />
-                              ))}
-                            </div>
-                            <div className="flex items-center flex-wrap gap-2 text-sm">
-                              <span className="font-medium">
-                                {!review.is_anonymous 
-                                  ? (review.profiles?.full_name || review.profiles?.email?.split('@')[0] || (review.verified_purchase ? "Verified Customer" : "Customer"))
-                                  : "Anonymous"}
-                              </span>
-                              {review.verified_purchase && (
-                                <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-green-600/80">
-                                  <CheckCircle2 className="h-3 w-3" /> Verified Buyer
-                                </span>
-                              )}
-                              {review.status === 'pending' && user?.id === review.user_id && (
-                                <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-[color:var(--gold)] ml-2 bg-[color:var(--gold)]/10 px-2 py-0.5 rounded-full">
-                                  <Clock className="h-3 w-3" /> Pending Approval
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div className="flex flex-col items-end gap-2">
-                            <span className="text-xs text-[color:var(--muted-foreground)]">
-                              {mounted ? new Date(review.created_at).toLocaleDateString() : ""}
-                            </span>
-                            
-                            {user?.id === review.user_id && review.status !== 'pending' && (
-                              <div className="flex items-center gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                                <button
-                                  onClick={() => setEditingReviewId(review.id)}
-                                  className="p-2 -m-2 text-[color:var(--muted-foreground)] hover:text-[color:var(--gold)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                                  title="Edit Review"
-                                >
-                                  <Edit2 className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(review.id)}
-                                  className="p-2 -m-2 text-[color:var(--muted-foreground)] hover:text-red-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                                  title="Delete Review"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {review.title && (
-                          <h4 className="font-serif text-lg text-[color:var(--foreground)] mb-1 mt-2 pr-12">
-                            {review.title}
-                          </h4>
-                        )}
-                        <p className="text-sm leading-relaxed text-[color:var(--muted-foreground)] mb-2 md:mb-4 max-w-2xl mt-1">
-                          {review.review_text}
-                        </p>
-
-                        {review.review_images && review.review_images.length > 0 && (
-                          <div className="flex gap-2 mt-3">
-                            {review.review_images.map((img, i) => (
-                              <button 
-                                key={i} 
-                                onClick={() => setFullscreenImage(resolveImageUrl(img))} 
-                                className="w-16 h-16 rounded-md overflow-hidden border border-[color:var(--border)] focus:outline-none focus:ring-2 focus:ring-[color:var(--gold)]"
-                              >
-                                <img src={resolveImageUrl(img)} alt="Review attachment" className="w-full h-full object-cover" />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </motion.div>
+                    review={review}
+                    user={user}
+                    editingReviewId={editingReviewId}
+                    isDeleting={isDeleting}
+                    mounted={mounted}
+                    setEditingReviewId={setEditingReviewId}
+                    handleReviewEdit={handleReviewEdit}
+                    handleDelete={handleDelete}
+                    setFullscreenImage={setFullscreenImage}
+                  />
                 ))}
               </AnimatePresence>
 
@@ -329,7 +368,29 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
             )}
 
             <div id="review-composer">
-              <ReviewComposer productName={productName} onSubmit={handleReviewSubmit} />
+              {!user ? (
+                <div className="mt-16 pt-16 border-t border-[color:var(--border)] text-center">
+                  <h3 className="text-display text-2xl mb-4">Sign in to write a review</h3>
+                  <p className="text-sm text-[color:var(--muted-foreground)] mb-6 max-w-md mx-auto">
+                    Please sign in to share your experience with this product. Reviews are available only for authenticated customers.
+                  </p>
+                  <button onClick={() => { navigate({ to: '/auth/login', search: { redirect: location.pathname } }); }} className="btn-lux">
+                    Sign In
+                  </button>
+                </div>
+              ) : existingUserReview ? (
+                <div className="mt-16 pt-16 border-t border-[color:var(--border)] text-center">
+                  <h3 className="text-display text-2xl mb-4">You've already reviewed this product</h3>
+                  <p className="text-sm text-[color:var(--muted-foreground)] mb-6 max-w-md mx-auto">
+                    Thank you for sharing your experience. You can edit your existing review above.
+                  </p>
+                  <button onClick={() => { setEditingReviewId(existingUserReview.id); document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn-lux px-8 py-3 rounded-full border border-[color:var(--border)] uppercase tracking-widest text-sm hover:border-[color:var(--gold)] hover:text-[color:var(--gold)] transition-colors">
+                    Edit Your Review
+                  </button>
+                </div>
+              ) : (
+                <ReviewComposer productName={productName} onSubmit={handleReviewSubmit} />
+              )}
             </div>
           </div>
         </div>

@@ -138,8 +138,14 @@ function AdminReviewsPage() {
                     {!review.is_anonymous
                       ? review.profiles?.full_name || review.profiles?.email || "Guest"
                       : "Anonymous (Guest)"}
-                    {review.verified_purchase && (
-                      <BadgeCheck size={16} className="text-blue-500" title="Verified Purchase" />
+                    {review.verified_purchase ? (
+                      <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full whitespace-nowrap font-medium flex items-center gap-1">
+                        ✓ Verified Purchase
+                      </span>
+                    ) : (
+                      <span className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 text-xs px-2 py-0.5 rounded-full whitespace-nowrap font-medium">
+                        Community Review
+                      </span>
                     )}
                   </div>
                   <div className="text-sm text-neutral-500">

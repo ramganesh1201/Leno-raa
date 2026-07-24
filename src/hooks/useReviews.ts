@@ -17,9 +17,9 @@ export interface Review {
   is_anonymous: boolean;
   created_at: string;
   updated_at: string;
-  profiles?: {
-    full_name: string | null;
-    email: string | null;
+  reviewer_profile?: {
+    display_name: string | null;
+    avatar_url?: string | null;
   } | null;
 }
 
@@ -34,13 +34,13 @@ export function useReviews(productId: string) {
       const [approvedRes, pendingRes] = await Promise.all([
         supabase
           .from("reviews")
-          .select(`*, profiles(full_name, email)`)
+          .select(`*, reviewer_profile`)
           .eq("product_id", productId)
           .eq("status", "approved"),
         user?.id
           ? supabase
               .from("reviews")
-              .select(`*, profiles(full_name, email)`)
+              .select(`*, reviewer_profile`)
               .eq("product_id", productId)
               .eq("status", "pending")
               .eq("user_id", user.id)
@@ -172,7 +172,7 @@ export function useReviews(productId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
-      queryClient.invalidateQueries({ queryKey: ["admin_reviews"] });
+      
     },
   });
 
@@ -191,7 +191,7 @@ export function useReviews(productId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
-      queryClient.invalidateQueries({ queryKey: ["admin_reviews"] });
+      
     },
   });
 
@@ -248,7 +248,7 @@ export function useAdminReviews() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin_reviews"] });
+      
     },
   });
 
@@ -259,7 +259,7 @@ export function useAdminReviews() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin_reviews"] });
+      
     },
   });
 
