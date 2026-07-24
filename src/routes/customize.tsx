@@ -65,6 +65,7 @@ function CustomizePage() {
   const [skinType, setSkinType] = useState(SKIN_TYPES[0]);
   const [coreActive, setCoreActive] = useState(CORE_ACTIVES[0]);
   const [fragrance, setFragrance] = useState(FRAGRANCES[0]);
+  const [quantity, setQuantity] = useState(6);
 
   const [saved, setSaved] = useState(false);
   const [added, setAdded] = useState(false);
@@ -76,11 +77,12 @@ function CustomizePage() {
     };
   }, []);
 
-  const price =
+  const unitPrice =
     120 +
     (SKIN_TYPE_PRICES[skinType] || 0) +
     (CORE_ACTIVE_PRICES[coreActive] || 0) +
     (FRAGRANCE_PRICES[fragrance] || 0);
+  const price = unitPrice * quantity;
   const name = "Bespoke Ritual";
 
   const buildDesign = (): CustomDesign => ({
@@ -170,6 +172,35 @@ function CustomizePage() {
                   ₹{new Intl.NumberFormat("en-IN").format(price)}
                 </div>
               </div>
+
+              {/* Quantity Selector */}
+              <div className="mt-6 flex flex-col gap-2">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm uppercase tracking-widest text-[color:var(--muted-foreground)]">
+                    Quantity
+                  </span>
+                  <div className="flex items-center gap-4 border border-[color:var(--border)] rounded-full px-4 py-1 w-fit bg-[color:var(--background)]">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(6, q - 1))}
+                      className="text-[color:var(--muted-foreground)] hover:text-[color:var(--foreground)] transition-colors p-1"
+                      disabled={quantity <= 6}
+                    >
+                      -
+                    </button>
+                    <span className="w-6 text-center text-[color:var(--foreground)]">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity((q) => q + 1)}
+                      className="text-[color:var(--muted-foreground)] hover:text-[color:var(--foreground)] transition-colors p-1"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <p className="text-xs text-[color:var(--gold)] mt-2">
+                  Custom soaps are handcrafted in small batches. The minimum order quantity is 6 soaps.
+                </p>
+              </div>
+
               <div className="mt-8 hidden md:flex flex-col md:flex-row flex-wrap gap-3 w-full md:w-auto">
 
                   <button
@@ -230,17 +261,18 @@ function CustomizePage() {
                             gift_wrap: false,
                             preview_image: null,
                             notes: null,
-                            estimated_price: price,
+                            estimated_price: unitPrice,
                           });
                           await addToCart.mutateAsync({
                             productId: null,
-                            quantity: 1,
+                            quantity: quantity,
                             customizationId: custom.id,
                           });
                         } else if (saveLocalDesign && addLocalCustom) {
                           const d = buildDesign();
                           saveLocalDesign(d);
-                          addLocalCustom(d);
+                          // For local custom, it adds 1. We don't have quantity arg in addLocalCustom, so we just call it 'quantity' times
+                          for(let i=0; i<quantity; i++) addLocalCustom(d);
                         }
                         setAdded(true);
                         const tid = setTimeout(() => setAdded(false), 2000);
@@ -305,17 +337,17 @@ function CustomizePage() {
                   gift_wrap: false,
                   preview_image: null,
                   notes: null,
-                  estimated_price: price,
+                  estimated_price: unitPrice,
                 });
                 await addToCart.mutateAsync({
                   productId: null,
-                  quantity: 1,
+                  quantity: quantity,
                   customizationId: custom.id,
                 });
               } else if (saveLocalDesign && addLocalCustom) {
                 const d = buildDesign();
                 saveLocalDesign(d);
-                addLocalCustom(d);
+                for(let i=0; i<quantity; i++) addLocalCustom(d);
               }
               setAdded(true);
               const tid = setTimeout(() => setAdded(false), 2000);

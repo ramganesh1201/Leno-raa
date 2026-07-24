@@ -31,6 +31,8 @@ function LoginPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [oauthEmailContext, setOauthEmailContext] = useState<string | null>(null);
+  const [setupMsg, setSetupMsg] = useState("");
 
   const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
   useEffect(() => {
@@ -42,6 +44,8 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
+    setOauthEmailContext(null);
+    setSetupMsg("");
     try {
       if (email === "demo@lenoraa.com") {
         await new Promise((r) => setTimeout(r, 1200));
@@ -84,7 +88,7 @@ function LoginPage() {
         try {
           const { data: provider, error } = await supabase.rpc("check_auth_provider", { lookup_email: email });
           if (!error && provider === "google") {
-            setErrorMsg("This account was created using Google. Please continue with Google to sign in, or set a password if supported.");
+            setOauthEmailContext(email);
             return;
           }
         } catch (e) {
@@ -114,6 +118,19 @@ function LoginPage() {
     }
   };
 
+  const handleSetPassword = async () => {
+    if (!oauthEmailContext) return;
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(oauthEmailContext, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      if (error) throw error;
+      setSetupMsg("A password setup link has been sent to your email.");
+    } catch (err: any) {
+      setSetupMsg(err.message || "Failed to send setup link.");
+    }
+  };
+
   return (
     <>
       <AuthBackground />
@@ -130,57 +147,111 @@ function LoginPage() {
             </div>
           )}
 
-          <OAuthButton
-            provider="google"
-            onClick={() => handleOAuth("google")}
-            disabled={signIn.isPending || isOAuthLoading || isSuccess}
-          />
+          {oauthEmailContext ? (
+            <div className="flex flex-col items-center mt-6 text-center">
+              <p className="text-[color:var(--muted-foreground)] text-sm mb-6">
+                You previously signed in with Google. You can continue with Google or set up a password for this email.
+              </p>
+              
+              <div className="w-full flex flex-col gap-4">
+                <OAuthButton
+                  provider="google"
+                  onClick={() => handleOAuth("google")}
+                  disabled={signIn.isPending || isOAuthLoading || isSuccess}
+                />
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-[color:var(--border)]" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase tracking-widest">
+                    <span className="bg-[color:var(--background)] px-4 text-[color:var(--muted-foreground)]">
+                      Or
+                    </span>
+                  </div>
+                </div>
 
-          <AuthDivider />
+                <button
+                  type="button"
+                  onClick={handleSetPassword}
+                  className="btn-ghost-lux w-full justify-center text-sm py-3"
+                >
+                  Set up a password
+                </button>
+              </div>
 
-          <form onSubmit={handleSubmit}>
-            <AuthInput
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
-            <AuthInput
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
-
-            <AuthButton
-              type="submit"
-              isLoading={signIn.isPending}
-              isSuccess={isSuccess}
-              loadingText="Entering Lenoraa"
-              successText="Welcome Back"
-            >
-              Enter the atelier
-            </AuthButton>
-          </form>
-
-          <div className="mt-8 flex flex-col items-center gap-4 text-sm text-[color:var(--muted-foreground)]">
-            <Link to="/auth/forgot" className="transition hover:text-[color:var(--gold)]">
-              Forgot password?
-            </Link>
-            <div className="flex gap-2">
-              <span>New to Lenoraa?</span>
-              <Link
-                to="/auth/signup"
-                className="text-[color:var(--foreground)] transition hover:text-[color:var(--gold)]"
+              {setupMsg && (
+                <div className="mt-4 text-sm text-[color:var(--gold)] bg-[color:var(--gold)]/10 py-3 px-4 rounded w-full">
+                  {setupMsg}
+                </div>
+              )}
+              
+              <button
+                type="button"
+                onClick={() => {
+                  setOauthEmailContext(null);
+                  setSetupMsg("");
+                }}
+                className="mt-6 text-xs text-[color:var(--muted-foreground)] hover:text-[color:var(--foreground)] transition-colors"
               >
-                Create an account
-              </Link>
+                ← Back to sign in
+              </button>
             </div>
-          </div>
+          ) : (
+            <>
+              <OAuthButton
+                provider="google"
+                onClick={() => handleOAuth("google")}
+                disabled={signIn.isPending || isOAuthLoading || isSuccess}
+              />
+
+              <AuthDivider />
+
+              <form onSubmit={handleSubmit}>
+                <AuthInput
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+                <AuthInput
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                />
+
+                <AuthButton
+                  type="submit"
+                  isLoading={signIn.isPending}
+                  isSuccess={isSuccess}
+                  loadingText="Entering Lenoraa"
+                  successText="Welcome Back"
+                >
+                  Enter the atelier
+                </AuthButton>
+              </form>
+
+              <div className="mt-8 flex flex-col items-center gap-4 text-sm text-[color:var(--muted-foreground)]">
+                <Link to="/auth/forgot" className="transition hover:text-[color:var(--gold)]">
+                  Forgot password?
+                </Link>
+                <div className="flex gap-2">
+                  <span>New to Lenoraa?</span>
+                  <Link
+                    to="/auth/signup"
+                    className="text-[color:var(--foreground)] transition hover:text-[color:var(--gold)]"
+                  >
+                    Create an account
+                  </Link>
+                </div>
+              </div>
+            </>
+          )}
         </AuthCard>
       </div>
     </>

@@ -50,11 +50,26 @@ export function useReviews(productId: string) {
       if (approvedRes.error) throw approvedRes.error;
       if (pendingRes.error) throw pendingRes.error;
 
-      const merged = [...(approvedRes.data || []), ...(pendingRes.data || [])] as Review[];
+      const merged = [...(approvedRes.data || []), ...(pendingRes.data || [])] as any[];
       // Sort descending by created_at
       merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       
-      return merged;
+      return merged.map(r => {
+        let parsed = { text: r.comment || '', title: null, images: [], is_anonymous: false };
+        try {
+          if (r.comment && r.comment.startsWith('{')) {
+            parsed = JSON.parse(r.comment);
+          }
+        } catch(e) {}
+        
+        return {
+          ...r,
+          review_text: r.review_text || parsed.text,
+          title: r.title || parsed.title,
+          review_images: r.review_images || parsed.images,
+          is_anonymous: r.is_anonymous !== undefined ? r.is_anonymous : parsed.is_anonymous
+        } as Review;
+      });
     },
   });
 
@@ -92,11 +107,13 @@ export function useReviews(productId: string) {
         product_id: productId,
         user_id: reviewData.userId,
         rating: reviewData.rating,
-        title: reviewData.title,
-        review_text: reviewData.review_text,
-        review_images: imageUrls,
-        is_anonymous: reviewData.is_anonymous,
-        status: "pending", // Default status
+        comment: JSON.stringify({
+          text: reviewData.review_text,
+          title: reviewData.title,
+          images: imageUrls,
+          is_anonymous: reviewData.is_anonymous
+        }),
+        status: "pending",
       });
       if (error) throw error;
     },
@@ -142,11 +159,13 @@ export function useReviews(productId: string) {
 
       const { error } = await supabase.from("reviews").update({
         rating: reviewData.rating,
-        title: reviewData.title,
-        review_text: reviewData.review_text,
-        review_images: finalImages,
-        is_anonymous: reviewData.is_anonymous,
-        status: "pending", // Reset status to pending after edit
+        comment: JSON.stringify({
+          text: reviewData.review_text,
+          title: reviewData.title,
+          images: finalImages,
+          is_anonymous: reviewData.is_anonymous
+        }),
+        status: "pending",
       }).eq("id", reviewData.id).eq("user_id", reviewData.userId);
       
       if (error) throw error;
@@ -203,7 +222,22 @@ export function useAdminReviews() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return (data || []).map((r: any) => {
+        let parsed = { text: r.comment || '', title: null, images: [], is_anonymous: false };
+        try {
+          if (r.comment && r.comment.startsWith('{')) {
+            parsed = JSON.parse(r.comment);
+          }
+        } catch(e) {}
+        
+        return {
+          ...r,
+          review_text: r.review_text || parsed.text,
+          title: r.title || parsed.title,
+          review_images: r.review_images || parsed.images,
+          is_anonymous: r.is_anonymous !== undefined ? r.is_anonymous : parsed.is_anonymous
+        };
+      });
     },
   });
 

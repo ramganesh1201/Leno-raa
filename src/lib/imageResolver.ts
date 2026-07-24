@@ -1,27 +1,26 @@
-const soapImages = import.meta.glob("/src/assets/soaps/*.{jpeg,jpg,png,webp}", {
-  eager: true,
-  query: "?url",
-  import: "default",
-});
+import { IMAGE_REGISTRY } from "./imageRegistry";
 
 export function resolveImageUrl(dbPath: string | undefined | null): string | undefined {
   if (!dbPath) return undefined;
-  // If it's already an absolute HTTP URL, just return it
+  
+  // 1. If it's already an absolute HTTP URL (e.g. Supabase or external), return it
   if (dbPath.startsWith("http://") || dbPath.startsWith("https://")) return dbPath;
 
-  // 1. Check if a WebP version exists in our local bundle
-  const webpPath = dbPath.replace(/\.(jpeg|jpg|png)$/i, ".webp");
-  const bundledWebP = soapImages[webpPath];
-  if (bundledWebP) {
-    return bundledWebP as string;
+  // 2. Normalize the path to just the filename
+  const filename = dbPath.split("/").pop() || "";
+  
+  // 3. Fallback to WebP if legacy jpg/png
+  const webpFilename = filename.replace(/\.(jpeg|jpg|png)$/i, ".webp");
+
+  // 4. Check registry
+  if (IMAGE_REGISTRY[webpFilename]) {
+    return IMAGE_REGISTRY[webpFilename];
+  }
+  
+  if (IMAGE_REGISTRY[filename]) {
+    return IMAGE_REGISTRY[filename];
   }
 
-  // 2. Resolve original format from Vite bundled assets
-  const bundledPath = soapImages[dbPath];
-  if (bundledPath) {
-    return bundledPath as string;
-  }
-
-  // 3. Fallback
+  // 5. Fallback
   return dbPath;
 }
