@@ -15,6 +15,11 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -107,7 +112,7 @@ export function ProductGallery({ images, productName, benefits }: ProductGallery
       )}
 
       {/* Fullscreen Modal (Rendered at top level via Portal) */}
-      {typeof document !== "undefined" && createPortal(
+      {mounted && typeof document !== "undefined" && createPortal(
         <AnimatePresence>
           {isFullscreen && (
             <motion.div

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Star,
@@ -19,6 +19,11 @@ export const Route = createFileRoute("/admin/reviews")({
 function AdminReviewsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("pending");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { reviews, isLoading, updateReviewStatus, deleteReview } = useAdminReviews();
 
@@ -154,7 +159,7 @@ function AdminReviewsPage() {
                     ))}
                   </div>
                   <div className="text-xs text-neutral-400">
-                    {new Date(review.created_at).toLocaleDateString()}
+                    {mounted ? new Date(review.created_at).toLocaleDateString() : ""}
                   </div>
                 </div>
 

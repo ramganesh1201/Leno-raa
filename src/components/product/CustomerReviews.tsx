@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star, CheckCircle2, Clock, Trash2, Edit2 } from "lucide-react";
 import { SplitText } from "../immersive/SplitText";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,11 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const { user } = useAuth();
   const { reviews, isLoading, submitReview, editReview, deleteReview } = useReviews(productId);
@@ -241,7 +246,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
                           
                           <div className="flex flex-col items-end gap-2">
                             <span className="text-xs text-[color:var(--muted-foreground)]">
-                              {new Date(review.created_at).toLocaleDateString()}
+                              {mounted ? new Date(review.created_at).toLocaleDateString() : ""}
                             </span>
                             
                             {user?.id === review.user_id && review.status !== 'pending' && (
