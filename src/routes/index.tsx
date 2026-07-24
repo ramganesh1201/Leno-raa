@@ -13,7 +13,7 @@ import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
 import { CraftsmanshipSection } from "@/components/home/CraftsmanshipSection";
 
-import heroIntro from "@/assets/hero-intro.png";
+import heroIntro from "@/assets/hero-intro.webp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -79,6 +79,7 @@ function Index() {
           width={1920}
           height={1280}
           fetchPriority="high"
+          loading="eager"
           decoding="async"
           style={{ y: heroY, scale: heroScale }}
           className="absolute inset-0 h-full w-full object-cover opacity-90"
@@ -184,6 +185,7 @@ function Index() {
             src={heroIntro}
             alt="Handcrafted soap"
             fetchPriority="high"
+            loading="eager"
             decoding="async"
             width={600}
             height={800}

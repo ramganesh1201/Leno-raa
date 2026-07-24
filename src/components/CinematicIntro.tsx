@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useLayoutEffect, useState } from "react";
-import heroIntro from "@/assets/hero-intro.png";
+import heroIntro from "@/assets/hero-intro.webp";
 
 const KEY = "lenoraa-intro-seen";
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { profileService } from "@/services/profile.service";
 import { supabase } from "@/lib/supabase";
@@ -32,6 +32,13 @@ function LoginPage() {
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach((id) => clearTimeout(id));
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
@@ -39,12 +46,13 @@ function LoginPage() {
       if (email === "demo@lenoraa.com") {
         await new Promise((r) => setTimeout(r, 1200));
         setIsSuccess(true);
-        setTimeout(() => navigate({ to: "/account" }), 1200);
+        const tid = setTimeout(() => navigate({ to: "/account" }), 1200);
+        timeoutRefs.current.push(tid);
       } else {
         const { user } = await signIn.mutateAsync({ email, password });
         setIsSuccess(true);
 
-        setTimeout(async () => {
+        const tid2 = setTimeout(async () => {
           try {
             if (!user) {
               navigate({ to: "/" });
@@ -65,6 +73,7 @@ function LoginPage() {
             setIsSuccess(false);
           }
         }, 1200);
+        timeoutRefs.current.push(tid2);
       }
     } catch (err: any) {
       const msg = err.message?.toLowerCase() || "";

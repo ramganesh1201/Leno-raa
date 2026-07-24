@@ -1,9 +1,9 @@
-import heroIntro from "@/assets/hero-intro.png";
-import envRadiance from "@/assets/env-radiance.jpg";
-import envCalm from "@/assets/env-calm.jpg";
-import envHerbal from "@/assets/env-herbal.jpg";
-import envNourish from "@/assets/env-nourish.jpg";
-import envRelax from "@/assets/env-relax.jpg";
+import heroIntro from "@/assets/hero-intro.webp";
+import envRadiance from "@/assets/env-radiance.webp";
+import envCalm from "@/assets/env-calm.webp";
+import envHerbal from "@/assets/env-herbal.webp";
+import envNourish from "@/assets/env-nourish.webp";
+import envRelax from "@/assets/env-relax.webp";
 
 export interface CraftsmanshipSlide {
   id: string;

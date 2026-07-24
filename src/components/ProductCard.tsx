@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import type { Product } from "@/lib/catalog";
 import { resolveImageUrl } from "@/lib/imageResolver";
 import { useShop } from "@/lib/store";
@@ -38,7 +38,7 @@ function SkinTypeBadge({ type }: { type: string }) {
   );
 }
 
-export function ProductCard({
+export const ProductCard = memo(function ProductCard({
   product,
   index = 0,
   rating,
@@ -270,4 +270,4 @@ export function ProductCard({
       </Link>
     </motion.div>
   );
-}
+});

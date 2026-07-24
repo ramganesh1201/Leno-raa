@@ -52,8 +52,8 @@ function PaymentPage() {
     const selected = e.target.files?.[0];
     if (!selected) return;
 
-    if (!["image/jpeg", "image/png", "image/jpg"].includes(selected.type)) {
-      setError("Please upload a valid image file (JPG or PNG).");
+    if (!["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(selected.type)) {
+      setError("Please upload a valid image file (JPG, PNG, or WebP).");
       return;
     }
 
@@ -257,7 +257,7 @@ function PaymentPage() {
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
-                    accept="image/jpeg, image/png, image/jpg"
+                    accept="image/jpeg, image/png, image/jpg, image/webp"
                     className="hidden"
                   />
                 </div>

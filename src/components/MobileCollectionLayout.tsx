@@ -15,7 +15,7 @@ import {
   Star,
 } from "lucide-react";
 import type { Product } from "@/lib/catalog";
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { resolveImageUrl } from "@/lib/imageResolver";
 import {
   Drawer,
@@ -26,7 +26,7 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 
-export function MobileCollectionLayout({
+export const MobileCollectionLayout = memo(function MobileCollectionLayout({
   collection,
   items,
   otherChapters,
@@ -177,6 +177,7 @@ export function MobileCollectionLayout({
                   src={resolveImageUrl(p.image)}
                   alt={p.name}
                   loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div
@@ -274,6 +275,7 @@ export function MobileCollectionLayout({
                   src={c.image}
                   alt={c.name}
                   loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -364,4 +366,4 @@ export function MobileCollectionLayout({
       </div>
     </div>
   );
-}
+});

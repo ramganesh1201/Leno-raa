@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { generateMetadata } from "@/lib/seo/metadata";
 import { generateSchema } from "@/lib/seo/schema";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import {
   getCollection,
   collections,
@@ -13,7 +13,7 @@ import {
 import { productService } from "@/services/product.service";
 import { useTheme } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
-import envRadiance from "@/assets/env-radiance.jpg";
+import envRadiance from "@/assets/env-radiance.webp";
 import { ProductCard } from "@/components/ProductCard";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
@@ -148,7 +148,7 @@ export interface CollectionData {
   ambience?: string;
 }
 
-function DesktopCollectionLayout({
+const DesktopCollectionLayout = memo(function DesktopCollectionLayout({
   collection,
   items,
   otherChapters,
@@ -324,4 +324,4 @@ function DesktopCollectionLayout({
       </section>
     </>
   );
-}
+});

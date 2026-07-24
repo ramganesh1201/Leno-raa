@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useShop, type CustomDesign } from "@/lib/store";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
@@ -68,6 +68,13 @@ function CustomizePage() {
 
   const [saved, setSaved] = useState(false);
   const [added, setAdded] = useState(false);
+
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach((id) => clearTimeout(id));
+    };
+  }, []);
 
   const price =
     120 +
@@ -191,7 +198,8 @@ function CustomizePage() {
                           saveLocalDesign(buildDesign());
                         }
                         setSaved(true);
-                        setTimeout(() => setSaved(false), 2000);
+                        const tid = setTimeout(() => setSaved(false), 2000);
+                        timeoutRefs.current.push(tid);
                       } catch (err) {
                         console.error("Failed to save customization:", err);
                       }
@@ -235,7 +243,8 @@ function CustomizePage() {
                           addLocalCustom(d);
                         }
                         setAdded(true);
-                        setTimeout(() => setAdded(false), 2000);
+                        const tid = setTimeout(() => setAdded(false), 2000);
+                        timeoutRefs.current.push(tid);
                       } catch (err) {
                         console.error("Failed to add to cart:", err);
                       }
@@ -309,7 +318,8 @@ function CustomizePage() {
                 addLocalCustom(d);
               }
               setAdded(true);
-              setTimeout(() => setAdded(false), 2000);
+              const tid = setTimeout(() => setAdded(false), 2000);
+              timeoutRefs.current.push(tid);
             } catch (err) {
               console.error("Failed to add to cart:", err);
             }
