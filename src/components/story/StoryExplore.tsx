@@ -32,7 +32,7 @@ export function StoryExplore() {
           </div>
 
           <div className="w-full md:w-auto">
-            <Link to="/catalog" className="btn-ghost-lux w-full justify-center">
+            <Link to="/" className="btn-ghost-lux w-full justify-center">
               Shop Now
             </Link>
           </div>
