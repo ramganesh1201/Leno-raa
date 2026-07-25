@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from "react";
+import { useNavigate, useLocation } from "@tanstack/react-router";
 import { Star, CheckCircle2, Clock, Trash2, Edit2 } from "lucide-react";
 import { SplitText } from "../immersive/SplitText";
 import { motion, AnimatePresence } from "framer-motion";
@@ -121,6 +122,8 @@ const ReviewCard = memo(({ review, user, editingReviewId, isDeleting, mounted, s
 });
 
 export function CustomerReviews({ productName, productId }: CustomerReviewsProps) {
+  const navigate = useNavigate({ from: "/products/$slug" });
+  const location = useLocation();
   const [sort, setSort] = useState("Newest");
   const [visibleCount, setVisibleCount] = useState(3);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -369,7 +372,7 @@ export function CustomerReviews({ productName, productId }: CustomerReviewsProps
                   <p className="text-sm text-[color:var(--muted-foreground)] mb-6 max-w-md mx-auto">
                     Please sign in to share your experience with this product. Reviews are available only for authenticated customers.
                   </p>
-                  <button onClick={() => { window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname); }} className="btn-lux">
+                  <button onClick={() => navigate({ to: '/auth/login', search: { redirect: location.pathname } })} className="btn-lux">
                     Sign In
                   </button>
                 </div>
