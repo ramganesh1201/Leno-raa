@@ -11,3 +11,4 @@ LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
   FROM profiles p
   WHERE p.id = $1.user_id;
 $$;
+ddddddd
