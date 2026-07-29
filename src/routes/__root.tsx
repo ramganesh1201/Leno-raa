@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -141,8 +142,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const routerState = useRouter();
-  const pathname = routerState.state.location.pathname;
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAdmin = pathname.startsWith("/admin");
   const isProductDetail = pathname.startsWith("/products/");
 

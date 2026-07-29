@@ -15,9 +15,9 @@ interface ProductRecommendationsProps {
 
 export function ProductRecommendations({ currentProduct }: ProductRecommendationsProps) {
   const { data: allProducts = [] } = useQuery({
-    queryKey: ["products", "all"],
+    queryKey: ["products"],
     queryFn: () => productService.getProducts(),
-    staleTime: 1000 * 60 * 60, // 1 hour
+    staleTime: 5 * 60 * 1000,
   });
 
   const [recommendations, setRecommendations] = useState<RecommendationResult[]>([]);

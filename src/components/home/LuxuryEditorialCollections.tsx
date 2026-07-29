@@ -8,16 +8,10 @@ import { SplitText } from "@/components/immersive/SplitText";
 import { useTheme } from "@/lib/store";
 
 export function LuxuryEditorialCollections() {
-  const setTheme = useTheme((s) => s.setTheme);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const handleCardHover = (index: number | null, collection?: Collection) => {
+  const handleCardHover = (index: number | null) => {
     setHoveredIndex(index);
-    if (index !== null && collection) {
-      setTheme(collection.slug, collection.ambience);
-    } else {
-      setTheme("radiance", "goldDust"); // Revert to default
-    }
   };
 
   return (

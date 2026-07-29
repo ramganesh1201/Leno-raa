@@ -6,15 +6,13 @@ const KEY = "lenoraa-intro-seen";
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export function CinematicIntro() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !sessionStorage.getItem(KEY);
+  });
   const [ready, setReady] = useState(false);
 
-  useIsomorphicLayoutEffect(() => {
-    if (typeof window === "undefined") return;
-    const seen = sessionStorage.getItem(KEY);
-    if (!seen) {
-      setVisible(true);
-    }
+  useEffect(() => {
     setReady(true);
   }, []);
 
@@ -28,7 +26,7 @@ export function CinematicIntro() {
     }
   }, [visible, ready]);
 
-  if (!ready) return null;
+  if (!ready || !visible) return null;
 
   return (
     <AnimatePresence>
@@ -54,18 +52,21 @@ export function CinematicIntro() {
           {Array.from({ length: 40 }).map((_, i) => (
             <motion.span
               key={i}
-              initial={{ opacity: 0, y: 50, x: Math.random() * window.innerWidth }}
+              initial={{ opacity: 0, y: 50 }}
               animate={{
                 opacity: [0, 0.9, 0],
-                y: -window.innerHeight * 0.6,
+                y: -600,
               }}
               transition={{
-                duration: 5 + Math.random() * 4,
-                delay: Math.random() * 2,
+                duration: 5 + (i % 4),
+                delay: (i % 3) * 0.5,
                 repeat: Infinity,
               }}
               className="absolute bottom-0 h-1 w-1 rounded-full bg-[color:var(--gold-soft,#e6c98a)]"
-              style={{ boxShadow: "0 0 12px currentColor" }}
+              style={{
+                left: `${(i * 2.5) % 100}%`,
+                boxShadow: "0 0 12px currentColor",
+              }}
             />
           ))}
 

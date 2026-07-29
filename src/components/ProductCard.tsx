@@ -60,11 +60,21 @@ export const ProductCard = memo(function ProductCard({
   const skinType = getSkinType(product.name);
 
   const tiltRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+
+  const onEnter = () => {
+    if (tiltRef.current) {
+      rectRef.current = tiltRef.current.getBoundingClientRect();
+    }
+  };
 
   const onMove = (e: React.PointerEvent) => {
     const el = tiltRef.current;
     if (!el) return;
-    const r = el.getBoundingClientRect();
+    if (!rectRef.current) {
+      rectRef.current = el.getBoundingClientRect();
+    }
+    const r = rectRef.current;
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
     // Subtle luxury tilt — no exaggerated motion.
@@ -73,6 +83,7 @@ export const ProductCard = memo(function ProductCard({
     el.style.setProperty("--shine-y", `${(y + 0.5) * 100}%`);
   };
   const onLeave = () => {
+    rectRef.current = null;
     const el = tiltRef.current;
     if (el) el.style.transform = "";
   };
@@ -176,6 +187,7 @@ export const ProductCard = memo(function ProductCard({
       >
         <div
           className="soap-bar-wrap aspect-[4/3] relative"
+          onPointerEnter={onEnter}
           onPointerMove={onMove}
           onPointerLeave={onLeave}
         >
