@@ -52,8 +52,8 @@ function ShippingPage() {
           </li>
         </ul>
         <p>
-          Shipping charges are calculated at checkout based on the delivery location and the weight
-          of your package. We offer complimentary standard shipping on all orders exceeding ₹2,500.
+          Standard delivery fee is <strong>₹70</strong> for orders with a total amount of <strong>₹500 or below</strong>. 
+          We offer <strong>FREE standard shipping (₹0)</strong> on all orders with a subtotal <strong>above ₹500</strong>.
         </p>
       </PolicySection>
 

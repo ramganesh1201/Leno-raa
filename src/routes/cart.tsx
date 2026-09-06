@@ -12,6 +12,7 @@ import { Reveal } from "@/components/immersive/Reveal";
 import { AnimatePresence, motion } from "framer-motion";
 import { Trash2, Heart, Plus, Minus, ArrowLeft, ShoppingBag } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
+import { calculateDeliveryFee } from "@/lib/shipping";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -103,6 +104,7 @@ function CartPage() {
   }, 0);
 
   const cartQuantity = cart.reduce((a, i) => a + i.quantity, 0);
+  const deliveryFee = calculateDeliveryFee(subtotal);
 
   // Get 3 recommendations excluding items in cart
   const recommendations = useMemo(() => {
@@ -427,7 +429,9 @@ function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span className="text-[color:var(--foreground)]">₹50</span>
+                    <span className="text-[color:var(--foreground)]">
+                      {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax</span>
@@ -440,7 +444,7 @@ function CartPage() {
                     Total
                   </span>
                   <span className="text-xl md:text-2xl tracking-widest text-[color:var(--foreground)] font-medium">
-                    ₹{new Intl.NumberFormat("en-IN").format(subtotal + 50)}
+                    ₹{new Intl.NumberFormat("en-IN").format(subtotal + deliveryFee)}
                   </span>
                 </div>
 

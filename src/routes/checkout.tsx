@@ -8,6 +8,7 @@ import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { calculateDeliveryFee } from "@/lib/shipping";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -53,7 +54,7 @@ function CheckoutPage() {
   }, 0);
 
   const cartQuantity = cart.reduce((a, i) => a + i.quantity, 0);
-  const shippingCost = 50;
+  const shippingCost = calculateDeliveryFee(subtotal);
   const total = subtotal + shippingCost;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -268,7 +269,7 @@ function CheckoutPage() {
                 <div className="flex justify-between">
                   <span>Shipping</span>
                   <span className="text-[color:var(--foreground)]">
-                    ₹{new Intl.NumberFormat("en-IN").format(shippingCost)}
+                    {shippingCost === 0 ? "FREE" : `₹${new Intl.NumberFormat("en-IN").format(shippingCost)}`}
                   </span>
                 </div>
               </div>
