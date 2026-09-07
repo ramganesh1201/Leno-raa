@@ -6,9 +6,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useOrders } from "@/hooks/useOrders";
 import { SplitText } from "@/components/immersive/SplitText";
 import { Reveal } from "@/components/immersive/Reveal";
-import { UploadCloud, CheckCircle2, AlertCircle, Smartphone } from "lucide-react";
+import { UploadCloud, CheckCircle2, AlertCircle } from "lucide-react";
 import { ordersService } from "@/services/orders.service";
-import { QRCodeSVG } from "qrcode.react";
 
 export const Route = createFileRoute("/payment/$orderId")({
   component: PaymentPage,
@@ -151,91 +150,56 @@ function PaymentPage() {
           </div>
 
           <div className="pt-12 grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Left: Dynamic QR Code */}
-          {(() => {
-            const upiId = siteSettings?.upi_id;
-            const merchantName = siteSettings?.merchant_name || "Lenoraa";
-            const payableAmount = Number(order.total).toFixed(2);
-            const orderNote = order.order_number;
+            {/* Left: QR Code */}
+            <div className="flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-[color:var(--border)] pb-10 md:pb-0 md:pr-10">
+              <h3 className="text-display text-xl mb-6 text-center">Scan to Pay</h3>
 
-            const upiPaymentUri = upiId
-              ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(merchantName)}&am=${payableAmount}&cu=INR&tn=${encodeURIComponent(orderNote)}`
-              : null;
+              <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-100 mb-6 w-56 h-56 flex items-center justify-center overflow-hidden">
+                {siteSettings?.upi_qr_url ? (
+                  <img
+                    src={siteSettings.upi_qr_url}
+                    alt="UPI QR Code"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-50 rounded-xl flex flex-col items-center justify-center text-gray-400 p-4 text-center border-2 border-dashed border-gray-200">
+                    <AlertCircle size={32} className="mb-2 opacity-50" />
+                    <span className="text-xs">
+                      QR Code
+                      <br />
+                      Not Configured
+                    </span>
+                  </div>
+                )}
+              </div>
 
-            return (
-              <div className="flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-[color:var(--border)] pb-10 md:pb-0 md:pr-10">
-                <h3 className="text-display text-xl mb-4 text-center">Scan to Pay</h3>
-                
-                <div className="mb-4 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-full text-center">
-                  <span className="text-xs font-semibold text-[color:var(--gold)]">
-                    Exact Amount Embedded: ₹{new Intl.NumberFormat("en-IN").format(order.total)}
+              <div className="text-center w-full max-w-[240px]">
+                {siteSettings?.merchant_name && (
+                  <p className="text-sm font-medium text-[color:var(--foreground)] mb-3">
+                    {siteSettings.merchant_name}
+                  </p>
+                )}
+                <div className="flex items-center justify-between gap-2 bg-black/5 dark:bg-white/5 py-3 px-4 rounded-full">
+                  <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] shrink-0">
+                    UPI
                   </span>
-                </div>
-
-                <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-100 mb-4 w-60 h-60 flex items-center justify-center overflow-hidden">
-                  {upiPaymentUri ? (
-                    <QRCodeSVG
-                      value={upiPaymentUri}
-                      size={210}
-                      level="M"
-                      marginSize={1}
-                      className="w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-50 rounded-xl flex flex-col items-center justify-center text-gray-400 p-4 text-center border-2 border-dashed border-gray-200">
-                      <AlertCircle size={32} className="mb-2 opacity-50 text-amber-500" />
-                      <span className="text-xs font-medium text-gray-600">
-                        UPI Payment Setup
-                        <br />
-                        Not Configured
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="text-center w-full max-w-[260px] space-y-3">
-                  {siteSettings?.merchant_name && (
-                    <p className="text-sm font-medium text-[color:var(--foreground)]">
-                      {siteSettings.merchant_name}
-                    </p>
-                  )}
-                  {upiId ? (
-                    <>
-                      <div className="flex items-center justify-between gap-2 bg-black/5 dark:bg-white/5 py-2.5 px-4 rounded-full">
-                        <span className="text-xs uppercase tracking-widest text-[color:var(--muted-foreground)] shrink-0">
-                          UPI
-                        </span>
-                        <span
-                          className="font-medium tracking-wide truncate max-w-[130px] text-xs"
-                          title={upiId}
-                        >
-                          {upiId}
-                        </span>
-                        <button
-                          onClick={() => navigator.clipboard.writeText(upiId)}
-                          className="text-xs text-[color:var(--gold)] hover:text-white transition-colors shrink-0 font-medium"
-                          title="Copy UPI ID"
-                        >
-                          Copy
-                        </button>
-                      </div>
-
-                      <a
-                        href={upiPaymentUri!}
-                        className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-full bg-[color:var(--gold)] text-white text-xs font-semibold uppercase tracking-wider shadow-md hover:brightness-110 active:scale-[0.98] transition-all"
-                      >
-                        <Smartphone size={16} /> Pay ₹{new Intl.NumberFormat("en-IN").format(order.total)} with UPI App
-                      </a>
-                    </>
-                  ) : (
-                    <p className="text-xs text-amber-500 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20">
-                      UPI configuration is currently unavailable. Please contact support.
-                    </p>
-                  )}
+                  <span
+                    className="font-medium tracking-wide truncate max-w-[120px]"
+                    title={siteSettings?.upi_id || "Not configured"}
+                  >
+                    {siteSettings?.upi_id || "Not configured"}
+                  </span>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(siteSettings?.upi_id || "")}
+                    className="text-[color:var(--gold)] hover:text-white transition-colors shrink-0"
+                    title="Copy UPI ID"
+                    disabled={!siteSettings?.upi_id}
+                  >
+                    Copy
+                  </button>
                 </div>
               </div>
-            );
-          })()}
+            </div>
 
             {/* Right: Upload Form */}
             <div className="flex flex-col justify-center">

@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase";
-import { calculateDeliveryFee } from "@/lib/shipping";
 
 export const ordersService = {
   async getOrders() {
@@ -62,8 +61,8 @@ export const ordersService = {
       alt_phone?: string;
       address_type?: string;
     },
-    _clientSubtotal?: number,
-    _clientShippingCost?: number,
+    subtotal: number,
+    shipping_cost: number,
     tax: number = 0,
     discount: number = 0,
   ) {
@@ -72,42 +71,17 @@ export const ordersService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Must be logged in to create an order");
 
-    // 1. Fetch current cart items with authoritative database prices
-    const { data: cartItems, error: cartError } = await supabase
-      .from("cart_items")
-      .select("*, product:products(price), customization:soap_customizations(calculated_price)")
-      .eq("user_id", user.id);
-
-    if (cartError) throw cartError;
-    if (!cartItems || cartItems.length === 0) {
-      throw new Error("Your bag is empty. Please add items before checking out.");
-    }
-
-    // 2. Authoritative subtotal calculation from database prices
-    const authoritativeSubtotal = cartItems.reduce((sum, item) => {
-      const price = item.product
-        ? item.product.price
-        : item.customization
-          ? item.customization.calculated_price
-          : 0;
-      return sum + Number(price) * item.quantity;
-    }, 0);
-
-    // 3. Authoritative shipping calculation using central delivery fee rule
-    const authoritativeShippingCost = calculateDeliveryFee(authoritativeSubtotal);
-
-    // 4. Authoritative total calculation
-    const total = authoritativeSubtotal + authoritativeShippingCost + tax - discount;
+    const total = subtotal + shipping_cost + tax - discount;
     const order_number = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
 
-    // 5. Create Order with authoritative amounts
+    // 1. Create Order
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
         order_number,
         user_id: user.id,
-        subtotal: authoritativeSubtotal,
-        shipping_cost: authoritativeShippingCost,
+        subtotal,
+        shipping_cost,
         tax,
         discount,
         total,
@@ -120,7 +94,7 @@ export const ordersService = {
 
     if (orderError) throw orderError;
 
-    // 6. Insert Shipping Address
+    // 2. Insert Shipping Address
     const { error: addressError } = await supabase.from("shipping_addresses").insert({
       order_id: order.id,
       ...shippingDetails,
@@ -128,30 +102,41 @@ export const ordersService = {
 
     if (addressError) throw addressError;
 
-    // 7. Move items to order_items using authoritative prices
-    const orderItemsToInsert = cartItems.map((item) => ({
-      order_id: order.id,
-      product_id: item.product_id,
-      quantity: item.quantity,
-      price: item.product
-        ? item.product.price
-        : item.customization
-          ? item.customization.calculated_price
-          : 0,
-      customization_id: item.customization_id,
-    }));
+    // 2. Fetch current cart items
+    const { data: cartItems, error: cartError } = await supabase
+      .from("cart_items")
+      .select("*, product:products(price), customization:soap_customizations(calculated_price)")
+      .eq("user_id", user.id);
 
-    const { error: itemsError } = await supabase.from("order_items").insert(orderItemsToInsert);
-    if (itemsError) throw itemsError;
+    if (cartError) throw cartError;
 
-    // 8. Clear cart & notify
-    await supabase.from("cart_items").delete().eq("user_id", user.id);
+    // 3. Move items to order_items
+    if (cartItems && cartItems.length > 0) {
+      const orderItemsToInsert = cartItems.map((item) => ({
+        order_id: order.id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: item.product
+          ? item.product.price
+          : item.customization
+            ? item.customization.calculated_price
+            : 0,
+        customization_id: item.customization_id,
+      }));
 
-    await supabase.from("notifications").insert({
-      user_id: user.id,
-      title: "Order Reserved",
-      message: `Your order ${order.order_number} has been saved securely.`,
-    });
+      const { error: itemsError } = await supabase.from("order_items").insert(orderItemsToInsert);
+
+      if (itemsError) throw itemsError;
+
+      await supabase.from("cart_items").delete().eq("user_id", user.id);
+
+      // 5. Notify User
+      await supabase.from("notifications").insert({
+        user_id: user.id,
+        title: "Order Reserved",
+        message: `Your order ${order.order_number} has been saved securely.`,
+      });
+    }
 
     return order;
   },
