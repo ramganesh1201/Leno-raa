@@ -1007,18 +1007,6 @@ export function MobileDrawer() {
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
-      
-      const mainEl = document.querySelector("main");
-      const footerEl = document.querySelector("footer");
-      [mainEl, footerEl].forEach((el) => {
-        if (el) {
-          el.style.transform = "scale(0.96) translateY(4px)";
-          el.style.filter = "blur(10px) brightness(0.85)";
-          el.style.transition = "all 0.45s cubic-bezier(0.22, 1, 0.36, 1)";
-          el.style.transformOrigin = "top center";
-          el.style.willChange = "transform, filter";
-        }
-      });
     } else {
       const topStr = document.body.style.top;
       if (topStr && topStr.includes("-")) {
@@ -1035,16 +1023,6 @@ export function MobileDrawer() {
         window.scrollTo(0, scrollY);
         setTimeout(() => { document.documentElement.style.scrollBehavior = originalBehavior; }, 0);
       }
-      
-      const mainEl = document.querySelector("main");
-      const footerEl = document.querySelector("footer");
-      [mainEl, footerEl].forEach((el) => {
-        if (el) {
-          el.style.transform = "";
-          el.style.filter = "";
-          el.style.willChange = "";
-        }
-      });
     }
     
     return () => {
@@ -1058,16 +1036,6 @@ export function MobileDrawer() {
         document.documentElement.style.scrollBehavior = "auto";
         window.scrollTo(0, scrollY);
         setTimeout(() => { document.documentElement.style.scrollBehavior = originalBehavior; }, 0);
-        
-        const mainEl = document.querySelector("main");
-        const footerEl = document.querySelector("footer");
-        [mainEl, footerEl].forEach((el) => {
-          if (el) {
-            el.style.transform = "";
-            el.style.filter = "";
-            el.style.willChange = "";
-          }
-        });
       }
     };
   }, [mobileMenuOpen]);

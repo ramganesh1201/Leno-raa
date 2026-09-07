@@ -39,7 +39,7 @@ export function ProductEnvironment({
           src={collectionImage}
           alt=""
           aria-hidden
-          className="h-full w-full object-cover blur-2xl"
+          className="h-full w-full object-cover blur-lg md:blur-xl opacity-20"
         />
 
         {/* Product-Specific Base Tint */}
@@ -51,10 +51,10 @@ export function ProductEnvironment({
         {/* Soft lighting shift overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[color:var(--background)]/40 via-transparent to-[color:var(--background)]/80 transition-colors duration-1000" />
 
-        {/* Dynamic Glow radiating from the center */}
+        {/* Dynamic Glow radiating from the center - GPU radial gradient */}
         <div
-          className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 h-[80vh] w-[80vw] rounded-full blur-[120px] opacity-20 transition-colors duration-1000"
-          style={{ background: `radial-gradient(circle, ${product.accentColor}, transparent 70%)` }}
+          className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 h-[80vh] w-[80vw] rounded-full opacity-25 transition-colors duration-1000"
+          style={{ background: `radial-gradient(circle at center, ${product.accentColor} 0%, transparent 65%)` }}
         />
       </div>
 

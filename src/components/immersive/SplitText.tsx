@@ -49,18 +49,14 @@ export function SplitText({
               variants={{
                 hidden: {
                   opacity: 0,
-                  y: "0.6em",
-                  scale: 0.95,
-                  filter: "blur(8px)",
-                  rotateX: 3,
+                  y: "0.4em",
+                  scale: 0.98,
                 },
                 show: {
                   opacity: 1,
                   y: 0,
                   scale: 1,
-                  filter: "blur(0px)",
-                  rotateX: 0,
-                  transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] },
+                  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
             >

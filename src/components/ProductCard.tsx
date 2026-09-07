@@ -61,28 +61,38 @@ export const ProductCard = memo(function ProductCard({
 
   const tiltRef = useRef<HTMLDivElement>(null);
   const rectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+  const rafId = useRef<number | null>(null);
 
-  const onEnter = () => {
+  const onEnter = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
     if (tiltRef.current) {
       rectRef.current = tiltRef.current.getBoundingClientRect();
     }
   };
 
   const onMove = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
     const el = tiltRef.current;
     if (!el) return;
     if (!rectRef.current) {
       rectRef.current = el.getBoundingClientRect();
     }
     const r = rectRef.current;
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    // Subtle luxury tilt — no exaggerated motion.
-    el.style.transform = `perspective(1200px) rotateX(${-y * 4}deg) rotateY(${x * 5}deg) scale(1.01)`;
-    el.style.setProperty("--shine-x", `${(x + 0.5) * 100}%`);
-    el.style.setProperty("--shine-y", `${(y + 0.5) * 100}%`);
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    if (rafId.current !== null) cancelAnimationFrame(rafId.current);
+    rafId.current = requestAnimationFrame(() => {
+      const x = (clientX - r.left) / r.width - 0.5;
+      const y = (clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(1200px) rotateX(${-y * 4}deg) rotateY(${x * 5}deg) scale(1.01)`;
+      el.style.setProperty("--shine-x", `${(x + 0.5) * 100}%`);
+      el.style.setProperty("--shine-y", `${(y + 0.5) * 100}%`);
+    });
   };
+
   const onLeave = () => {
+    if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     rectRef.current = null;
     const el = tiltRef.current;
     if (el) el.style.transform = "";
@@ -92,8 +102,8 @@ export const ProductCard = memo(function ProductCard({
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 1.1, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.9, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
       className="group relative"
       data-theme={product.collection}
     >

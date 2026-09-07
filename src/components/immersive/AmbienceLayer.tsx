@@ -110,6 +110,7 @@ export const AmbienceLayer = memo(function AmbienceLayer() {
   const [mounted, setMounted] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [density, setDensity] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -118,10 +119,11 @@ export const AmbienceLayer = memo(function AmbienceLayer() {
     const onChange = () => setReducedMotion(mq.matches);
     mq.addEventListener?.("change", onChange);
 
-    // Adaptive quality
+    // Adaptive quality for mobile and lower performance cores
     const cores = (navigator as { hardwareConcurrency?: number }).hardwareConcurrency ?? 4;
-    const isSmall = window.innerWidth < 720;
-    setDensity(cores >= 8 && !isSmall ? 1 : cores >= 4 ? 0.7 : 0.45);
+    const small = window.innerWidth < 768;
+    setIsMobile(small);
+    setDensity(small ? 0.35 : cores >= 8 ? 1 : cores >= 4 ? 0.7 : 0.45);
 
     return () => mq.removeEventListener?.("change", onChange);
   }, []);
@@ -129,7 +131,7 @@ export const AmbienceLayer = memo(function AmbienceLayer() {
   const cfg = PRESETS[ambience];
   const items = useMemo(() => {
     if (!mounted) return [];
-    const total = Math.max(3, Math.round(cfg.count * density));
+    const total = Math.max(2, Math.round(cfg.count * density));
     return Array.from({ length: total }, (_, i) => {
       const size = rand(cfg.minSize, cfg.maxSize);
       return {
@@ -165,7 +167,7 @@ export const AmbienceLayer = memo(function AmbienceLayer() {
       />
       {/* Slow rotating light halo */}
       <div
-        className="absolute -left-[20%] -top-[30%] h-[120vh] w-[120vh] rounded-full opacity-25 blur-3xl rotate-slow"
+        className="absolute -left-[20%] -top-[30%] h-[120vh] w-[120vh] rounded-full opacity-25 blur-2xl md:blur-3xl rotate-slow"
         style={{
           background:
             "conic-gradient(from 0deg, transparent, color-mix(in oklab, var(--theme) 35%, transparent), transparent 60%)",
@@ -179,6 +181,13 @@ export const AmbienceLayer = memo(function AmbienceLayer() {
       {!reducedMotion &&
         mounted &&
         items.map((p) => {
+          // On mobile, clamp heavy blur filters to lightweight radial glows to prevent compositor bottlenecking
+          const activeBlur = cfg.blur
+            ? isMobile
+              ? Math.min(cfg.blur, 10)
+              : cfg.blur
+            : undefined;
+
           const style: React.CSSProperties = {
             width: p.size,
             height: p.size,
@@ -187,9 +196,13 @@ export const AmbienceLayer = memo(function AmbienceLayer() {
             opacity: p.opacity,
             animationDelay: `${p.delay}s`,
             animationDuration: `${p.duration}s`,
-            background: cfg.color,
-            filter: cfg.blur ? `blur(${cfg.blur}px)` : undefined,
-            transform: `rotate(${p.rotate}deg)`,
+            background:
+              isMobile && cfg.shape === "smoke"
+                ? `radial-gradient(circle, ${cfg.color} 0%, transparent 70%)`
+                : cfg.color,
+            filter: activeBlur ? `blur(${activeBlur}px)` : undefined,
+            transform: `rotate(${p.rotate}deg) translateZ(0)`,
+            willChange: "transform",
           };
           const cls =
             cfg.shape === "petal"

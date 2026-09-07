@@ -837,6 +837,18 @@
   box-shadow: 0 40px 80px -30px color-mix(in oklab, var(--charcoal) 30%, transparent);
 }
 
+@media (max-width: 768px) {
+  .surface-glass,
+  .surface-glass-dark {
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+  }
+  .surface-menu {
+    backdrop-filter: blur(12px) saturate(130%);
+    -webkit-backdrop-filter: blur(12px) saturate(130%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;

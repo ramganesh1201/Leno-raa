@@ -33,25 +33,22 @@ export function Reveal({
     switch (preset) {
       case "heading":
         return {
-          hidden: { opacity: 0, y: 35, scale: 0.95, filter: "blur(8px)", rotateX: 3 },
+          hidden: { opacity: 0, y: 25, scale: 0.97 },
           show: {
             opacity: 1,
             y: 0,
             scale: 1,
-            filter: "blur(0px)",
-            rotateX: 0,
-            transition: { duration: 1.0, delay, ease: [0.22, 1, 0.36, 1] },
+            transition: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] },
           },
         };
       case "subheading":
         return {
-          hidden: { opacity: 0, y: 25, scale: 0.98, filter: "blur(6px)" },
+          hidden: { opacity: 0, y: 18, scale: 0.99 },
           show: {
             opacity: 1,
             y: 0,
             scale: 1,
-            filter: "blur(0px)",
-            transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
+            transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
           },
         };
       case "label":
