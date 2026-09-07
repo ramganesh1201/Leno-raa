@@ -38,25 +38,6 @@ export function StoryHero() {
           />
         </div>
       </div>
-
-      {/* Subtle Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span className="text-[10px] uppercase tracking-widest text-[color:var(--muted-foreground)]">
-          Scroll
-        </span>
-        <div className="w-[1px] h-12 bg-[color:var(--border)] overflow-hidden relative">
-          <motion.div
-            animate={{ y: ["-100%", "100%"] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-            className="absolute inset-0 bg-[color:var(--gold)] w-full h-1/2"
-          />
-        </div>
-      </motion.div>
     </section>
   );
 }

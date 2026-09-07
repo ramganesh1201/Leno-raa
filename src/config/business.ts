@@ -2,7 +2,7 @@ export const businessConfig = {
   name: "Lenoraa",
   websiteUrl: import.meta.env.VITE_PUBLIC_SITE_URL || "https://leno-raa-zeta.vercel.app",
   email: "lenora.1642@gmail.com",
-  phone: "+91 98765 43210", // Placeholder, easily updatable
+  phone: "+91 XXXXX XXXXX", // Placeholder, easily updatable
   address: "Leno-Raa labs,Gudivada,AP,521301", // Placeholder
   businessHours: "Monday - Friday, 9:00 AM - 6:00 PM IST",
   socialLinks: {
